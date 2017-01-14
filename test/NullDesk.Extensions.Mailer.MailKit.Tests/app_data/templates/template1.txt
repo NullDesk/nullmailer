@@ -1,0 +1,9 @@
+
+
+Hello %name%,
+
+This is a test plain text message from xUnit the automated test runner included with the NullDesk Mailer Extensions.
+
+Thanks,
+
+Bot
