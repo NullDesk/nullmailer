@@ -139,14 +139,14 @@ namespace NullDesk.Extensions.Mailer.MailKit
             var templateExists = false;
             var directory = new DirectoryInfo(TemplateSettings.TemplatePath);
 
-            var htmlTemplate = directory.GetFileForExtensions(templateName, TemplateSettings.HtmlTemplateFileExtensions.ToArray());
+            var htmlTemplate = directory.GetFirstFileForExtensions(templateName, TemplateSettings.HtmlTemplateFileExtensions.ToArray());
             if (htmlTemplate != null)
             {
                 bodyBuilder.HtmlBody = await htmlTemplate.ToMessageAsync(replacementVariables, token);
                 templateExists = true;
             }
 
-            var textTemplate = directory.GetFileForExtensions(templateName, TemplateSettings.TextTemplateFileExtension.ToArray());
+            var textTemplate = directory.GetFirstFileForExtensions(templateName, TemplateSettings.TextTemplateFileExtension.ToArray());
             if (textTemplate != null)
             {
                 bodyBuilder.TextBody = await textTemplate.ToMessageAsync(replacementVariables, token);
