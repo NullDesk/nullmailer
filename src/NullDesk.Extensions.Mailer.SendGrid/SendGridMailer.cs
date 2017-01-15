@@ -1,19 +1,22 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using NullDesk.Extensions.Mailer.Core;
 using Microsoft.Extensions.Options;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 namespace NullDesk.Extensions.Mailer.SendGrid
 {
     /// <summary>
     /// SendGrid Email Service.
     /// </summary>
-    public class SendGridMailer: IMailer<SendGridMailerSettings>
+    public class SendGridMailer : IMailer<SendGridMailerSettings>
     {
-         /// <summary>
+        /// <summary>
         /// Settings for the mailer instance
         /// </summary>
         /// <returns></returns>
@@ -23,9 +26,9 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// Initializes a new instance of the <see cref="SendGridMailer"/> class.
         /// </summary>
         /// <param name="settings">The settings.</param>
-        public SendGridMailer(IOptions<SendGridMailerSettings> settings) 
+        public SendGridMailer(IOptions<SendGridMailerSettings> settings)
         {
-           Settings = settings.Value;
+            Settings = settings.Value;
         }
 
 
@@ -41,16 +44,34 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;System.Boolean&gt;.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        public Task<bool> SendMailAsync(
-            string toEmailAddress, 
-            string toDisplayName, 
-            string subject, 
-            string htmlBody, 
-            string textBody, 
-            IDictionary<string, Stream> attachments, 
+        public async Task<bool> SendMailAsync(
+            string toEmailAddress,
+            string toDisplayName,
+            string subject,
+            string htmlBody,
+            string textBody,
+            IDictionary<string, Stream> attachments,
             CancellationToken token)
         {
-            throw new NotImplementedException();
+
+            var apiKey = Settings.ApiKey;
+            var client = new Client(apiKey);
+
+            var from = new Email(Settings.FromEmailAddress, Settings.FromDisplayName);
+            var to = new Email(toEmailAddress, toDisplayName);
+            var textContent = new Content("text/plain", textBody);
+            var htmlContent = new Content("text/html", htmlBody);
+
+            var mail = new Mail(from, subject, to, textContent);
+            mail.AddContent(htmlContent);
+            mail.MailSettings.SandboxMode.Enable = Settings.IsSandboxMode;
+
+            var response = await client.RequestAsync(method: Client.Methods.POST,
+                                                          requestBody: mail.Get(),
+                                                          urlPath: "mail/send");
+            //TODO: Log status                                                          
+            return response.StatusCode == HttpStatusCode.Accepted;
+            
         }
 
         /// <summary>
@@ -65,15 +86,16 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;System.Boolean&gt;.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        public Task<bool> SendMailAsync(
-            string toEmailAddress, 
-            string toDisplayName, 
-            string subject, 
-            string htmlBody, 
-            string textBody, 
-            IEnumerable<string> attachmentFiles, 
+        public async Task<bool> SendMailAsync(
+            string toEmailAddress,
+            string toDisplayName,
+            string subject,
+            string htmlBody,
+            string textBody,
+            IEnumerable<string> attachmentFiles,
             CancellationToken token)
         {
+            await Task.CompletedTask;
             throw new NotImplementedException();
         }
     }
