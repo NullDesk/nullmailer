@@ -6,7 +6,7 @@ namespace NullDesk.Extensions.Mailer.Core
     /// <summary>
     /// Settings for SMTP Email Services.
     /// </summary>
-    public class MailerTemplateFileSettings : IMailerTemplateSettings
+    public class MailerFileTemplateSettings : IMailerTemplateSettings
     {
 
         /// <summary>

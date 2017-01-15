@@ -1,6 +1,5 @@
 ﻿{
   "dependencies": {
-    "MailKit": "1.10.1",
     "NETStandard.Library": "1.6.1",
     "NullDesk.Extensions.Mailer.Core": "1.*"
   },
@@ -14,7 +13,7 @@
   "authors": [
     "Stephen M. Redd"
   ],
-  "description": "Provides MailKit implementations for email messaging services",
+  "description": "Provides SendGrid implementations for email messaging services",
 
   "packOptions": {
     "packageType": "Dependency",
@@ -25,7 +24,7 @@
     "tags": [
       "Email",
       "NullDesk",
-      "MailKit"
+      "SendGrid"
     ]
   },
   "version": "1.0.0-*"

@@ -23,8 +23,8 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
 
             services.AddOptions();
 
-            var templateOptions = new OptionsWrapper<MailerTemplateFileSettings>(
-                new MailerTemplateFileSettings
+            var templateOptions = new OptionsWrapper<MailerFileTemplateSettings>(
+                new MailerFileTemplateSettings
                 {
                     TemplatePath = "./app_data/templates"
                 });

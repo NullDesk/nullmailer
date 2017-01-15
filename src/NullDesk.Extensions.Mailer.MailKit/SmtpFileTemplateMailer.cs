@@ -14,13 +14,13 @@ namespace NullDesk.Extensions.Mailer.MailKit
     /// <summary>
     /// SMTP File Template EMail Service.
     /// </summary>
-    public class SmtpFileTemplateMailer : SmtpMailer, ITemplateMailer<MailerTemplateFileSettings>
+    public class SmtpFileTemplateMailer : SmtpMailer, ITemplateMailer<MailerFileTemplateSettings>
     {
         /// <summary>
         /// Template settings
         /// </summary>
         /// <value>The template settings.</value>
-        public MailerTemplateFileSettings TemplateSettings { get; set; }
+        public MailerFileTemplateSettings TemplateSettings { get; set; }
 
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         public SmtpFileTemplateMailer(
             SmtpClient client,
             IOptions<SmtpMailerSettings> settings,
-            IOptions<MailerTemplateFileSettings> templateSettings)
+            IOptions<MailerFileTemplateSettings> templateSettings)
         : base(client, settings)
         {
             TemplateSettings = templateSettings.Value;
@@ -46,7 +46,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="templateSettings">The template settings.</param>
         public SmtpFileTemplateMailer(
             IOptions<SmtpMailerSettings> settings,
-            IOptions<MailerTemplateFileSettings> templateSettings)
+            IOptions<MailerFileTemplateSettings> templateSettings)
         : base(settings)
         {
             TemplateSettings = templateSettings.Value;

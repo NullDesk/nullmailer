@@ -6,9 +6,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceRoot}\\test\\NullDesk.Extensions.Mailer.Tests\\bin\\Debug\\netcoreapp1.1\\NullDesk.Extensions.Mailer.Tests.dll",
+            "program": "${workspaceRoot}\\test\\NullDesk.Extensions.Mailer.MailKit.Tests\\bin\\Debug\\netcoreapp1.1\\NullDesk.Extensions.Mailer.MailKit.Tests.dll",
             "args": [],
-            "cwd": "${workspaceRoot}\\test\\NullDesk.Extensions.Mailer.Tests",
+            "cwd": "${workspaceRoot}\\test\\NullDesk.Extensions.Mailer.MailKit.Tests",
             "externalConsole": false,
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart"

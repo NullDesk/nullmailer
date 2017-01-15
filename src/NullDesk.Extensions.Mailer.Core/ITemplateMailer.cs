@@ -8,7 +8,7 @@ namespace NullDesk.Extensions.Mailer.Core
     /// <summary>
     /// Mailer base class
     /// </summary>
-    public interface ITemplateMailer<T> : IMailerSettings where T : class, IMailerTemplateSettings
+    public interface ITemplateMailer<T> where T : class, IMailerTemplateSettings
     {
         /// <summary>
         /// Template settings 
