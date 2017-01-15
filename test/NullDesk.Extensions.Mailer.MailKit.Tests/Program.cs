@@ -42,8 +42,8 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
                   .SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>())
                   .Returns(Task.CompletedTask);
                 return (isMailServerAlive)
-                    ? new SmtpMailer(options)
-                    : new SmtpMailer(client, options);
+                    ? new MailKitSmtpMailer(options)
+                    : new MailKitSmtpMailer(client, options);
             });
 
             services.AddTransient(s =>
@@ -54,8 +54,8 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
                   .SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>())
                   .Returns(Task.CompletedTask);
                 return (isMailServerAlive)
-                    ? new SmtpFileTemplateMailer(options, templateOptions)
-                    : new SmtpFileTemplateMailer(client, options, templateOptions);
+                    ? new MailKitSmtpFileTemplateMailer(options, templateOptions)
+                    : new MailKitSmtpFileTemplateMailer(client, options, templateOptions);
             });
 
 

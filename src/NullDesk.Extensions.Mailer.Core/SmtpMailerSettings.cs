@@ -1,6 +1,6 @@
 ﻿using NullDesk.Extensions.Mailer.Core;
 
-namespace NullDesk.Extensions.Mailer.MailKit
+namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
     /// Settings for SMTP Email Services.

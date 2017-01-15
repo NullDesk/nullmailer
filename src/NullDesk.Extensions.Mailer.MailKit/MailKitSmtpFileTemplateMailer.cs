@@ -14,7 +14,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
     /// <summary>
     /// SMTP File Template EMail Service.
     /// </summary>
-    public class SmtpFileTemplateMailer : SmtpMailer, ITemplateMailer<MailerFileTemplateSettings>
+    public class MailKitSmtpFileTemplateMailer : MailKitSmtpMailer, ITemplateMailer<MailerFileTemplateSettings>
     {
         /// <summary>
         /// Template settings
@@ -24,13 +24,13 @@ namespace NullDesk.Extensions.Mailer.MailKit
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SmtpFileTemplateMailer" /> class.
+        /// Initializes a new instance of the <see cref="MailKitSmtpFileTemplateMailer" /> class.
         /// </summary>
         /// <param name="client">The smtp client instance to use for sending messages.</param>
         /// <param name="settings">The settings.</param>
         /// <param name="templateSettings">The template settings.</param>
         /// <remarks>Overload used by unit tests</remarks>
-        public SmtpFileTemplateMailer(
+        public MailKitSmtpFileTemplateMailer(
             SmtpClient client,
             IOptions<SmtpMailerSettings> settings,
             IOptions<MailerFileTemplateSettings> templateSettings)
@@ -40,11 +40,11 @@ namespace NullDesk.Extensions.Mailer.MailKit
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SmtpFileTemplateMailer" /> class.
+        /// Initializes a new instance of the <see cref="MailKitSmtpFileTemplateMailer" /> class.
         /// </summary>
         /// <param name="settings">The settings.</param>
         /// <param name="templateSettings">The template settings.</param>
-        public SmtpFileTemplateMailer(
+        public MailKitSmtpFileTemplateMailer(
             IOptions<SmtpMailerSettings> settings,
             IOptions<MailerFileTemplateSettings> templateSettings)
         : base(settings)
