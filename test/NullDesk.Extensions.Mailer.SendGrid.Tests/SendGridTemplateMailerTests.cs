@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -7,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure;
 using NullDesk.Extensions.Mailer.Tests.Common;
-using SendGrid;
 using Xunit;
 
 namespace NullDesk.Extensions.Mailer.SendGrid.Tests

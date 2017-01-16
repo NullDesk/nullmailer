@@ -1,8 +1,3 @@
-using System;
-using Microsoft.Extensions.DependencyInjection;
-using NullDesk.Extensions.Mailer.Core;
-using SendGrid;
-
 namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
 {
     public static class ServiceProviderExtensions

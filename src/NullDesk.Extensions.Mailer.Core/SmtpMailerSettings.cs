@@ -1,5 +1,4 @@
-﻿using NullDesk.Extensions.Mailer.Core;
-
+﻿
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
