@@ -47,7 +47,8 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// Initializes a new instance of the <see cref="SendGridMailer"/> class.
         /// </summary>
         /// <param name="settings">The settings.</param>
-        public SendGridMailer(IOptions<SendGridMailerSettings> settings) : this(new Client(settings.Value.ApiKey), settings) { }
+        public SendGridMailer(IOptions<SendGridMailerSettings> settings) 
+            : this(new Client(settings.Value.ApiKey), settings) { }
 
         /// <summary>
         /// /// Send mail as an asynchronous operation.

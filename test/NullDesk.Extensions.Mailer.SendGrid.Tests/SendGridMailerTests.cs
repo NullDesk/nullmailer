@@ -3,9 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
+using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure;
 using NullDesk.Extensions.Mailer.Tests.Common;
-using SendGrid;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NullDesk.Extensions.Mailer.SendGrid.Tests
 {
@@ -25,7 +26,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
         public async Task SendMail(string html, string text, string[] attachments)
         {
 
-            var mailer = Fixture.ServiceProvider.GetSendGridMailer(new Response(HttpStatusCode.Accepted, null, null));
+            var mailer = Fixture.ServiceProvider.GetService<IMailer>();
 
             var result =
                 await

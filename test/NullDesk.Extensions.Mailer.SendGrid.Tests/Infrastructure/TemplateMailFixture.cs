@@ -5,35 +5,37 @@ using SendGrid;
 
 namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
 {
-    public class StandardMailFixture: IDisposable
+
+    public class TemplateMailFixture : IDisposable
     {
         public IServiceProvider ServiceProvider { get; set; }
 
-        public StandardMailFixture()
+        public TemplateMailFixture()
         {
 
             //setup the dependency injection service
             var services = new ServiceCollection();
 
             services.AddOptions();
-           
+
             services.Configure<SendGridMailerSettings>(s => s.ApiKey = "abc");
+            services.Configure<EmptyMailerTemplateSettings>(s => { });
             services.AddTransient<Client>(s => new FakeClient("abc"));
-            services.AddTransient<SendGridMailer>();
-            services.AddTransient<IMailer>(s => s.GetService<SendGridMailer>());
+            services.AddTransient<SendGridTemplateMailer>();
+            services.AddTransient<ITemplateMailer>(s => s.GetService<SendGridTemplateMailer>());
 
 
             ServiceProvider = services.BuildServiceProvider();
-            
+
         }
 
-        
+
 
         public void Dispose()
         {
-            
+
         }
 
-        
+
     }
 }

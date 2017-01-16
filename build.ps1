@@ -37,22 +37,25 @@ foreach ($folder in $srcDir) {
     
     # only src project folders -> folders with a project.json file 
     if (Test-Path $p -PathType Leaf) {
-        Write-Output ""
-        Write-Output "Next project: $folder.Name"
         Set-Location $folder.FullName
         
         # find the test project, if one exists, and run each
         $testFolderPath = "..\..\test\" + $folder.Name + ".Tests"
         if (Test-Path $testFolderPath -PathType Container){
-            Set-Location $testFolderPath
-            
-            dotnet test --configuration $config -trait "TestType=Unit"
-            
-            Set-Location $folder.FullName
+            $x = Join-Path -Path $testFolderPath -ChildPath 'xunit.runner.json';
+            if (Test-Path $x -PathType Leaf) {
+                Write-Output ""
+                Write-Output "Next project: $testFolderPath"
+                Set-Location $testFolderPath
+                
+                dotnet test --configuration $config -trait "TestType=Unit"
+                
+                Set-Location $folder.FullName
+            }
         }
         else{
             Write-Output ""
-            Write-Output "test path not found"
+            Write-Output "Test project not found for source project '$folder'"
         }
     }
 }
