@@ -4,28 +4,32 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 using Microsoft.Extensions.DependencyInjection;
+using NullDesk.Extensions.Mailer.Core;
+using NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure;
+using NullDesk.Extensions.Mailer.Tests.Common;
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests
 {
-    public class MailKitSmtpFileTemplateMailerTests
+    public class MailKitSmtpFileTemplateMailerTests : IClassFixture<TemplateMailFixture>
     {
+
+        private TemplateMailFixture Fixture { get; }
+
         private Dictionary<string, string> ReplacementVars { get; } = new Dictionary<string, string>();
 
-        public MailKitSmtpFileTemplateMailerTests()
+        public MailKitSmtpFileTemplateMailerTests(TemplateMailFixture fixture)
         {
             ReplacementVars.Add("%name%", "Mr. Toast");
+            Fixture = fixture;
         }
 
         [Theory]
         [Trait("TestType", "Unit")]
-        [InlineData("template1", new string[] { })]
-        [InlineData("template1", new[] { "./app_data/attachments/testFile.1.txt" })]
-        [InlineData("template1", new[] { "./app_data/attachments/testFile.1.txt", "./app_data/attachments/testFile.2.txt" })]
-        [InlineData("template2", new[] { "./app_data/attachments/testFile.1.txt" })]
+        [ClassData(typeof(TemplateMailerTestData))]
         public async Task SendMailWithTemplate(string templateName, string[] attachments)
         {
 
-            var mailer = Program.ServiceProvider.GetService<MailKitSmtpFileTemplateMailer>();
+            var mailer = Fixture.ServiceProvider.GetService<ITemplateMailer>();
 
             var result =
                 await

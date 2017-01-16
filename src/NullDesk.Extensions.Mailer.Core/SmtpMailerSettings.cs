@@ -11,7 +11,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// From email address.
         /// </summary>
         /// <value>From email.</value>
-        public string FromEmail { get; set; }
+        public string FromEmailAddress { get; set; }
 
         /// <summary>
         /// From display name.

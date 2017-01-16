@@ -35,7 +35,7 @@ foreach ($folder in $testDir) {
 foreach ($folder in $srcDir) {
     $p = Join-Path -Path $folder.FullName -ChildPath 'project.json';
     
-    # only build projects -> folders with a project.json file 
+    # only src project folders -> folders with a project.json file 
     if (Test-Path $p -PathType Leaf) {
         Write-Output ""
         Write-Output "Next project: $folder.Name"
