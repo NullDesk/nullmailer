@@ -1,0 +1,33 @@
+﻿{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "emitEntryPoint": true,
+    "debugType": "portable"
+  },
+  "dependencies": {
+    "Microsoft.Extensions.CommandLineUtils": "1.1.0",
+    "Microsoft.Extensions.Configuration": "1.1.0",
+    "Microsoft.Extensions.Configuration.Abstractions": "1.1.0",
+    "Microsoft.Extensions.Configuration.Json": "1.1.0",
+    "Microsoft.Extensions.DependencyInjection": "1.1.0",
+    "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
+    "Microsoft.NETCore.App": {
+      "version": "1.1.0"
+    },
+    "Newtonsoft.Json": "9.0.1",
+    "NullDesk.Extensions.Mailer.MailKit": "1.*",
+    "NullDesk.Extensions.Mailer.SendGrid": "1.*" 
+  },
+
+  "frameworks": {
+    "netcoreapp1.1": {}
+  },
+  "include": [
+    "appsettings.json"
+  ],
+  "runtimes": {
+    "win10-x64": {},
+    "osx.10.10-x64": {},
+    "ubuntu.14.04-x64": {}
+  }
+}
