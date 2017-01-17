@@ -4,17 +4,12 @@ using System.Threading;
 using System.Threading.Tasks;
 namespace NullDesk.Extensions.Mailer.Core
 {
-    /// <summary>
-    /// Mailer base class
-    /// </summary>
-    public interface IMailer<T> where T : class, IMailerSettings
-    {
-        /// <summary>
-        /// Settings for the mailer service
-        /// </summary>
-        /// <returns></returns>
-        T Settings { get; set; }
 
+    /// <summary>
+    /// Common mailer interface
+    /// </summary>
+    public interface IMailer
+    {
         /// <summary>
         /// Send mail as an asynchronous operation.
         /// </summary>
@@ -54,5 +49,17 @@ namespace NullDesk.Extensions.Mailer.Core
             string textBody,
             IDictionary<string, Stream> attachments,
             CancellationToken token);
+    }
+
+    /// <summary>
+    /// Mailer with settings interface
+    /// </summary>
+    public interface IMailer<T> : IMailer where T : class, IMailerSettings
+    {
+        /// <summary>
+        /// Settings for the mailer service
+        /// </summary>
+        /// <returns></returns>
+        T Settings { get; set; }
     }
 }

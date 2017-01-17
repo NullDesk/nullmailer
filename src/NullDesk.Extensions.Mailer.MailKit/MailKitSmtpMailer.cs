@@ -32,8 +32,9 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// </remarks>
         /// <param name="client">The smtp client instance to use for sending messages.</param>
         /// <param name="settings">The settings.</param>
-        public MailKitSmtpMailer(SmtpClient client, IOptions<SmtpMailerSettings> settings) : this(settings)
+        public MailKitSmtpMailer(SmtpClient client, IOptions<SmtpMailerSettings> settings)
         {
+            Settings = settings.Value;
             MailClient = client;
         }
 
@@ -41,14 +42,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// Initializes a new instance of the <see cref="MailKitSmtpMailer"/> class.
         /// </summary>
         /// <param name="settings">The settings.</param>
-        public MailKitSmtpMailer(IOptions<SmtpMailerSettings> settings)
-        {
-            Settings = settings.Value;
-            if (MailClient == null)
-            {
-                MailClient = new SmtpClient();
-            }
-        }
+        public MailKitSmtpMailer(IOptions<SmtpMailerSettings> settings) : this(new SmtpClient(), settings) { }
 
         /// <summary>
         /// Send mail as an asynchronous operation.
@@ -139,7 +133,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
             CancellationToken token)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(Settings.FromDisplayName, Settings.FromEmail));
+            message.From.Add(new MailboxAddress(Settings.FromDisplayName, Settings.FromEmailAddress));
 
             try
             {

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("NullDesk.Extensions.Mailer.SendGrid.Tests")]
+[assembly: AssemblyProduct("NullDesk.Extensions.Mailer.Tests.Common")]
 [assembly: AssemblyTrademark("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -15,4 +15,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("62dcbbd1-9178-4375-9540-021300fa09bd")]
+[assembly: Guid("fb824a9f-2baa-49cb-9114-5f3ce639cc25")]

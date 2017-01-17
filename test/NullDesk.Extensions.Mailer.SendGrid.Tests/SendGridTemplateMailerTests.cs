@@ -2,22 +2,22 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Xunit;
 using Microsoft.Extensions.DependencyInjection;
 using NullDesk.Extensions.Mailer.Core;
-using NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure;
+using NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure;
 using NullDesk.Extensions.Mailer.Tests.Common;
+using Xunit;
 
-namespace NullDesk.Extensions.Mailer.MailKit.Tests
+namespace NullDesk.Extensions.Mailer.SendGrid.Tests
 {
-    public class MailKitSmtpFileTemplateMailerTests : IClassFixture<TemplateMailFixture>
+    public class SendGridTemplateMailerTests : IClassFixture<TemplateMailFixture>
     {
 
         private TemplateMailFixture Fixture { get; }
 
         private Dictionary<string, string> ReplacementVars { get; } = new Dictionary<string, string>();
 
-        public MailKitSmtpFileTemplateMailerTests(TemplateMailFixture fixture)
+        public SendGridTemplateMailerTests(TemplateMailFixture fixture)
         {
             ReplacementVars.Add("%name%", "Mr. Toast");
             Fixture = fixture;

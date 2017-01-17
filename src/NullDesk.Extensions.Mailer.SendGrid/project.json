@@ -1,7 +1,8 @@
 ﻿{
   "dependencies": {
     "NETStandard.Library": "1.6.1",
-    "NullDesk.Extensions.Mailer.Core": "1.*"
+    "NullDesk.Extensions.Mailer.Core": "1.*",
+    "SendGrid": "9.0.0-beta-9"
   },
 
   "frameworks": {

@@ -7,6 +7,7 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NullDesk.Extensions.Mailer.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "general", "general", "{C82FA801-0F7E-422F-9A4F-CA5507AC4982}"
 	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -24,7 +25,13 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NullDesk.Extensions.Mailer.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{FC938642-D555-4298-BD58-FB52152FD282}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NullDesk.Extensions.Mailer.Samples.AspNet45", "samples\NullDesk.Extensions.Mailer.Samples.AspNet45\NullDesk.Extensions.Mailer.Samples.AspNet45.csproj", "{787CC34C-3FA5-4DD2-9F98-DCF2F584D800}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "library", "library", "{29322684-5025-4129-A2BA-70EA61E41193}"
+	ProjectSection(SolutionItems) = preProject
+		library\SendGrid.9.0.0-beta-9.nupkg = library\SendGrid.9.0.0-beta-9.nupkg
+		library\SendGrid.9.0.0-beta-9.symbols.nupkg = library\SendGrid.9.0.0-beta-9.symbols.nupkg
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NullDesk.Extensions.Mailer.Tests.Common", "test\NullDesk.Extensions.Mailer.Tests.Common\NullDesk.Extensions.Mailer.Tests.Common.xproj", "{FB824A9F-2BAA-49CB-9114-5F3CE639CC25}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,10 +59,10 @@ Global
 		{62DCBBD1-9178-4375-9540-021300FA09BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62DCBBD1-9178-4375-9540-021300FA09BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62DCBBD1-9178-4375-9540-021300FA09BD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{787CC34C-3FA5-4DD2-9F98-DCF2F584D800}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{787CC34C-3FA5-4DD2-9F98-DCF2F584D800}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{787CC34C-3FA5-4DD2-9F98-DCF2F584D800}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{787CC34C-3FA5-4DD2-9F98-DCF2F584D800}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB824A9F-2BAA-49CB-9114-5F3CE639CC25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB824A9F-2BAA-49CB-9114-5F3CE639CC25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB824A9F-2BAA-49CB-9114-5F3CE639CC25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB824A9F-2BAA-49CB-9114-5F3CE639CC25}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,6 +73,6 @@ Global
 		{39E2396A-0038-42CB-B234-5676E2876B8C} = {A7F6046E-2F93-4D8E-94A3-56D0027C0D8F}
 		{B4B03DD2-2765-4E49-B882-828B5889A0A0} = {A7F6046E-2F93-4D8E-94A3-56D0027C0D8F}
 		{62DCBBD1-9178-4375-9540-021300FA09BD} = {18D6B9AA-C6A4-43C3-B530-CD5839147452}
-		{787CC34C-3FA5-4DD2-9F98-DCF2F584D800} = {FC938642-D555-4298-BD58-FB52152FD282}
+		{FB824A9F-2BAA-49CB-9114-5F3CE639CC25} = {18D6B9AA-C6A4-43C3-B530-CD5839147452}
 	EndGlobalSection
 EndGlobal

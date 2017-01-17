@@ -1,7 +1,10 @@
 ﻿{
   "buildOptions": {
     "debugType": "portable",
-    "emitEntryPoint": true
+    "emitEntryPoint": true,
+    "copyToOutput": {
+      "include": [ "xunit.runner.json" ]
+    }
   },
   "dependencies": {
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
@@ -17,7 +20,8 @@
     "xunit": "2.2.0-beta4-build3444",
     "NSubstitute": "2.0.1-rc",
     "System.Net.Sockets": "4.3.0",
-    "NullDesk.Extensions.Mailer.MailKit": "1.*"
+    "NullDesk.Extensions.Mailer.MailKit": "1.*",
+    "NullDesk.Extensions.Mailer.Tests.Common": "1.*"
   },
   "frameworks": {
     "netcoreapp1.1": {}

@@ -6,16 +6,10 @@ using System.Threading.Tasks;
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
-    /// Mailer base class
+    /// Common template mailer interface
     /// </summary>
-    public interface ITemplateMailer<T> where T : class, IMailerTemplateSettings
+    public interface ITemplateMailer: IMailer
     {
-        /// <summary>
-        /// Template settings 
-        /// </summary>
-        /// <returns></returns>
-        T TemplateSettings { get; set; }
-
         /// <summary>
         /// Send mail using a template.
         /// </summary>
@@ -60,5 +54,17 @@ namespace NullDesk.Extensions.Mailer.Core
             IDictionary<string, Stream> attachments,
             CancellationToken token);
 
+    }
+
+    /// <summary>
+    /// Template Mailer with settings interface
+    /// </summary>
+    public interface ITemplateMailer<T>: ITemplateMailer where T : class, IMailerTemplateSettings
+    {
+        /// <summary>
+        /// Template settings 
+        /// </summary>
+        /// <returns></returns>
+        T TemplateSettings { get; set; }
     }
 }

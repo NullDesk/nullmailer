@@ -1,29 +1,32 @@
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Xunit;
-using Microsoft.Extensions.DependencyInjection;
+using FluentAssertions;
 using NullDesk.Extensions.Mailer.Core;
-using NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure;
+using NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure;
 using NullDesk.Extensions.Mailer.Tests.Common;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace NullDesk.Extensions.Mailer.MailKit.Tests
+namespace NullDesk.Extensions.Mailer.SendGrid.Tests
 {
-    public class MailKitSmtpMailerTests : IClassFixture<StandardMailFixture>
+    public class SendGridMailerTests : IClassFixture<StandardMailFixture>
     {
         private StandardMailFixture Fixture { get; }
 
-        public MailKitSmtpMailerTests(StandardMailFixture fixture)
+        public SendGridMailerTests(StandardMailFixture fixture)
         {
             Fixture = fixture;
         }
+
 
         [Theory]
         [Trait("TestType", "Unit")]
         [ClassData(typeof(StandardMailerTestData))]
         public async Task SendMail(string html, string text, string[] attachments)
         {
+
             var mailer = Fixture.ServiceProvider.GetService<IMailer>();
+
             var result =
                 await
                     mailer.SendMailAsync(
@@ -37,5 +40,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
                     );
             result.Should().BeTrue();
         }
+
+       
     }
 }

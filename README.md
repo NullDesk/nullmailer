@@ -20,3 +20,7 @@ Email service extensions for sending email through a variety of different email 
 |NullDesk.Extensions.Mailer.SendGrid|SendGrid email service using SendGrid APIs. Supports basic usage of SendGrid templates; can be inherited for more advanced SendGrid functionality.|
 |NullDesk.Extensions.Mailer.NetMail|*(coming soon)* SMTP Relay Email service using the cross-platform System.Net.Mail framework from Microsoft.
 
+
+## SendGrid Beta
+
+This project is using a beta version of SendGrid
