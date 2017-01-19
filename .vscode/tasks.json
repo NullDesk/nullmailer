@@ -3,15 +3,14 @@
     "command": "dotnet",
     "isShellCommand": true,
     "args": [],
-    "tasks": [
-        {
-            "taskName": "build",
-            "args": [
-                "${workspaceRoot}\\test\\NullDesk.Extensions.Mailer.MailKit.Tests\\project.json",
-                "${workspaceRoot}\\test\\NullDesk.Extensions.Mailer.SendGrid.Tests\\project.json"
-            ],
-            "isBuildCommand": true,
-            "problemMatcher": "$msCompile"
-        }
-    ]
+    "tasks": [{
+        "taskName": "build",
+        "args": [
+            "${workspaceRoot}\\test\\NullDesk.Extensions.Mailer.MailKit.Tests\\project.json",
+            "${workspaceRoot}\\test\\NullDesk.Extensions.Mailer.SendGrid.Tests\\project.json",
+            "${workspaceRoot}\\samples\\mailer-cli\\mailer\\project.json"
+        ],
+        "isBuildCommand": true,
+        "problemMatcher": "$msCompile"
+    }]
 }

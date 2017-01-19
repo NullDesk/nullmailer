@@ -1,14 +1,28 @@
 {
     "version": "0.2.0",
-    "configurations": [
-        {
-            "name": ".NET Core Launch (console)",
+    "configurations": [{
+            "name": "Main (console)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceRoot}\\test\\NullDesk.Extensions.Mailer.MailKit.Tests\\bin\\Debug\\netcoreapp1.1\\NullDesk.Extensions.Mailer.MailKit.Tests.dll",
             "args": [],
-            "cwd": "${workspaceRoot}\\test\\NullDesk.Extensions.Mailer.MailKit.Tests",
+            "cwd": "${workspaceRoot}",
+            "externalConsole": false,
+            "stopAtEntry": false,
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "name": "Samples (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceRoot}\\samples\\mailer-cli\\mailer\\bin\\Debug\\netcoreapp1.1\\win10-x64\\mailer.dll",
+            "args": ["send", "simple"],
+            "cwd": "${workspaceRoot}\\samples\\mailer-cli\\mailer",
+            "symbolPath": ["${workspaceRoot}"
+                
+            ],
             "externalConsole": false,
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart"

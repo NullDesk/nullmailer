@@ -1,9 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using Microsoft.Extensions.CommandLineUtils;
-using NullDesk.Cli;
+﻿using Microsoft.Extensions.CommandLineUtils;
 using NullDesk.Extensions.Mailer.Core;
 
 namespace Sample.Mailer.Cli.Commands
@@ -18,42 +13,19 @@ namespace Sample.Mailer.Cli.Commands
                 sendApp.FullName = "Attempts to send a test Email";
                 sendApp.Description = "Sends Email";
                 sendApp.AllowArgumentSeparator = true;
+                sendApp.HelpOption("-?|-h|--help");
 
-                sendApp.OnExecute(async () =>
+                sendApp.ConfigureCliCommand<SendSimpleMessage>();
+
+                sendApp.OnExecute(() =>
                 {
-                    var result = false;
-                    try
-                    {
-                        result = await Mailer
-                            .SendMailAsync(
-                                "noone@nowhere.com",
-                                "Mr. Nobody",
-                                "Test Mail",
-                                null,
-                                "This is a test",
-                                new List<string>(),
-                                CancellationToken.None);
-                    }
-                    catch(Exception ex)
-                    { 
-                        Reporter.WriteLine($"[Error] {ex.Message}");
-                        Reporter.WriteLine(string.Empty);
-                    }
-                    var message = result ? "Email sent".Cyan() : "Failed to send email".Red();
-
-                    Reporter.WriteLine(message);
-
+                    sendApp.ShowHelp();
                     return 0;
                 });
 
             }, false);
         }
 
-        private ITemplateMailer Mailer { get; }
-
-        public SendMail(AnsiConsole console, ITemplateMailer mailer) : base(console)
-        {
-            Mailer = mailer;
-        }
+        public SendMail(AnsiConsole console) : base(console) { }
     }
 }

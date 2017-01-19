@@ -7,6 +7,7 @@ using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.MailKit;
 using NullDesk.Extensions.Mailer.SendGrid;
 using Sample.Mailer.Cli.Commands;
+using Sample.Mailer.Cli.Configuration;
 
 namespace Sample.Mailer.Cli
 {
@@ -17,7 +18,7 @@ namespace Sample.Mailer.Cli
         public void Run(string[] args)
         {
             Config = AcquireConfiguration();
-           
+
             ConfigureConsoleServices(new ServiceCollection());
         }
 
@@ -40,12 +41,16 @@ namespace Sample.Mailer.Cli
         private void ConfigureConsoleServices(IServiceCollection services)
         {
             services.AddOptions();
+
+          
             services.Configure<SmtpMailerSettings>(Config.GetSection("MailSettings:SmtpMailerSettings"));
             services.Configure<MailerFileTemplateSettings>(Config.GetSection("MailSettings:MailerFileTemplateSettings"));
             services.Configure<SendGridMailerSettings>(Config.GetSection("MailSettings:SendGridMailerSettings"));
+            
+            services.Configure<TestMessageSettings>(Config.GetSection("TestMessageSettings"));
 
             var activeService = Config.GetSection("MailSettings:ActiveMailService").Value;
-            
+
             //add both template mailer types 
             services.AddTransient<SendGridTemplateMailer>();
             services.AddTransient<MailKitSmtpFileTemplateMailer>();
@@ -53,15 +58,17 @@ namespace Sample.Mailer.Cli
             //check which is the active type based on config setting
             var templateMailerType = activeService.Equals("sendgrid", StringComparison.OrdinalIgnoreCase)
                 ? typeof(SendGridTemplateMailer)
-                : typeof(MailKitSmtpFileTemplateMailer); 
+                : typeof(MailKitSmtpFileTemplateMailer);
 
             //add the actual interface type we'll use when asking for a template mailer
             services.AddTransient(s => (ITemplateMailer)s.GetService(templateMailerType));
-          
+
 
             services.AddSingleton(provider => AnsiConsole.GetOutput(true));
 
+            //add the cli commands
             services.AddTransient<SendMail>();
+            services.AddTransient<SendSimpleMessage>();
 
             Program.ServiceProvider = services.BuildServiceProvider();
         }

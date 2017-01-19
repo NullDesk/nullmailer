@@ -2,7 +2,11 @@
   "version": "1.0.0-*",
   "buildOptions": {
     "emitEntryPoint": true,
-    "debugType": "portable"
+    "debugType": "portable",
+    "copyToOutput":[
+      "./App_Data/Attachments/test.txt",
+      "./appsettings*.json"
+    ]
   },
   "dependencies": {
     "Microsoft.Extensions.CommandLineUtils": "1.1.0",
