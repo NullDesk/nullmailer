@@ -19,7 +19,6 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
             services.AddOptions();
 
             services.Configure<SendGridMailerSettings>(s => s.ApiKey = "abc");
-            services.Configure<EmptyMailerTemplateSettings>(s => { });
             services.AddTransient<Client>(s => new FakeClient("abc"));
             services.AddTransient<SendGridTemplateMailer>();
             services.AddTransient<ITemplateMailer>(s => s.GetService<SendGridTemplateMailer>());

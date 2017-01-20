@@ -30,8 +30,8 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                   .SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>())
                   .Returns(Task.CompletedTask);
                 return (isMailServerAlive)
-                    ? new MailKitSmtpMailer(options)
-                    : new MailKitSmtpMailer(client, options);
+                    ? new MkSmtpMailer(options)
+                    : new MkSmtpMailer(client, options);
             });
             ServiceProvider = services.BuildServiceProvider();
         }

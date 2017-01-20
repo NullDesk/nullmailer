@@ -14,7 +14,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
     /// <summary>
     /// SMTP EMail Service.
     /// </summary>
-    public class MailKitSmtpMailer : IMailer<SmtpMailerSettings>, IDisposable
+    public class MkSmtpMailer : IMailer<SmtpMailerSettings>, IDisposable
     {
         private SmtpClient MailClient { get; }
 
@@ -25,25 +25,53 @@ namespace NullDesk.Extensions.Mailer.MailKit
         public SmtpMailerSettings Settings { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MailKitSmtpMailer"/> class.
+        /// Initializes a new instance of the <see cref="MkSmtpMailer"/> class.
         /// </summary>
         /// <remarks>
         /// Overload used by unit tests
         /// </remarks>
         /// <param name="client">The smtp client instance to use for sending messages.</param>
         /// <param name="settings">The settings.</param>
-        public MailKitSmtpMailer(SmtpClient client, IOptions<SmtpMailerSettings> settings)
+        public MkSmtpMailer(SmtpClient client, IOptions<SmtpMailerSettings> settings)
         {
             Settings = settings.Value;
             MailClient = client;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MailKitSmtpMailer"/> class.
+        /// Initializes a new instance of the <see cref="MkSmtpMailer"/> class.
         /// </summary>
         /// <param name="settings">The settings.</param>
-        public MailKitSmtpMailer(IOptions<SmtpMailerSettings> settings) : this(new SmtpClient(), settings) { }
+        public MkSmtpMailer(IOptions<SmtpMailerSettings> settings) : this(new SmtpClient(), settings) { }
 
+        /// <summary>
+        /// Send mail as an asynchronous operation.
+        /// </summary>
+        /// <param name="toEmailAddress">To email address.</param>
+        /// <param name="toDisplayName">To display name.</param>
+        /// <param name="subject">The subject.</param>
+        /// <param name="htmlBody">The HTML body.</param>
+        /// <param name="textBody">The text body.</param>
+        /// <param name="token">The cancellation token.</param>
+        /// <returns>Task&lt;System.Boolean&gt;.</returns>
+        /// <exception cref="ArgumentException"></exception>
+        public virtual async Task<bool> SendMailAsync(
+            string toEmailAddress,
+            string toDisplayName,
+            string subject,
+            string htmlBody,
+            string textBody,
+            CancellationToken token)
+        {
+            return await SendMailAsync(
+                toEmailAddress,
+                toDisplayName,
+                subject,
+                htmlBody,
+                textBody,
+                new List<string>(),
+                token);
+        }
         /// <summary>
         /// Send mail as an asynchronous operation.
         /// </summary>

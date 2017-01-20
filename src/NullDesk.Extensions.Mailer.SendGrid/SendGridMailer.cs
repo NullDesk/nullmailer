@@ -51,6 +51,35 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             : this(new Client(settings.Value.ApiKey), settings) { }
 
         /// <summary>
+        /// Send mail as an asynchronous operation.
+        /// </summary>
+        /// <param name="toEmailAddress">To email address.</param>
+        /// <param name="toDisplayName">To display name.</param>
+        /// <param name="subject">The subject.</param>
+        /// <param name="htmlBody">The HTML body.</param>
+        /// <param name="textBody">The text body.</param>
+        /// <param name="token">The cancellation token.</param>
+        /// <returns>Task&lt;System.Boolean&gt;.</returns>
+        /// <exception cref="ArgumentException"></exception>
+        public virtual async Task<bool> SendMailAsync(
+            string toEmailAddress,
+            string toDisplayName,
+            string subject,
+            string htmlBody,
+            string textBody,
+            CancellationToken token)
+        {
+            return await SendMailAsync(
+                toEmailAddress,
+                toDisplayName,
+                subject,
+                htmlBody,
+                textBody,
+                new List<string>(),
+                token);
+        }
+
+        /// <summary>
         /// /// Send mail as an asynchronous operation.
         /// </summary>
         /// <param name="toEmailAddress">To email address.</param>

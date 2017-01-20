@@ -14,39 +14,39 @@ namespace NullDesk.Extensions.Mailer.MailKit
     /// <summary>
     /// SMTP File Template EMail Service.
     /// </summary>
-    public class MailKitSmtpFileTemplateMailer : MailKitSmtpMailer, ITemplateMailer<MailerFileTemplateSettings>
+    public class MkSmtpFileTemplateMailer : MkSmtpMailer, ITemplateMailer<FileTemplateMailerSettings>
     {
         /// <summary>
         /// Template settings
         /// </summary>
         /// <value>The template settings.</value>
-        public MailerFileTemplateSettings TemplateSettings { get; set; }
+        public FileTemplateMailerSettings TemplateSettings { get; set; }
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MailKitSmtpFileTemplateMailer" /> class.
+        /// Initializes a new instance of the <see cref="MkSmtpFileTemplateMailer" /> class.
         /// </summary>
         /// <param name="client">The smtp client instance to use for sending messages.</param>
         /// <param name="settings">The settings.</param>
         /// <param name="templateSettings">The template settings.</param>
         /// <remarks>Overload used by unit tests</remarks>
-        public MailKitSmtpFileTemplateMailer(
+        public MkSmtpFileTemplateMailer(
             SmtpClient client,
             IOptions<SmtpMailerSettings> settings,
-            IOptions<MailerFileTemplateSettings> templateSettings)
+            IOptions<FileTemplateMailerSettings> templateSettings)
         : base(client, settings)
         {
             TemplateSettings = templateSettings.Value;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MailKitSmtpFileTemplateMailer" /> class.
+        /// Initializes a new instance of the <see cref="MkSmtpFileTemplateMailer" /> class.
         /// </summary>
         /// <param name="settings">The settings.</param>
         /// <param name="templateSettings">The template settings.</param>
-        public MailKitSmtpFileTemplateMailer(
+        public MkSmtpFileTemplateMailer(
             IOptions<SmtpMailerSettings> settings,
-            IOptions<MailerFileTemplateSettings> templateSettings)
+            IOptions<FileTemplateMailerSettings> templateSettings)
         : base(settings)
         {
             TemplateSettings = templateSettings.Value;

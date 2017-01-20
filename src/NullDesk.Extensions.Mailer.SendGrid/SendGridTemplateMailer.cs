@@ -13,40 +13,26 @@ namespace NullDesk.Extensions.Mailer.SendGrid
     /// <summary>
     /// SendGrid File Template based Email Service.
     /// </summary>
-    public class SendGridTemplateMailer : SendGridMailer, ITemplateMailer<EmptyMailerTemplateSettings>
+    public class SendGridTemplateMailer : SendGridMailer, ITemplateMailer
     {
-        /// <summary>
-        /// Settings for the mailer instance
-        /// </summary>
-        /// <returns></returns>
-        public EmptyMailerTemplateSettings TemplateSettings { get; set; }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SendGridTemplateMailer" /> class.
         /// </summary>
         /// <param name="client">The SendGrid client instance</param>
         /// <param name="settings">The settings.</param>
-        /// <param name="templateSettings">The template settings.</param>
         /// <remarks>Overload used by unit tests</remarks>
         public SendGridTemplateMailer(
             Client client,
-            IOptions<SendGridMailerSettings> settings,
-            IOptions<EmptyMailerTemplateSettings> templateSettings) :
-        base(client, settings)
-        {
-            TemplateSettings = templateSettings.Value;
-        }
+            IOptions<SendGridMailerSettings> settings) :
+        base(client, settings) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SendGridTemplateMailer"/> class.
         /// </summary>
         /// <param name="settings"></param>
-        /// <param name="templateSettings"></param>
         public SendGridTemplateMailer(
-            IOptions<SendGridMailerSettings> settings,
-            IOptions<EmptyMailerTemplateSettings> templateSettings
-            ) :
-        this(new Client(settings.Value.ApiKey), settings, templateSettings)
+            IOptions<SendGridMailerSettings> settings) :
+        this(new Client(settings.Value.ApiKey), settings)
         { }
 
         /// <summary>

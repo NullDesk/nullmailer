@@ -2,14 +2,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Samples (console)",
+            "name": ".NET Core Launch (console)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceRoot}\\samples\\mailer-cli\\mailer\\bin\\Debug\\netcoreapp1.1\\mailer.dll",
-            "args": ["send", "simple"],
-            "cwd": "${workspaceRoot}\\samples\\mailer-cli\\mailer",
-            "symbolPath": [],
+            "program": "${workspaceRoot}\\mailer\\bin\\Debug\\netcoreapp1.1\\mailer.dll",
+            "args": [],
+            "cwd": "${workspaceRoot}\\mailer",
             "externalConsole": false,
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart"

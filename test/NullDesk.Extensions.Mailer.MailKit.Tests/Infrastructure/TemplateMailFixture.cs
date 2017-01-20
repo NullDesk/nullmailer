@@ -21,8 +21,8 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 
             services.AddOptions();
 
-            var templateOptions = new OptionsWrapper<MailerFileTemplateSettings>(
-                new MailerFileTemplateSettings
+            var templateOptions = new OptionsWrapper<FileTemplateMailerSettings>(
+                new FileTemplateMailerSettings
                 {
                     TemplatePath = "../TestData/templates"
                 });
@@ -38,8 +38,8 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                     .SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>())
                     .Returns(Task.CompletedTask);
                 return (isMailServerAlive)
-                    ? new MailKitSmtpFileTemplateMailer(options, templateOptions)
-                    : new MailKitSmtpFileTemplateMailer(client, options, templateOptions);
+                    ? new MkSmtpFileTemplateMailer(options, templateOptions)
+                    : new MkSmtpFileTemplateMailer(client, options, templateOptions);
             });
 
 
