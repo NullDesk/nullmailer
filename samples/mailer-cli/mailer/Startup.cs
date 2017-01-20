@@ -69,6 +69,7 @@ namespace Sample.Mailer.Cli
             //add the cli commands
             services.AddTransient<SendMail>();
             services.AddTransient<SendSimpleMessage>();
+            services.AddTransient<SendTemplateMessage>();
 
             Program.ServiceProvider = services.BuildServiceProvider();
         }

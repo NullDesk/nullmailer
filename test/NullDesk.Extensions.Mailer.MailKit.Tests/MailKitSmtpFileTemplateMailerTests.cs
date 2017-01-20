@@ -26,7 +26,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
         [Theory]
         [Trait("TestType", "Unit")]
         [ClassData(typeof(TemplateMailerTestData))]
-        public async Task SendMailWithTemplate(string templateName, string[] attachments)
+        public async Task SendMailWithTemplate(string template, string[] attachments)
         {
 
             var mailer = Fixture.ServiceProvider.GetService<ITemplateMailer>();
@@ -34,10 +34,10 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
             var result =
                 await
                     mailer.SendMailAsync(
-                        templateName,
+                        template,
                         "noone@toast.com",
                         "No One Important",
-                        $"xunit Test run: {templateName}",
+                        $"xunit Test run: {template}",
                         ReplacementVars,
                         attachments,
                         CancellationToken.None);

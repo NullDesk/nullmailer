@@ -24,7 +24,8 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         public SendGridTemplateMailer(
             Client client,
             IOptions<SendGridMailerSettings> settings) :
-        base(client, settings) { }
+        base(client, settings)
+        { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SendGridTemplateMailer"/> class.
@@ -36,9 +37,41 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         { }
 
         /// <summary>
+        /// Send mail using a template file.
+        /// </summary>
+        /// <remarks>
+        /// The template file will be located using the folder and filename from the supplied service settings. 
+        /// </remarks>
+        /// <param name="template">The template file identifier; should be the filename without extension or file name suffix (specified in settings).</param>
+        /// <param name="toEmailAddress">To email address.</param>
+        /// <param name="toDisplayName">To display name.</param>
+        /// <param name="subject">The subject.</param>
+        /// <param name="replacementVariables">The replacement variables. The key should include the delimiters needed to locate text which should be replaced.</param>
+        /// <param name="token">The cancellation token.</param>
+        /// <returns>Task&lt;System.Boolean&gt;.</returns>
+        public async Task<bool> SendMailAsync(
+            string template,
+            string toEmailAddress,
+            string toDisplayName,
+            string subject,
+            IDictionary<string, string> replacementVariables,
+            CancellationToken token)
+        {
+            return await SendMailAsync(
+                template,
+                toEmailAddress,
+                toDisplayName,
+                subject,
+                replacementVariables,
+                new List<string>() { },
+                token
+            );
+        }
+
+        /// <summary>
         /// Send mail using a template.
         /// </summary>
-        /// <param name="templateName">The template identifier.</param>
+        /// <param name="template">The template identifier.</param>
         /// <param name="toEmailAddress">To email address.</param>
         /// <param name="toDisplayName">To display name.</param>
         /// <param name="subject">The subject.</param>
@@ -49,7 +82,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <exception cref="System.NotImplementedException"></exception>
         /// <remarks>It is up to the implementing class to decide how to locate and use the specified template.</remarks>
         public virtual async Task<bool> SendMailAsync(
-            string templateName,
+            string template,
             string toEmailAddress,
             string toDisplayName,
             string subject,
@@ -71,13 +104,13 @@ namespace NullDesk.Extensions.Mailer.SendGrid
                     attachments.Add(f.Name, f.OpenRead());
                 }
             }
-            return await SendMailAsync(templateName, toEmailAddress, toDisplayName, subject, replacementVariables, attachments, token);
+            return await SendMailAsync(template, toEmailAddress, toDisplayName, subject, replacementVariables, attachments, token);
         }
 
         /// <summary>
         /// Send mail using a template.
         /// </summary>
-        /// <param name="templateName">The template identifier.</param>
+        /// <param name="template">The template identifier.</param>
         /// <param name="toEmailAddress">To email address.</param>
         /// <param name="toDisplayName">To display name.</param>
         /// <param name="subject">The subject.</param>
@@ -88,7 +121,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <exception cref="System.NotImplementedException"></exception>
         /// <remarks>It is up to the implementing class to decide how to locate and use the specified template.</remarks>
         public virtual async Task<bool> SendMailAsync(
-            string templateName,
+            string template,
             string toEmailAddress,
             string toDisplayName,
             string subject,
@@ -96,21 +129,20 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             IDictionary<string, Stream> attachments,
             CancellationToken token)
         {
-            var from = new Email(Settings.FromEmailAddress, Settings.FromDisplayName);
-            var to = new Email(toEmailAddress, toDisplayName);
+            var mfrom = new Email(Settings.FromEmailAddress, Settings.FromDisplayName);
+            var mto = new Email(toEmailAddress, toDisplayName);
 
             var mail = new Mail
             {
-                From = @from,
-                ReplyTo = to,
+                From = mfrom,
                 Subject = subject,
                 TemplateId = "13b8f94f-bcae-4ec6-b752-70d6cb59f932"
             };
-            mail.AddPersonalization(
-                new Personalization
-                {
-                    Substitutions = new Dictionary<string, string>(replacementVariables)
-                });
+            mail.AddPersonalization(new Personalization
+            {
+                Tos = new List<Email> { mto },
+                Substitutions = new Dictionary<string, string>(replacementVariables)
+            });
 
             await AddAttachmentStreamsAsync(mail, attachments, token);
 

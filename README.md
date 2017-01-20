@@ -15,8 +15,9 @@ Email service extensions for sending email through a variety of different email 
 
 ## Packages
 
-|   |   |
-|--:|:--|
+
+|Package|Description|
+|------:|:----------|
 |NullDesk.Extensions.Mailer.Core|Base classes and interfaces for the mailer extensions, and settings.|
 |NullDesk.Extensions.Mailer.MailKit|SMTP Relay Email service using the popular cross platform [MailKit library](https://github.com/jstedfast/MailKit). Includes support for basic Email Template files.|
 |NullDesk.Extensions.Mailer.SendGrid|SendGrid email service using SendGrid APIs. Supports basic usage of SendGrid templates; can be inherited for more advanced SendGrid functionality.|

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Sample.Mailer.Cli.Configuration
 {
     public class SimpleMessageSettings
@@ -16,26 +18,23 @@ namespace Sample.Mailer.Cli.Configuration
     public class TemplateMessageSettings
     {
 
-        public string TemplateName { get; set; }
+        public string Template { get; set; }
 
         public string ToAddress { get; set; }
 
         public string ToDisplayName { get; set; }
 
         public string Subject { get; set; }
-    }
 
-    public class FileTemplateMessageSettings : TemplateMessageSettings
-    {
-        public string Folder { get; set; }
+        public Dictionary<string, string> ReplacementVariables { get; set; }
     }
 
     public class TestMessageSettings
     {
         public SimpleMessageSettings SimpleMessageSettings { get; set; }
 
-        public FileTemplateMessageSettings SmtpFileTemplateTestMessage { get; set; }
-
         public TemplateMessageSettings SendGridTemplateMessage { get; set; }
+
+        public TemplateMessageSettings MailKitTemplateMessage { get; set; }
     }
 }

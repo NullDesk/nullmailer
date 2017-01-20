@@ -17,6 +17,7 @@ namespace Sample.Mailer.Cli.Commands
                 
 
                 sendApp.ConfigureCliCommand<SendSimpleMessage>();
+                sendApp.ConfigureCliCommand<SendTemplateMessage>();
 
                 sendApp.OnExecute(() =>
                 {

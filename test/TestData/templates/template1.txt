@@ -2,7 +2,8 @@
 
 Hello %name%,
 
-This is a test plain text message from xUnit the automated test runner included with the NullDesk Mailer Extensions.
+This is a test message from the NullDesk Mailer Extensions. This
+        message was sent via SMTP using a file template.
 
 Thanks,
 

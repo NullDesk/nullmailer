@@ -176,7 +176,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
                 mail.Get(),
                 urlPath: "mail/send");
             //TODO: Log status                                                          
-            return response.StatusCode == HttpStatusCode.Accepted;
+            return response.StatusCode == HttpStatusCode.Accepted || (Settings.IsSandboxMode && response.StatusCode == HttpStatusCode.OK);
 
         }
 
