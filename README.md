@@ -1,17 +1,24 @@
 # NullDesk Email Extensions
 
+
+
+[ZenHub Project Board](https://github.com/NullDesk/NullMailer/issues#boards?repos=79507993)  
+
 <a href="https://zenhub.io"><img src="https://raw.githubusercontent.com/ZenHubIO/support/master/zenhub-badge.png"></a>
 
 ## Overview
-Email service extensions for sending email through a variety of different email frameworks and cloud service providers.
+Email extension services for quickly integrating common mail scenarios into any .Net Core or .Net project using a variety of different message frameworks and cloud service providers.
 
 ## Features  
 
+- Cross platform framework
 - Netstandard 1.3 packages
   - Compatible with classic .Net and .Net core applicaitons.
-- Uses the Microsoft options framework for configuration settings
-- Designed for use with or without DI frameworks 
-  - Support Microsoft's .Net Core Dependency Injection Extensions framework for both mail services and option settings
+- Microsoft options framework for easy configuration settings management
+- Use with or without DI frameworks 
+- Sample applications demonstrating common integration scenarios
+- Editor support for Visual Studio Code or Visual Studio 2015
+ 
 
 ## Packages
 
@@ -24,6 +31,6 @@ Email service extensions for sending email through a variety of different email 
 |NullDesk.Extensions.Mailer.NetMail|*(coming soon)* SMTP Relay Email service using the cross-platform System.Net.Mail framework from Microsoft.
 
 
-## SendGrid Beta
+## **WARNING:** SendGrid Beta Package
 
-This project is using a beta version of SendGrid
+This project uses a beta version of SendGrid v9, which has not yet been published to a public NuGet feed. To use the SendGrid package you may need to copy the sendgrid nupkg files from the <code>/library</code> folder to your local file, or a private NuGet feed of your own, and configure it as a package source for your project.  
