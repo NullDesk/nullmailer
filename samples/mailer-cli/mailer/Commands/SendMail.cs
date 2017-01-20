@@ -13,7 +13,8 @@ namespace Sample.Mailer.Cli.Commands
                 sendApp.FullName = "Attempts to send a test Email";
                 sendApp.Description = "Sends Email";
                 sendApp.AllowArgumentSeparator = true;
-                sendApp.HelpOption("-?|-h|--help");
+
+                
 
                 sendApp.ConfigureCliCommand<SendSimpleMessage>();
 

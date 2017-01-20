@@ -44,7 +44,7 @@ namespace Sample.Mailer.Cli
 
           
             services.Configure<SmtpMailerSettings>(Config.GetSection("MailSettings:SmtpMailerSettings"));
-            services.Configure<MailerFileTemplateSettings>(Config.GetSection("MailSettings:MailerFileTemplateSettings"));
+            services.Configure<FileTemplateMailerSettings>(Config.GetSection("MailSettings:FileTemplateMailerSettings"));
             services.Configure<SendGridMailerSettings>(Config.GetSection("MailSettings:SendGridMailerSettings"));
             
             services.Configure<TestMessageSettings>(Config.GetSection("TestMessageSettings"));
@@ -53,12 +53,12 @@ namespace Sample.Mailer.Cli
 
             //add both template mailer types 
             services.AddTransient<SendGridTemplateMailer>();
-            services.AddTransient<MailKitSmtpFileTemplateMailer>();
+            services.AddTransient<MkSmtpFileTemplateMailer>();
 
             //check which is the active type based on config setting
             var templateMailerType = activeService.Equals("sendgrid", StringComparison.OrdinalIgnoreCase)
                 ? typeof(SendGridTemplateMailer)
-                : typeof(MailKitSmtpFileTemplateMailer);
+                : typeof(MkSmtpFileTemplateMailer);
 
             //add the actual interface type we'll use when asking for a template mailer
             services.AddTransient(s => (ITemplateMailer)s.GetService(templateMailerType));

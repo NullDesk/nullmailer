@@ -14,7 +14,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
     /// <summary>
     /// SMTP EMail Service.
     /// </summary>
-    public class MailKitSmtpMailer : IMailer<SmtpMailerSettings>, IDisposable
+    public class MkSmtpMailer : IMailer<SmtpMailerSettings>, IDisposable
     {
         private SmtpClient MailClient { get; }
 
@@ -25,24 +25,24 @@ namespace NullDesk.Extensions.Mailer.MailKit
         public SmtpMailerSettings Settings { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MailKitSmtpMailer"/> class.
+        /// Initializes a new instance of the <see cref="MkSmtpMailer"/> class.
         /// </summary>
         /// <remarks>
         /// Overload used by unit tests
         /// </remarks>
         /// <param name="client">The smtp client instance to use for sending messages.</param>
         /// <param name="settings">The settings.</param>
-        public MailKitSmtpMailer(SmtpClient client, IOptions<SmtpMailerSettings> settings)
+        public MkSmtpMailer(SmtpClient client, IOptions<SmtpMailerSettings> settings)
         {
             Settings = settings.Value;
             MailClient = client;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MailKitSmtpMailer"/> class.
+        /// Initializes a new instance of the <see cref="MkSmtpMailer"/> class.
         /// </summary>
         /// <param name="settings">The settings.</param>
-        public MailKitSmtpMailer(IOptions<SmtpMailerSettings> settings) : this(new SmtpClient(), settings) { }
+        public MkSmtpMailer(IOptions<SmtpMailerSettings> settings) : this(new SmtpClient(), settings) { }
 
         /// <summary>
         /// Send mail as an asynchronous operation.

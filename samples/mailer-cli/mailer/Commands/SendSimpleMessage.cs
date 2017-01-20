@@ -20,8 +20,6 @@ namespace Sample.Mailer.Cli.Commands
                 simpleApp.Description = "Attempts to send a simple test message through the currently configured provider, no template is used";
                 simpleApp.AllowArgumentSeparator = true;
 
-                simpleApp.HelpOption("-?|-h|--help");
-
                 simpleApp.OnExecute(async () =>
                 {
                     var result = false;

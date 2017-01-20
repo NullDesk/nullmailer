@@ -9,7 +9,8 @@
     "netstandard1.3": {}
   },
   "buildOptions": {
-    "xmlDoc": true
+    "xmlDoc": true,
+    "debugType": "portable"
   },
   "authors": [
     "Stephen M. Redd"

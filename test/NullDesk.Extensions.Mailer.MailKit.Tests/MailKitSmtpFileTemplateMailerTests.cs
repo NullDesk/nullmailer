@@ -10,14 +10,14 @@ using NullDesk.Extensions.Mailer.Tests.Common;
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests
 {
-    public class MailKitSmtpFileTemplateMailerTests : IClassFixture<TemplateMailFixture>
+    public class MkSmtpFileTemplateMailerTests : IClassFixture<TemplateMailFixture>
     {
 
         private TemplateMailFixture Fixture { get; }
 
         private Dictionary<string, string> ReplacementVars { get; } = new Dictionary<string, string>();
 
-        public MailKitSmtpFileTemplateMailerTests(TemplateMailFixture fixture)
+        public MkSmtpFileTemplateMailerTests(TemplateMailFixture fixture)
         {
             ReplacementVars.Add("%name%", "Mr. Toast");
             Fixture = fixture;

@@ -34,7 +34,7 @@ namespace Sample.Mailer.Cli.Configuration
     {
         public SimpleMessageSettings SimpleMessageSettings { get; set; }
 
-        public FileTemplateMessageSettings FileTemplateTestMessage { get; set; }
+        public FileTemplateMessageSettings SmtpFileTemplateTestMessage { get; set; }
 
         public TemplateMessageSettings SendGridTemplateMessage { get; set; }
     }

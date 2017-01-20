@@ -16,7 +16,8 @@
     "Microsoft.Extensions.DependencyInjection": "1.1.0",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
     "Microsoft.NETCore.App": {
-      "version": "1.1.0"
+      "version": "1.1.0",
+      "type": "platform"
     },
     "Newtonsoft.Json": "9.0.1",
     "NullDesk.Extensions.Mailer.MailKit": "1.*",
@@ -28,10 +29,5 @@
   },
   "include": [
     "appsettings.json"
-  ],
-  "runtimes": {
-    "win10-x64": {},
-    "osx.10.10-x64": {},
-    "ubuntu.14.04-x64": {}
-  }
+  ]
 }

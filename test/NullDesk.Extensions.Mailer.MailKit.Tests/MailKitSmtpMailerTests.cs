@@ -9,11 +9,11 @@ using NullDesk.Extensions.Mailer.Tests.Common;
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests
 {
-    public class MailKitSmtpMailerTests : IClassFixture<StandardMailFixture>
+    public class MkSmtpMailerTests : IClassFixture<StandardMailFixture>
     {
         private StandardMailFixture Fixture { get; }
 
-        public MailKitSmtpMailerTests(StandardMailFixture fixture)
+        public MkSmtpMailerTests(StandardMailFixture fixture)
         {
             Fixture = fixture;
         }
