@@ -33,6 +33,7 @@ namespace Sample.Mailer.Cli
                 AllowArgumentSeparator = true
             };
 
+
             app.HelpOption("-?|-h|--help");
 
             app.ConfigureCliCommand<SendMail>();

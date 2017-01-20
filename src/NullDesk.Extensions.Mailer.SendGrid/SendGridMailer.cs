@@ -170,10 +170,10 @@ namespace NullDesk.Extensions.Mailer.SendGrid
                     Enable = Settings.IsSandboxMode
                 }
             };
-
+            var message = mail.Get();
             var response = await MailClient.RequestAsync(
                 Client.Methods.POST,
-                mail.Get(),
+                message,
                 urlPath: "mail/send");
             //TODO: Log status                                                          
             return response.StatusCode == HttpStatusCode.Accepted || (Settings.IsSandboxMode && response.StatusCode == HttpStatusCode.OK);

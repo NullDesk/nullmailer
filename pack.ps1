@@ -57,7 +57,7 @@ foreach ($folder in $testDir) {
     }
 }
 
-$abort = false
+$abort = $false
 # loop through projects under ./src
 foreach ($folder in $srcDir) {
     if($abort){

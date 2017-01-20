@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +11,7 @@ namespace NullDesk.Extensions.Mailer.Core
     public static class FileExtensions
     {
         /// <summary>
-        /// to message as an asynchronous operation.
+        /// Converts content of a template file into string message content.
         /// </summary>
         /// <param name="templateFile">The tempalte file.</param>
         /// <param name="replacementVariables">The replacement variables.</param>
@@ -22,12 +21,7 @@ namespace NullDesk.Extensions.Mailer.Core
         {
             
             var fileContents = await templateFile.OpenText().ReadToEndAsync();
-            var emailBody = new StringBuilder(fileContents);
-            foreach (var item in replacementVariables)
-            {
-                emailBody.Replace(item.Key, item.Value);
-            }
-            return emailBody.ToString();
+            return fileContents.TemplateReplace(replacementVariables);
         }
     }
 }

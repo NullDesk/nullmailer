@@ -108,6 +108,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
             CancellationToken token)
         {
             var body = await GetBodyForTemplate(template, replacementVariables, attachmentFiles, token);
+            subject = subject.TemplateReplace(replacementVariables);
             return await SendMailAsync(toEmailAddress, toDisplayName, subject, body, token);
         }
 
@@ -133,6 +134,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
             CancellationToken token)
         {
             var body = await GetBodyForTemplate(template, replacementVariables, attachments, token);
+            subject = subject.TemplateReplace(replacementVariables);
             return await SendMailAsync(toEmailAddress, toDisplayName, subject, body, token);
 
         }
@@ -157,6 +159,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
                     attachments.Add(f.Name, f.OpenRead());
                 }
             }
+
             return await GetBodyForTemplate(template, replacementVariables, attachments, token);
         }
 

@@ -45,7 +45,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="template">The template file identifier; should be the filename without extension or file name suffix (specified in settings).</param>
         /// <param name="toEmailAddress">To email address.</param>
         /// <param name="toDisplayName">To display name.</param>
-        /// <param name="subject">The subject.</param>
+        /// <param name="subject">The subject; will be ignored by sendgrid if the template specifies a subject of its own.</param>
         /// <param name="replacementVariables">The replacement variables. The key should include the delimiters needed to locate text which should be replaced.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;System.Boolean&gt;.</returns>
@@ -74,7 +74,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="template">The template identifier.</param>
         /// <param name="toEmailAddress">To email address.</param>
         /// <param name="toDisplayName">To display name.</param>
-        /// <param name="subject">The subject.</param>
+        /// <param name="subject">The subject; will be ignored by sendgrid if the template specifies a subject of its own.</param>
         /// <param name="replacementVariables">The replacement variables to use in the template.</param>
         /// <param name="attachmentFiles">A collection of paths to attachment files to include in the message.</param>
         /// <param name="token">The cancellation token.</param>
@@ -113,7 +113,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="template">The template identifier.</param>
         /// <param name="toEmailAddress">To email address.</param>
         /// <param name="toDisplayName">To display name.</param>
-        /// <param name="subject">The subject.</param>
+        /// <param name="subject">The subject; will be ignored by sendgrid if the template specifies a subject of its own.</param>
         /// <param name="replacementVariables">The replacement variables to use in the template.</param>
         /// <param name="attachments">A dictionary of attachments as streams</param>
         /// <param name="token">The cancellation token.</param>
@@ -135,12 +135,12 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             var mail = new Mail
             {
                 From = mfrom,
-                Subject = subject,
-                TemplateId = "13b8f94f-bcae-4ec6-b752-70d6cb59f932"
+                TemplateId = template
             };
             mail.AddPersonalization(new Personalization
             {
                 Tos = new List<Email> { mto },
+                Subject = subject, 
                 Substitutions = new Dictionary<string, string>(replacementVariables)
             });
 
