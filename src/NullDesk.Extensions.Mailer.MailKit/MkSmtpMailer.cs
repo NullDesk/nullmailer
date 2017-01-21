@@ -180,10 +180,32 @@ namespace NullDesk.Extensions.Mailer.MailKit
             message.Body = body;
 
             await MailClient.ConnectAsync(Settings.SmtpServer, Settings.SmtpPort, Settings.SmtpUseSsl, token);
-            await MailClient.SendAsync(message, token);
-            await MailClient.DisconnectAsync(true, token);
 
-            return true;
+            try
+            {
+                if (Settings.Credentials != null)
+                {
+                    MailClient.Authenticate(Settings.Credentials, token);
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(Settings.UserName) && !string.IsNullOrEmpty(Settings.UserName))
+                    {
+                        MailClient.Authenticate(Settings.UserName, Settings.Password, token);
+                    }
+                }
+
+                await MailClient.SendAsync(message, token);
+
+                await MailClient.DisconnectAsync(true, token);
+
+                return true;
+            }
+            catch {
+                //TODO: log stuff
+             }
+            return false;
+
         }
 
 
