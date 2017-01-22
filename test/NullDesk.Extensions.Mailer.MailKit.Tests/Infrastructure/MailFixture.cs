@@ -6,10 +6,10 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 {
     public class MailFixture
     {
-        protected OptionsWrapper<SmtpMailerSettings> SetupMailerOptions(out bool isMailServerAlive)
+        protected OptionsWrapper<MkSmtpMailerSettings> SetupMailerOptions(out bool isMailServerAlive)
         {
-            var mailOptions = new OptionsWrapper<SmtpMailerSettings>(
-                new SmtpMailerSettings
+            var mailOptions = new OptionsWrapper<MkSmtpMailerSettings>(
+                new MkSmtpMailerSettings
                 {
                     FromEmailAddress = "toast@toast.com",
                     FromDisplayName = "Xunit",

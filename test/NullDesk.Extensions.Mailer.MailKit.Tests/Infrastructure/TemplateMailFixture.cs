@@ -28,7 +28,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                 });
 
             var isMailServerAlive = false;
-            var lazy = new Lazy<OptionsWrapper<SmtpMailerSettings>>(() => SetupMailerOptions(out isMailServerAlive));
+            var lazy = new Lazy<OptionsWrapper<MkSmtpMailerSettings>>(() => SetupMailerOptions(out isMailServerAlive));
 
             services.AddTransient<ITemplateMailer>(s =>
             {
@@ -38,8 +38,8 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                     .SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>())
                     .Returns(Task.CompletedTask);
                 return (isMailServerAlive)
-                    ? new MkSmtpFileTemplateMailer(options, templateOptions)
-                    : new MkSmtpFileTemplateMailer(client, options, templateOptions);
+                    ? new MkSmtpMailer(options, templateOptions)
+                    : new MkSmtpMailer(client, options, templateOptions);
             });
 
 

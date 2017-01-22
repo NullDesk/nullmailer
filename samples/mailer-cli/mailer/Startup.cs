@@ -52,13 +52,13 @@ namespace Sample.Mailer.Cli
             var activeService = Config.GetSection("MailSettings:ActiveMailService").Value;
 
             //add both template mailer types 
-            services.AddTransient<SendGridTemplateMailer>();
-            services.AddTransient<MkSmtpFileTemplateMailer>();
+            services.AddTransient<SendGridMailer>();
+            services.AddTransient<MkSmtpMailer>();
 
             //check which is the active type based on config setting
             var templateMailerType = activeService.Equals("sendgrid", StringComparison.OrdinalIgnoreCase)
-                ? typeof(SendGridTemplateMailer)
-                : typeof(MkSmtpFileTemplateMailer);
+                ? typeof(SendGridMailer)
+                : typeof(MkSmtpMailer);
 
             //add the actual interface type we'll use when asking for a template mailer
             services.AddTransient(s => (ITemplateMailer)s.GetService(templateMailerType));

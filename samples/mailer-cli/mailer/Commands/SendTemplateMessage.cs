@@ -57,7 +57,7 @@ namespace Sample.Mailer.Cli.Commands
         public SendTemplateMessage(AnsiConsole console, ITemplateMailer mailer, IOptions<TestMessageSettings> settings) : base(console)
         {
             Mailer = mailer;
-            if (mailer is SendGridTemplateMailer)
+            if (mailer is SendGridMailer)
             {
                 Settings = settings.Value.SendGridTemplateMessage;
             }

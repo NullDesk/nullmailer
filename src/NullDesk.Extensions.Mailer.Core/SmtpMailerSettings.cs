@@ -36,25 +36,6 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <value><c>true</c> if using SSL; otherwise, <c>false</c>.</value>
         public bool SmtpUseSsl { get; set; } = false;
 
-        /// <summary>
-        /// If provided, specifies the username used to authenticate with the SMTP server 
-        /// </summary>
-        /// <returns>The username</returns>
-        public string UserName { get; set; }
-
-        /// <summary>
-        /// If provided, specifies the password used to authenticate with the SMTP server 
-        /// </summary>
-        /// <returns></returns>
-        public string Password { get; set; }
-
-        /// <summary>
-        /// If provided, specifies the credentials used to autheticate with the SMTP server.
-        /// </summary>
-        /// <remarks>
-        /// Will be used instead of username and password if provided.
-        /// </remarks>
-        /// <returns></returns>
-        public System.Net.ICredentials Credentials { get; set; }
+       
     }
 }

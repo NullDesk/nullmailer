@@ -1,95 +1,147 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using NullDesk.Extensions.Mailer.Core;
+using System.Linq;
 
 namespace NullDesk.Extensions.Mailer.MailKit
 {
     /// <summary>
-    /// SMTP EMail Service.
+    /// Standard message and template SMTP mail service using MailKit.
     /// </summary>
-    public class MkSmtpMailer : IMailer<SmtpMailerSettings>, IDisposable
+    public class MkSmtpMailer : MkSimpleSmtpMailer, ITemplateMailer<FileTemplateMailerSettings>
     {
-        private SmtpClient MailClient { get; }
+        /// <summary>
+        /// Template settings
+        /// </summary>
+        /// <value>The template settings.</value>
+        public FileTemplateMailerSettings TemplateSettings { get; set; }
+
 
         /// <summary>
-        /// Settings for the mailer instance
+        /// Initializes a new instance of the <see cref="MkSmtpMailer" /> class.
         /// </summary>
-        /// <returns></returns>
-        public SmtpMailerSettings Settings { get; set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MkSmtpMailer"/> class.
-        /// </summary>
-        /// <remarks>
-        /// Overload used by unit tests
-        /// </remarks>
         /// <param name="client">The smtp client instance to use for sending messages.</param>
         /// <param name="settings">The settings.</param>
-        public MkSmtpMailer(SmtpClient client, IOptions<SmtpMailerSettings> settings)
+        /// <param name="templateSettings">The template settings.</param>
+        /// <remarks>Overload used by unit tests</remarks>
+        public MkSmtpMailer(
+            SmtpClient client,
+            IOptions<MkSmtpMailerSettings> settings,
+            IOptions<FileTemplateMailerSettings> templateSettings)
+        : base(client, settings)
         {
-            Settings = settings.Value;
-            MailClient = client;
+            TemplateSettings = templateSettings.Value;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MkSmtpMailer"/> class.
+        /// Initializes a new instance of the <see cref="MkSmtpMailer" /> class.
         /// </summary>
         /// <param name="settings">The settings.</param>
-        public MkSmtpMailer(IOptions<SmtpMailerSettings> settings) : this(new SmtpClient(), settings) { }
+        /// <param name="templateSettings">The template settings.</param>
+        public MkSmtpMailer(
+            IOptions<MkSmtpMailerSettings> settings,
+            IOptions<FileTemplateMailerSettings> templateSettings)
+        : base(settings)
+        {
+            TemplateSettings = templateSettings.Value;
+        }
 
         /// <summary>
-        /// Send mail as an asynchronous operation.
+        /// Send mail using a template file.
         /// </summary>
+        /// <remarks>
+        /// The template file will be located using the folder and filename from the supplied service settings. 
+        /// </remarks>
+        /// <param name="template">The template file identifier; should be the filename without extension or file name suffix (specified in settings).</param>
         /// <param name="toEmailAddress">To email address.</param>
         /// <param name="toDisplayName">To display name.</param>
         /// <param name="subject">The subject.</param>
-        /// <param name="htmlBody">The HTML body.</param>
-        /// <param name="textBody">The text body.</param>
+        /// <param name="replacementVariables">The replacement variables. The key should include the delimiters needed to locate text which should be replaced.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        /// <exception cref="ArgumentException"></exception>
-        public virtual async Task<bool> SendMailAsync(
+        public async Task<bool> SendMailAsync(
+            string template,
             string toEmailAddress,
             string toDisplayName,
             string subject,
-            string htmlBody,
-            string textBody,
+            IDictionary<string, string> replacementVariables,
             CancellationToken token)
         {
             return await SendMailAsync(
+                template,
                 toEmailAddress,
                 toDisplayName,
                 subject,
-                htmlBody,
-                textBody,
-                new List<string>(),
-                token);
+                replacementVariables,
+                new List<string>() { },
+                token
+            );
         }
+
         /// <summary>
-        /// Send mail as an asynchronous operation.
+        /// Send mail using a template file.
         /// </summary>
+        /// <remarks>
+        /// The template file will be located using the folder and filename from the supplied service settings. 
+        /// </remarks>
+        /// <param name="template">The template file identifier; should be the filename without extension or file name suffix (specified in settings).</param>
         /// <param name="toEmailAddress">To email address.</param>
         /// <param name="toDisplayName">To display name.</param>
         /// <param name="subject">The subject.</param>
-        /// <param name="htmlBody">The HTML body.</param>
-        /// <param name="textBody">The text body.</param>
-        /// <param name="attachmentFiles">A collection of paths to attachment files to include in the message.</param>
+        /// <param name="replacementVariables">The replacement variables. The key should include the delimiters needed to locate text which should be replaced.</param>
+        /// <param name="attachmentFiles">The full path for any attachment files to include in the outgoing message.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        /// <exception cref="ArgumentException"></exception>
-        public virtual async Task<bool> SendMailAsync(
+        public async Task<bool> SendMailAsync(
+            string template,
             string toEmailAddress,
             string toDisplayName,
             string subject,
-            string htmlBody,
-            string textBody,
+            IDictionary<string, string> replacementVariables,
+            IEnumerable<string> attachmentFiles,
+            CancellationToken token)
+        {
+            var body = await GetBodyForTemplate(template, replacementVariables, attachmentFiles, token);
+            subject = subject.TemplateReplace(replacementVariables);
+            return await SendMailAsync(toEmailAddress, toDisplayName, subject, body, token);
+        }
+
+        /// <summary>
+        /// Send mail using a template file.
+        /// </summary>
+        /// <param name="template">The template identifier.</param>
+        /// <param name="toEmailAddress">To email address.</param>
+        /// <param name="toDisplayName">To display name.</param>
+        /// <param name="subject">The subject.</param>
+        /// <param name="replacementVariables">The replacement variables to use in the template.</param>
+        /// <param name="attachments">A dictionary of attachments as streams</param>
+        /// <param name="token">The cancellation token.</param>
+        /// <returns>Task&lt;System.Boolean&gt;.</returns>
+        /// <remarks>It is up to the implementing class to decide how to locate and use the specified template.</remarks>
+        public async Task<bool> SendMailAsync(
+            string template,
+            string toEmailAddress,
+            string toDisplayName,
+            string subject,
+            IDictionary<string, string> replacementVariables,
+            IDictionary<string, Stream> attachments,
+            CancellationToken token)
+        {
+            var body = await GetBodyForTemplate(template, replacementVariables, attachments, token);
+            subject = subject.TemplateReplace(replacementVariables);
+            return await SendMailAsync(toEmailAddress, toDisplayName, subject, body, token);
+
+        }
+
+        private async Task<MimeEntity> GetBodyForTemplate(
+            string template,
+            IDictionary<string, string> replacementVariables,
             IEnumerable<string> attachmentFiles,
             CancellationToken token)
         {
@@ -108,130 +160,43 @@ namespace NullDesk.Extensions.Mailer.MailKit
                 }
             }
 
-            return await SendMailAsync(toEmailAddress, toDisplayName, subject, htmlBody, textBody, attachments, token);
+            return await GetBodyForTemplate(template, replacementVariables, attachments, token);
         }
 
-        /// <summary>
-        /// Send mail as an asynchronous operation.
-        /// </summary>
-        /// <param name="toEmailAddress">To email address.</param>
-        /// <param name="toDisplayName">To display name.</param>
-        /// <param name="subject">The subject.</param>
-        /// <param name="htmlBody">The HTML body.</param>
-        /// <param name="textBody">The text body.</param>
-        /// <param name="attachments">A dictionary of attachments as streams</param>
-        /// <param name="token">The token.</param>
-        /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        public virtual async Task<bool> SendMailAsync(
-            string toEmailAddress,
-            string toDisplayName,
-            string subject,
-            string htmlBody,
-            string textBody,
+
+        private async Task<MimeEntity> GetBodyForTemplate(
+            string template,
+            IDictionary<string, string> replacementVariables,
             IDictionary<string, Stream> attachments,
             CancellationToken token)
         {
-            var bodyBuilder = new BodyBuilder()
+            var bodyBuilder = new BodyBuilder();
+            var templateExists = false;
+            var directory = new DirectoryInfo(TemplateSettings.TemplatePath);
+
+            var htmlTemplate = directory.GetFirstFileForExtensions(template, TemplateSettings.HtmlTemplateFileExtensions.ToArray());
+            if (htmlTemplate != null)
             {
-                TextBody = textBody,
-                HtmlBody = htmlBody
-            };
+                bodyBuilder.HtmlBody = await htmlTemplate.ToMessageAsync(replacementVariables, token);
+                templateExists = true;
+            }
+
+            var textTemplate = directory.GetFirstFileForExtensions(template, TemplateSettings.TextTemplateFileExtension.ToArray());
+            if (textTemplate != null)
+            {
+                bodyBuilder.TextBody = await textTemplate.ToMessageAsync(replacementVariables, token);
+                templateExists = true;
+            }
+
+            if (!templateExists)
+            {
+                throw new ArgumentException($"No email message template found for TemplateId {template}");
+            }
+
             AddAttachmentStreams(bodyBuilder, attachments);
 
-            return await SendMailAsync(toEmailAddress, toDisplayName, subject, bodyBuilder.ToMessageBody(), token);
-
+            return bodyBuilder.ToMessageBody();
         }
 
-
-        /// <summary>
-        /// send mail as an asynchronous operation.
-        /// </summary>
-        /// <param name="toEmailAddress">To email address.</param>
-        /// <param name="toDisplayName">To display name.</param>
-        /// <param name="subject">The subject.</param>
-        /// <param name="body">The body.</param>
-        /// <param name="token">The cancellation token.</param>
-        /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        /// <exception cref="FormatException"></exception>
-        public virtual async Task<bool> SendMailAsync(
-            string toEmailAddress,
-            string toDisplayName,
-            string subject,
-            MimeEntity body,
-            CancellationToken token)
-        {
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(Settings.FromDisplayName, Settings.FromEmailAddress));
-
-            try
-            {
-                var box = string.IsNullOrEmpty(toDisplayName)
-                    ? new MailboxAddress(toEmailAddress)
-                    : new MailboxAddress(toDisplayName, toEmailAddress);
-                message.To.Add(box);
-            }
-            catch (FormatException ex)
-            {
-                throw new FormatException($"Invalid Email Address: {toDisplayName} <{toEmailAddress}>. Subject: {subject}.", ex);
-            }
-
-            message.Subject = subject;
-            message.Priority = MessagePriority.Normal;
-            message.Body = body;
-
-            await MailClient.ConnectAsync(Settings.SmtpServer, Settings.SmtpPort, Settings.SmtpUseSsl, token);
-
-            try
-            {
-                if (Settings.Credentials != null)
-                {
-                    MailClient.Authenticate(Settings.Credentials, token);
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(Settings.UserName) && !string.IsNullOrEmpty(Settings.UserName))
-                    {
-                        MailClient.Authenticate(Settings.UserName, Settings.Password, token);
-                    }
-                }
-
-                await MailClient.SendAsync(message, token);
-
-                await MailClient.DisconnectAsync(true, token);
-
-                return true;
-            }
-            catch {
-                //TODO: log stuff
-             }
-            return false;
-
-        }
-
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            MailClient.Dispose();
-        }
-
-
-        /// <summary>
-        /// Adds the attachment streams.
-        /// </summary>
-        /// <param name="builder">The builder.</param>
-        /// <param name="attachments">The attachments.</param>
-        protected virtual void AddAttachmentStreams(BodyBuilder builder, IDictionary<string, Stream> attachments)
-        {
-            if (attachments != null && attachments.Any())
-            {
-                foreach (var attachment in attachments)
-                {
-                    builder.Attachments.Add(attachment.Key, attachment.Value);
-                }
-            }
-        }
     }
 }
