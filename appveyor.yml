@@ -17,6 +17,7 @@ deploy:
   server: https://www.myget.org/F/nulldesk/api/v2/package
   api_key:
     secure: uBiyeuaz9rRv16bZe/X6HID91rZK//umRAHXo0gRh8l57p8MElDVETuqSwFXZVme
+  skip_symbols: true
   on:
     branch: master
 - provider: NuGet
