@@ -13,6 +13,8 @@ namespace Sample.Mailer.Cli.Configuration
         public string HtmlBody { get; set; }
 
         public string TextBody { get; set; }
+
+        public IEnumerable<string> AttachmentFiles { get; set; }
     }
 
     public class TemplateMessageSettings
@@ -27,6 +29,8 @@ namespace Sample.Mailer.Cli.Configuration
         public string Subject { get; set; }
 
         public Dictionary<string, string> ReplacementVariables { get; set; }
+
+        public IEnumerable<string> AttachmentFiles { get; set; }
     }
 
     public class TestMessageSettings

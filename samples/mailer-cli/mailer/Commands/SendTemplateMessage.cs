@@ -21,19 +21,39 @@ namespace Sample.Mailer.Cli.Commands
                 templateApp.Description = "Attempts to send a template based test message through the currently configured provider";
                 templateApp.AllowArgumentSeparator = true;
 
+                var addAttachments = templateApp.Option("-a|--attachments",
+                 "Include attachment files if specified in the messsage settings (see appsettings.json)",
+                 CommandOptionType.NoValue);
+
                 templateApp.OnExecute(async () =>
                 {
                     var result = false;
                     try
                     {
-                        result = await Mailer
-                            .SendMailAsync(
-                                Settings.Template,
-                                Settings.ToAddress,
-                                Settings.ToDisplayName,
-                                Settings.Subject,
-                                Settings.ReplacementVariables,
-                                CancellationToken.None);
+
+                        if (addAttachments.HasValue())
+                        {
+                            result = await Mailer
+                                .SendMailAsync(
+                                    Settings.Template,
+                                    Settings.ToAddress,
+                                    Settings.ToDisplayName,
+                                    Settings.Subject,
+                                    Settings.ReplacementVariables,
+                                    Settings.AttachmentFiles,
+                                    CancellationToken.None);
+                        }
+                        else
+                        {
+                            result = await Mailer
+                                .SendMailAsync(
+                                    Settings.Template,
+                                    Settings.ToAddress,
+                                    Settings.ToDisplayName,
+                                    Settings.Subject,
+                                    Settings.ReplacementVariables,
+                                    CancellationToken.None);
+                        }
                     }
                     catch (Exception ex)
                     {

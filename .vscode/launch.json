@@ -7,7 +7,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceRoot}\\samples\\mailer-cli\\mailer\\bin\\Debug\\netcoreapp1.1\\mailer.dll",
-            "args": ["send", "template"],
+            "args": ["send", "simple", "-a"],
             "cwd": "${workspaceRoot}\\samples\\mailer-cli\\mailer",
             "symbolPath": [],
             "externalConsole": false,

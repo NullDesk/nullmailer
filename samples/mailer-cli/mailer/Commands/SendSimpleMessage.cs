@@ -20,19 +20,38 @@ namespace Sample.Mailer.Cli.Commands
                 simpleApp.Description = "Attempts to send a simple test message through the currently configured provider, no template is used";
                 simpleApp.AllowArgumentSeparator = true;
 
+                var addAttachments = simpleApp.Option("-a|--attachments",
+                    "Include attachment files if specified in the messsage settings (see appsettings.json)",
+                    CommandOptionType.NoValue);
+
                 simpleApp.OnExecute(async () =>
                 {
                     var result = false;
                     try
                     {
-                        result = await Mailer
-                            .SendMailAsync(
-                                Settings.ToAddress,
-                                Settings.ToDisplayName,
-                                Settings.Subject,
-                                Settings.HtmlBody,
-                                Settings.TextBody,
-                                CancellationToken.None);
+                        if (addAttachments.HasValue())
+                        {
+                            result = await Mailer
+                                .SendMailAsync(
+                                    Settings.ToAddress,
+                                    Settings.ToDisplayName,
+                                    Settings.Subject,
+                                    Settings.HtmlBody,
+                                    Settings.TextBody,
+                                    Settings.AttachmentFiles,
+                                    CancellationToken.None);
+                        }
+                        else
+                        {
+                            result = await Mailer
+                                .SendMailAsync(
+                                    Settings.ToAddress,
+                                    Settings.ToDisplayName,
+                                    Settings.Subject,
+                                    Settings.HtmlBody,
+                                    Settings.TextBody,
+                                    CancellationToken.None);
+                        }
                     }
                     catch(Exception ex)
                     { 

@@ -9,6 +9,7 @@ using NullDesk.Extensions.Mailer.SendGrid;
 using Sample.Mailer.Cli.Commands;
 using Sample.Mailer.Cli.Configuration;
 
+
 namespace Sample.Mailer.Cli
 {
     public class Startup
@@ -43,7 +44,7 @@ namespace Sample.Mailer.Cli
             services.AddOptions();
 
           
-            services.Configure<SmtpMailerSettings>(Config.GetSection("MailSettings:SmtpMailerSettings"));
+            services.Configure<MkSmtpMailerSettings>(Config.GetSection("MailSettings:MkSmtpMailerSettings"));
             services.Configure<FileTemplateMailerSettings>(Config.GetSection("MailSettings:FileTemplateMailerSettings"));
             services.Configure<SendGridMailerSettings>(Config.GetSection("MailSettings:SendGridMailerSettings"));
             
