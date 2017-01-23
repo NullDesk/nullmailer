@@ -17,7 +17,6 @@ deploy:
   server: https://www.myget.org/F/nulldesk-ci/api/v2/package
   api_key:
     secure: uBiyeuaz9rRv16bZe/X6HID91rZK//umRAHXo0gRh8l57p8MElDVETuqSwFXZVme
-  skip_symbols: true
   symbol_server: https://www.myget.org/F/nulldesk-ci/symbols/api/v2/package
   on:
     branch: master
