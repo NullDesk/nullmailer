@@ -43,11 +43,12 @@ function Exec {
     )
     & $cmd
     if ($lastexitcode -ne 0) {
+        Set-Location $rootDir
         throw ("Exec: " + $errorMessage)
     }
 }
+Write-Output ""
 Write-Output "Begin: build.ps1"
-
 $repoTag = @{ $true = $env:APPVEYOR_REPO_TAG_NAME; $false = $NULL }[$env:APPVEYOR_REPO_TAG_NAME -ne $NULL]
 #only care about tags that look like version numbers 
 $isBeta = $repoTag -notmatch "^[V|v]?\d+\.\d+\.\d+"
@@ -69,7 +70,7 @@ EnsurePsbuildInstalled
 
 exec { & dotnet restore }
 
-
+$rootDir = Get-Location
 $srcDir = Get-ChildItem ./src
 
 [object[]]$projectFolders = $NULL
@@ -86,7 +87,7 @@ foreach ($folder in $srcDir) {
     if (Test-Path $p -PathType Leaf) {
         $projectFolders += $folder.FullName
         # find the test project, if one exists, and run each
-        $testFolderPath = "..\..\test\" + $folder.Name + ".Tests"
+        $testFolderPath = ".\test\" + $folder.Name + ".Tests"
         if (Test-Path $testFolderPath -PathType Container){
             $x = Join-Path -Path $testFolderPath -ChildPath 'xunit.runner.json';
             if (Test-Path $x -PathType Leaf) {
@@ -98,11 +99,21 @@ foreach ($folder in $srcDir) {
 
 # run tests first
 foreach($testFolder in $testFolders){
-    exec { & dotnet test $testFolder --configuration $config -trait "TestType=Unit" }
+    Write-Output ""
+    Write-Output "--------"
+    Write-Output "testing : $testFolder"
+    Write-Output "--------"
+    Set-Location $testFolder
+    exec { & dotnet test --configuration $config -trait "TestType=Unit" }
+    Set-Location $rootDir
 }
 
 # package src projects
 foreach($srcFolder in $projectFolders){
+    Write-Output ""
+    Write-Output "--------"
+    Write-Output "packing : $srcFolder"
+    Write-Output "--------"
     if($isBeta){
         exec { & dotnet pack $srcFolder -c $config -o .\dist --version-suffix=$revision }
     }
