@@ -7,17 +7,25 @@
 ## Overview
 Email extension service packages for quickly integrating common mail scenarios into any .Net Core or .Net project using a variety of message delivery frameworks and cloud service providers.
 
-## Packages
+## Status
+
+|                                   |   |   |
+|-----------------------------------|:-:|:-:|
+|Project  [Issue Board](https://github.com/NullDesk/NullMailer/issues#boards?repos=79507993)|[![Build status](https://ci.appveyor.com/api/projects/status/5uc95cb6xho4qtdh/branch/master?svg=true)](https://ci.appveyor.com/project/StephenRedd/nullmailer/branch/master)|[![ZenHub](https://img.shields.io/badge/Shipping_faster_with-ZenHub-5e60ba.svg?style=flat-square)](https://github.com/NullDesk/NullMailer/issues#boards?repos=79507993)|
+|NullDesk.Extensions.Mailer                                                                 |[![MyGet](https://img.shields.io/myget/nulldesk-ci/v/NullDesk.Extensions.Mailer.Core.svg)](NullDesk-CI)|[![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.Core.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.Core/)|
+|NullDesk.Extensions.Mailer.MailKit                                                         |[![MyGet](https://img.shields.io/myget/nulldesk-ci/v/NullDesk.Extensions.Mailer.MailKit.svg)](NullDesk-CI)|[![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.MailKit.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.MailKit/)|
+|NullDesk.Extensions.Mailer.SendGrid                                                        |[![MyGet](https://img.shields.io/myget/nulldesk-ci/v/NullDesk.Extensions.Mailer.SendGrid.svg)](NullDesk-CI)|[![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.SendGrid.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.SendGrid/)|
+
+## Package Descriptions
 
 
+|                                   |           |
+|-----------------------------------|-----------|
+|NullDesk.Extensions.Mailer         |Base classes and interfaces for the mailer extensions, and settings.|
+|NullDesk.Extensions.Mailer.MailKit |SMTP Relay Email service using the popular cross platform [MailKit library](https://github.com/jstedfast/MailKit). Includes support for basic Email Template files.|
+|NullDesk.Extensions.Mailer.SendGrid|SendGrid email service using SendGrid APIs. Supports basic usage of SendGrid templates; can be inherited for more advanced SendGrid functionality.|
+|NullDesk.Extensions.Mailer.NetMail |*(coming soon)* SMTP Relay Email service using the cross-platform System.Net.Mail framework from Microsoft.|
 
-|                                   | | |           |
-|-----------------------------------|:-:|:-:|-----------|
-|Project                            |[![Build status](https://ci.appveyor.com/api/projects/status/5uc95cb6xho4qtdh/branch/master?svg=true)](https://ci.appveyor.com/project/StephenRedd/nullmailer/branch/master)|[![ZenHub](https://img.shields.io/badge/Shipping_faster_with-ZenHub-5e60ba.svg?style=flat-square)](https://github.com/NullDesk/NullMailer/issues#boards?repos=79507993)|[Issue Board](https://github.com/NullDesk/NullMailer/issues#boards?repos=79507993)|
-|NullDesk.Extensions.Mailer         |[![MyGet](https://img.shields.io/myget/nulldesk-ci/v/NullDesk.Extensions.Mailer.Core.svg)](NullDesk-CI)|[![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.Core.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.Core/)|Base classes and interfaces for the mailer extensions, and settings.|
-|NullDesk.Extensions.Mailer.MailKit |[![MyGet](https://img.shields.io/myget/nulldesk-ci/v/NullDesk.Extensions.Mailer.MailKit.svg)](NullDesk-CI)|[![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.MailKit.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.MailKit/)|SMTP Relay Email service using the popular cross platform [MailKit library](https://github.com/jstedfast/MailKit). Includes support for basic Email Template files.|
-|NullDesk.Extensions.Mailer.SendGrid|[![MyGet](https://img.shields.io/myget/nulldesk-ci/v/NullDesk.Extensions.Mailer.SendGrid.svg)](NullDesk-CI)|[![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.SendGrid.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.SendGrid/)|SendGrid email service using SendGrid APIs. Supports basic usage of SendGrid templates; can be inherited for more advanced SendGrid functionality.|
-|NullDesk.Extensions.Mailer.NetMail |||*(coming soon)* SMTP Relay Email service using the cross-platform System.Net.Mail framework from Microsoft.|
 
 ## Features  
 
