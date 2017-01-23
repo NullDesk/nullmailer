@@ -46,7 +46,20 @@ function Exec {
         throw ("Exec: " + $errorMessage)
     }
 }
+Write-Output "Begin: build.ps1"
 
+$repoTag = @{ $true = $env:APPVEYOR_REPO_TAG_NAME; $false = $NULL }[$env:APPVEYOR_REPO_TAG_NAME -ne $NULL]
+#only care about tags that look like version numbers 
+$isBeta = $repoTag -notmatch "^[V|v]?\d+\.\d+\.\d+"
+
+$revision = @{ $true = $env:APPVEYOR_BUILD_NUMBER; $false = 1 }[$env:APPVEYOR_BUILD_NUMBER -ne $NULL]
+$revision = "beta-{0:D4}" -f [convert]::ToInt32($revision, 10)
+
+Write-Output "------------------------------------"
+Write-Output "Repo Tag = $repoTag"
+Write-Output "Building Beta = $isBeta"
+Write-Output @{$true = "Revision = $revision"; $false =""}[$isBeta]
+Write-Output "------------------------------------"
 
 if(Test-Path .\dist) {
     Remove-Item .\dist -Force -Recurse 
@@ -56,12 +69,6 @@ EnsurePsbuildInstalled
 
 exec { & dotnet restore }
 
-$repoTag = @{ $true = $env:APPVEYOR_REPO_TAG_NAME; $false = $NULL }[$env:APPVEYOR_REPO_TAG_NAME -ne $NULL];
-#only care about tags that look like version numbers 
-$isBeta = -not $repoTag -match "^[V|v]?\d+\.\d+\.\d+"
-
-$revision = @{ $true = $env:APPVEYOR_BUILD_NUMBER; $false = 1 }[$env:APPVEYOR_BUILD_NUMBER -ne $NULL];
-$revision = "beta-{0:D4}" -f [convert]::ToInt32($revision, 10)
 
 $srcDir = Get-ChildItem ./src
 
@@ -104,3 +111,5 @@ foreach($srcFolder in $projectFolders){
 
     }
 }
+
+Write-Output "Done: build.ps1"
