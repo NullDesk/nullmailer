@@ -9,6 +9,7 @@ using NullDesk.Extensions.Mailer.Core;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using Microsoft.Extensions.Logging;
 
 namespace NullDesk.Extensions.Mailer.SendGrid
 {
@@ -17,6 +18,14 @@ namespace NullDesk.Extensions.Mailer.SendGrid
     /// </summary>
     public class SendGridSimpleMailer : IMailer<SendGridMailerSettings>
     {
+
+        /// <summary>
+        /// Optional logger
+        /// </summary>
+        /// <returns></returns>
+        protected ILogger Logger { get; }
+
+
         /// <summary>
         /// Gets or sets the mail client.
         /// </summary>
@@ -37,18 +46,21 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// </remarks>
         /// <param name="client">The SendGrid client instance</param>
         /// <param name="settings">The settings.</param>
-        public SendGridSimpleMailer(Client client, IOptions<SendGridMailerSettings> settings)
+        /// <param name="logger">Optional ILogger instance.</param>
+        public SendGridSimpleMailer(Client client, IOptions<SendGridMailerSettings> settings, ILogger<SendGridSimpleMailer> logger = null)
         {
             Settings = settings.Value;
             MailClient = client;
+            Logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance as ILogger;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SendGridSimpleMailer"/> class.
         /// </summary>
         /// <param name="settings">The settings.</param>
-        public SendGridSimpleMailer(IOptions<SendGridMailerSettings> settings) 
-            : this(new Client(settings.Value.ApiKey), settings) { }
+        /// <param name="logger">Optional ILogger instance.</param>
+        public SendGridSimpleMailer(IOptions<SendGridMailerSettings> settings, ILogger<SendGridSimpleMailer> logger = null)
+            : this(new Client(settings.Value.ApiKey), settings, logger) { }
 
         /// <summary>
         /// Send mail as an asynchronous operation.
@@ -100,20 +112,8 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             IEnumerable<string> attachmentFiles,
             CancellationToken token)
         {
-            IDictionary<string, Stream> attachments = null;
-            if (attachmentFiles != null)
-            {
-                attachments = new Dictionary<string, Stream>();
-                foreach (var attachmentFile in attachmentFiles)
-                {
-                    if (!File.Exists(attachmentFile))
-                    {
-                        throw new ArgumentException($"Unable to find email attachment with file name: {attachmentFile}");
-                    }
-                    var f = new FileInfo(attachmentFile);
-                    attachments.Add(f.Name, f.OpenRead());
-                }
-            }
+            var attachments = attachmentFiles.GetStreamsForFileNames(Logger);
+
             return await SendMailAsync(toEmailAddress, toDisplayName, subject, htmlBody, textBody, attachments, token);
         }
 

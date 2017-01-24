@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using NullDesk.Extensions.Mailer.Core;
@@ -14,8 +15,14 @@ namespace NullDesk.Extensions.Mailer.MailKit
     /// <summary>
     /// Simplified SMTP email service using MailKit.
     /// </summary>
-    public class MkSimpleSmtpMailer : IMailer<MkSmtpMailerSettings>, IDisposable
+    public class MkSmtpSimpleMailer : IMailer<MkSmtpMailerSettings>, IDisposable
     {
+        /// <summary>
+        /// Optional logger
+        /// </summary>
+        /// <returns></returns>
+        protected ILogger Logger { get; }
+
         private SmtpClient MailClient { get; }
 
         /// <summary>
@@ -25,24 +32,28 @@ namespace NullDesk.Extensions.Mailer.MailKit
         public MkSmtpMailerSettings Settings { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MkSimpleSmtpMailer"/> class.
+        /// Initializes a new instance of the <see cref="MkSmtpSimpleMailer"/> class.
         /// </summary>
         /// <remarks>
         /// Overload used by unit tests
         /// </remarks>
         /// <param name="client">The smtp client instance to use for sending messages.</param>
         /// <param name="settings">The settings.</param>
-        public MkSimpleSmtpMailer(SmtpClient client, IOptions<MkSmtpMailerSettings> settings)
+        /// <param name="logger">Optional ILogger instance.</param>
+        public MkSmtpSimpleMailer(SmtpClient client, IOptions<MkSmtpMailerSettings> settings, ILogger<MkSmtpSimpleMailer> logger = null)
         {
             Settings = settings.Value;
             MailClient = client;
+            Logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance as ILogger;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MkSimpleSmtpMailer"/> class.
+        /// Initializes a new instance of the <see cref="MkSmtpSimpleMailer"/> class.
         /// </summary>
         /// <param name="settings">The settings.</param>
-        public MkSimpleSmtpMailer(IOptions<MkSmtpMailerSettings> settings) : this(new SmtpClient(), settings) { }
+        /// <param name="logger">Optional ILogger instance.</param>
+
+        public MkSmtpSimpleMailer(IOptions<MkSmtpMailerSettings> settings, ILogger<MkSmtpSimpleMailer> logger = null) : this(new SmtpClient(), settings, logger) { }
 
         /// <summary>
         /// Send mail as an asynchronous operation.
@@ -93,20 +104,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
             IEnumerable<string> attachmentFiles,
             CancellationToken token)
         {
-            IDictionary<string, Stream> attachments = null;
-            if (attachmentFiles != null)
-            {
-                attachments = new Dictionary<string, Stream>();
-                foreach (var attachmentFile in attachmentFiles)
-                {
-                    if (!File.Exists(attachmentFile))
-                    {
-                        throw new ArgumentException($"Unable to find email attachment with file name: {attachmentFile}");
-                    }
-                    var f = new FileInfo(attachmentFile);
-                    attachments.Add(f.Name, f.OpenRead());
-                }
-            }
+            var attachments = attachmentFiles.GetStreamsForFileNames(Logger);
 
             return await SendMailAsync(toEmailAddress, toDisplayName, subject, htmlBody, textBody, attachments, token);
         }
@@ -139,7 +137,6 @@ namespace NullDesk.Extensions.Mailer.MailKit
             AddAttachmentStreams(bodyBuilder, attachments);
 
             return await SendMailAsync(toEmailAddress, toDisplayName, subject, bodyBuilder.ToMessageBody(), token);
-
         }
 
 
@@ -172,17 +169,17 @@ namespace NullDesk.Extensions.Mailer.MailKit
             }
             catch (FormatException ex)
             {
-                throw new FormatException($"Invalid Email Address: {toDisplayName} <{toEmailAddress}>. Subject: {subject}.", ex);
+                Logger.LogError(1, ex, "Invalid email address format: {toDisplayName} <{toEmailAddress}> Subject: {subject}", toEmailAddress, toDisplayName);
+                throw ex;
             }
 
             message.Subject = subject;
             message.Priority = MessagePriority.Normal;
             message.Body = body;
-
-            await MailClient.ConnectAsync(Settings.SmtpServer, Settings.SmtpPort, Settings.SmtpUseSsl, token);
-
             try
             {
+                await MailClient.ConnectAsync(Settings.SmtpServer, Settings.SmtpPort, Settings.SmtpUseSsl, token);
+
                 if (Settings.Credentials != null)
                 {
                     MailClient.Authenticate(Settings.Credentials, token);
@@ -201,11 +198,11 @@ namespace NullDesk.Extensions.Mailer.MailKit
 
                 return true;
             }
-            catch {
-                //TODO: log stuff
-             }
+            catch (Exception ex)
+            {
+                Logger.LogError(1, ex, ex.Message);
+            }
             return false;
-
         }
 
 

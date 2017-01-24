@@ -7,6 +7,7 @@ using NullDesk.Extensions.Mailer.Core;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using Microsoft.Extensions.Logging;
 
 namespace NullDesk.Extensions.Mailer.SendGrid
 {
@@ -20,20 +21,24 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// </summary>
         /// <param name="client">The SendGrid client instance</param>
         /// <param name="settings">The settings.</param>
+        /// <param name="logger">Optional ILogger instance.</param>
         /// <remarks>Overload used by unit tests</remarks>
         public SendGridMailer(
             Client client,
-            IOptions<SendGridMailerSettings> settings) :
-        base(client, settings)
+            IOptions<SendGridMailerSettings> settings,
+            ILogger<SendGridMailer> logger = null) :
+        base(client, settings, logger)
         { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SendGridMailer"/> class.
         /// </summary>
         /// <param name="settings"></param>
+        /// <param name="logger">Optional ILogger instance.</param>
         public SendGridMailer(
-            IOptions<SendGridMailerSettings> settings) :
-        this(new Client(settings.Value.ApiKey), settings)
+            IOptions<SendGridMailerSettings> settings,
+            ILogger<SendGridMailer> logger = null) :
+        this(new Client(settings.Value.ApiKey), settings, logger)
         { }
 
         /// <summary>
@@ -90,20 +95,8 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             IEnumerable<string> attachmentFiles,
             CancellationToken token)
         {
-            IDictionary<string, Stream> attachments = null;
-            if (attachmentFiles != null)
-            {
-                attachments = new Dictionary<string, Stream>();
-                foreach (var attachmentFile in attachmentFiles)
-                {
-                    if (!File.Exists(attachmentFile))
-                    {
-                        throw new ArgumentException($"Unable to find email attachment with file name: {attachmentFile}");
-                    }
-                    var f = new FileInfo(attachmentFile);
-                    attachments.Add(f.Name, f.OpenRead());
-                }
-            }
+            var attachments = attachmentFiles.GetStreamsForFileNames(Logger);
+
             return await SendMailAsync(template, toEmailAddress, toDisplayName, subject, replacementVariables, attachments, token);
         }
 
@@ -140,7 +133,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             mail.AddPersonalization(new Personalization
             {
                 Tos = new List<Email> { mto },
-                Subject = subject, 
+                Subject = subject,
                 Substitutions = new Dictionary<string, string>(replacementVariables)
             });
 

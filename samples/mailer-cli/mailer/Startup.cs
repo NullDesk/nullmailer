@@ -3,6 +3,7 @@ using System.IO;
 using Microsoft.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.MailKit;
 using NullDesk.Extensions.Mailer.SendGrid;
@@ -20,7 +21,17 @@ namespace Sample.Mailer.Cli
         {
             Config = AcquireConfiguration();
 
-            ConfigureConsoleServices(new ServiceCollection());
+            var services = ConfigureConsoleServices(new ServiceCollection());
+            Program.ServiceProvider = services; 
+            ConfigureLogging(services.GetService<ILoggerFactory>()); 
+            
+        }
+
+        private void ConfigureLogging(ILoggerFactory loggerFactory){
+            
+            loggerFactory.AddConsole(Config.GetSection("Logging"));
+
+            loggerFactory.CreateLogger("startup").LogInformation("Application logging configured");
         }
 
         private IConfigurationRoot AcquireConfiguration()
@@ -39,10 +50,10 @@ namespace Sample.Mailer.Cli
             return builder.Build();
         }
 
-        private void ConfigureConsoleServices(IServiceCollection services)
+        private IServiceProvider ConfigureConsoleServices(IServiceCollection services)
         {
             services.AddOptions();
-
+            services.AddLogging();
           
             services.Configure<MkSmtpMailerSettings>(Config.GetSection("MailSettings:MkSmtpMailerSettings"));
             services.Configure<FileTemplateMailerSettings>(Config.GetSection("MailSettings:FileTemplateMailerSettings"));
@@ -72,7 +83,7 @@ namespace Sample.Mailer.Cli
             services.AddTransient<SendSimpleMessage>();
             services.AddTransient<SendTemplateMessage>();
 
-            Program.ServiceProvider = services.BuildServiceProvider();
+            return services.BuildServiceProvider();
         }
     }
 }

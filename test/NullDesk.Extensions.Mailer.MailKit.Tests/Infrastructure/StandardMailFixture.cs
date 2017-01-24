@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using NSubstitute;
@@ -17,6 +18,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
         public StandardMailFixture()
         {
             var services = new ServiceCollection();
+            services.AddLogging();
 
             services.AddOptions();
 
@@ -30,10 +32,14 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                   .SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>())
                   .Returns(Task.CompletedTask);
                 return (isMailServerAlive)
-                    ? new MkSimpleSmtpMailer(options)
-                    : new MkSimpleSmtpMailer(client, options);
+                    ? new MkSmtpSimpleMailer(options, s.GetService<ILogger<MkSmtpSimpleMailer>>())
+                    : new MkSmtpSimpleMailer(client, options, s.GetService<ILogger<MkSmtpSimpleMailer>>());
             });
+            
             ServiceProvider = services.BuildServiceProvider();
+            
+            var logging = ServiceProvider.GetService<ILoggerFactory>();
+            logging.AddDebug(LogLevel.Debug);
         }
 
         public void Dispose() { }

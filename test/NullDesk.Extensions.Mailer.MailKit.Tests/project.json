@@ -3,7 +3,7 @@
     "debugType": "portable",
     "emitEntryPoint": true,
     "copyToOutput": {
-      "include": [ "xunit.runner.json" ]
+      "include": ["xunit.runner.json"]
     }
   },
   "dependencies": {
@@ -12,6 +12,9 @@
     "Microsoft.CodeCoverage": "1.0.2",
     "Microsoft.Extensions.DependencyInjection": "1.1.0",
     "Microsoft.Extensions.Configuration.Json": "1.1.0",
+    "Microsoft.Extensions.Logging": "1.1.0",
+    "Microsoft.Extensions.Logging.Abstractions": "1.1.0",
+    "Microsoft.Extensions.Logging.Debug":"1.1.0",
     "Microsoft.Extensions.Options": "1.1.0",
     "Microsoft.NETCore.App": {
       "type": "platform",
