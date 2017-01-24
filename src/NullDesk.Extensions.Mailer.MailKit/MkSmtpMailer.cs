@@ -8,13 +8,14 @@ using Microsoft.Extensions.Options;
 using MimeKit;
 using NullDesk.Extensions.Mailer.Core;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace NullDesk.Extensions.Mailer.MailKit
 {
     /// <summary>
     /// Standard message and template SMTP mail service using MailKit.
     /// </summary>
-    public class MkSmtpMailer : MkSimpleSmtpMailer, ITemplateMailer<FileTemplateMailerSettings>
+    public class MkSmtpMailer : MkSmtpSimpleMailer, ITemplateMailer<FileTemplateMailerSettings>
     {
         /// <summary>
         /// Template settings
@@ -26,15 +27,17 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <summary>
         /// Initializes a new instance of the <see cref="MkSmtpMailer" /> class.
         /// </summary>
+        /// <remarks>Overload used by unit tests</remarks>
         /// <param name="client">The smtp client instance to use for sending messages.</param>
         /// <param name="settings">The settings.</param>
         /// <param name="templateSettings">The template settings.</param>
-        /// <remarks>Overload used by unit tests</remarks>
+        /// <param name="logger">Optional ILogger instance.</param>
         public MkSmtpMailer(
             SmtpClient client,
             IOptions<MkSmtpMailerSettings> settings,
-            IOptions<FileTemplateMailerSettings> templateSettings)
-        : base(client, settings)
+            IOptions<FileTemplateMailerSettings> templateSettings,
+            ILogger<MkSmtpMailer> logger = null)
+        : base(client, settings, logger)
         {
             TemplateSettings = templateSettings.Value;
         }
@@ -44,10 +47,12 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// </summary>
         /// <param name="settings">The settings.</param>
         /// <param name="templateSettings">The template settings.</param>
+        /// <param name="logger">Optional ILogger instance.</param>
         public MkSmtpMailer(
             IOptions<MkSmtpMailerSettings> settings,
-            IOptions<FileTemplateMailerSettings> templateSettings)
-        : base(settings)
+            IOptions<FileTemplateMailerSettings> templateSettings,
+            ILogger<MkSmtpMailer> logger = null)
+        : base(settings, logger)
         {
             TemplateSettings = templateSettings.Value;
         }
@@ -145,21 +150,8 @@ namespace NullDesk.Extensions.Mailer.MailKit
             IEnumerable<string> attachmentFiles,
             CancellationToken token)
         {
-            IDictionary<string, Stream> attachments = null;
-            if (attachmentFiles != null)
-            {
-                attachments = new Dictionary<string, Stream>();
-                foreach (var attachmentFile in attachmentFiles)
-                {
-                    if (!File.Exists(attachmentFile))
-                    {
-                        throw new ArgumentException($"Unable to find email attachment with file name: {attachmentFile}");
-                    }
-                    var f = new FileInfo(attachmentFile);
-                    attachments.Add(f.Name, f.OpenRead());
-                }
-            }
-
+            var attachments = attachmentFiles.GetStreamsForFileNames(Logger);
+      
             return await GetBodyForTemplate(template, replacementVariables, attachments, token);
         }
 
@@ -190,7 +182,9 @@ namespace NullDesk.Extensions.Mailer.MailKit
 
             if (!templateExists)
             {
-                throw new ArgumentException($"No email message template found for TemplateId {template}");
+                var ex = new ArgumentException($"No email message template found for TemplateId {template}");
+                Logger.LogError(1,ex, ex.Message);
+                throw ex;
             }
 
             AddAttachmentStreams(bodyBuilder, attachments);
