@@ -15,7 +15,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
     /// <summary>
     /// Standard message and template SMTP mail service using MailKit.
     /// </summary>
-    public class MkSmtpMailer : MkSmtpSimpleMailer, ITemplateMailer<FileTemplateMailerSettings>
+    public class MkSmtpMailer : MkSimpleSmtpMailer, ITemplateMailer<FileTemplateMailerSettings>
     {
         /// <summary>
         /// Template settings

@@ -15,7 +15,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
     /// <summary>
     /// Simplified SMTP email service using MailKit.
     /// </summary>
-    public class MkSmtpSimpleMailer : IMailer<MkSmtpMailerSettings>, IDisposable
+    public class MkSimpleSmtpMailer : IMailer<MkSmtpMailerSettings>, IDisposable
     {
         /// <summary>
         /// Optional logger
@@ -32,7 +32,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         public MkSmtpMailerSettings Settings { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MkSmtpSimpleMailer"/> class.
+        /// Initializes a new instance of the <see cref="MkSimpleSmtpMailer"/> class.
         /// </summary>
         /// <remarks>
         /// Overload used by unit tests
@@ -40,7 +40,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="client">The smtp client instance to use for sending messages.</param>
         /// <param name="settings">The settings.</param>
         /// <param name="logger">Optional ILogger instance.</param>
-        public MkSmtpSimpleMailer(SmtpClient client, IOptions<MkSmtpMailerSettings> settings, ILogger<MkSmtpSimpleMailer> logger = null)
+        public MkSimpleSmtpMailer(SmtpClient client, IOptions<MkSmtpMailerSettings> settings, ILogger<MkSimpleSmtpMailer> logger = null)
         {
             Settings = settings.Value;
             MailClient = client;
@@ -48,12 +48,12 @@ namespace NullDesk.Extensions.Mailer.MailKit
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MkSmtpSimpleMailer"/> class.
+        /// Initializes a new instance of the <see cref="MkSimpleSmtpMailer"/> class.
         /// </summary>
         /// <param name="settings">The settings.</param>
         /// <param name="logger">Optional ILogger instance.</param>
 
-        public MkSmtpSimpleMailer(IOptions<MkSmtpMailerSettings> settings, ILogger<MkSmtpSimpleMailer> logger = null) : this(new SmtpClient(), settings, logger) { }
+        public MkSimpleSmtpMailer(IOptions<MkSmtpMailerSettings> settings, ILogger<MkSimpleSmtpMailer> logger = null) : this(new SmtpClient(), settings, logger) { }
 
         /// <summary>
         /// Send mail as an asynchronous operation.
