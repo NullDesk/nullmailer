@@ -57,7 +57,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="mailerFunc">The mailer function.</param>
-        public void RegisterMailer<T>(Func<T> mailerFunc) where T : class, IMailer
+        public void Register<T>(Func<T> mailerFunc) where T : class, IMailer
         {
             Mailers.Add(mailerFunc);
         }
