@@ -29,7 +29,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
         public async Task SendMailWithTemplate(string template, string[] attachments)
         {
 
-            var mailer = Fixture.ServiceProvider.GetService<ITemplateMailer>();
+            var mailer = Fixture.ServiceProvider.GetService<IStandardMailer>();
 
             var result =
                 await

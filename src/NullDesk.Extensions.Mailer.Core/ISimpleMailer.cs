@@ -4,11 +4,24 @@ using System.Threading;
 using System.Threading.Tasks;
 namespace NullDesk.Extensions.Mailer.Core
 {
+    /// <summary>
+    /// Simplified mailer interface
+    /// </summary>
+    /// <typeparam name="TSettings">The type of the mailer settings.</typeparam>
+    /// <seealso cref="NullDesk.Extensions.Mailer.Core.ISimpleMailer" />
+    public interface ISimpleMailer<TSettings> : ISimpleMailer where TSettings : class, IMailerSettings
+    {
+        /// <summary>
+        /// Settings for the mailer service
+        /// </summary>
+        /// <returns></returns>
+        TSettings Settings { get; set; }
+    }
 
     /// <summary>
-    /// Common mailer interface
+    /// Simplified mailer
     /// </summary>
-    public interface IMailer
+    public interface ISimpleMailer
     {
         /// <summary>
         /// Send mail as an asynchronous operation.
@@ -69,15 +82,5 @@ namespace NullDesk.Extensions.Mailer.Core
             CancellationToken token);
     }
 
-    /// <summary>
-    /// Mailer with settings interface
-    /// </summary>
-    public interface IMailer<T> : IMailer where T : class, IMailerSettings
-    {
-        /// <summary>
-        /// Settings for the mailer service
-        /// </summary>
-        /// <returns></returns>
-        T Settings { get; set; }
-    }
+   
 }

@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 
-namespace NullDesk.Extensions.Mailer.Core
+namespace NullDesk.Extensions.Mailer.MailKit
 {
     /// <summary>
-    /// Settings for SMTP Email Services.
+    /// File template settings for MailKit mailers.
     /// </summary>
-    public class FileTemplateMailerSettings : IMailerTemplateSettings
+    public class MkFileTemplateSettings
     {
-
         /// <summary>
         /// The folder path where templates are stored.
         /// </summary>
@@ -18,13 +17,12 @@ namespace NullDesk.Extensions.Mailer.Core
         /// Collection of possible HTML template file name extensions
         /// </summary>
         /// <value>The HTML template file extensions.</value>
-        public IEnumerable<string> HtmlTemplateFileExtensions { get; set; } = new [] {"htm", "html"};
+        public IEnumerable<string> HtmlTemplateFileExtensions { get; set; } = new[] { "htm", "html" };
 
         /// <summary>
         /// Gets or sets the text template file extension.
         /// </summary>
         /// <value>The text template file extension.</value>
-        public IEnumerable<string> TextTemplateFileExtension { get; set; } = new [] {"txt"};
-
+        public IEnumerable<string> TextTemplateFileExtension { get; set; } = new[] { "txt" };
     }
 }

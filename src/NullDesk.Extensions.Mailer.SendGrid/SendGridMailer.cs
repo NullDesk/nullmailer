@@ -14,7 +14,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
     /// <summary>
     /// Standard message and template mail service using SendGrid.
     /// </summary>
-    public class SendGridMailer : SendGridSimpleMailer, ITemplateMailer
+    public class SendGridMailer : SendGridSimpleMailer, IStandardMailer<SendGridMailerSettings>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SendGridMailer" /> class.
@@ -54,7 +54,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="replacementVariables">The replacement variables. The key should include the delimiters needed to locate text which should be replaced.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        public async Task<bool> SendMailAsync(
+        public virtual async Task<bool> SendMailAsync(
             string template,
             string toEmailAddress,
             string toDisplayName,

@@ -25,7 +25,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
         public async Task SendMail(string html, string text, string[] attachments)
         {
 
-            var mailer = Fixture.ServiceProvider.GetService<IMailer>();
+            var mailer = Fixture.ServiceProvider.GetService<ISimpleMailer>();
 
             var result =
                 await
