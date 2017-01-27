@@ -53,3 +53,28 @@ Create a nuget.config file in the root of your project:
     </configuration>   
 
 Alternately, you can setup nuget to get the package from the filesystem. The nupkg files are included in the repository in the <code>./library</code> folder.
+
+## Creating your own mailers
+
+To implement your own full-featured mailer, simply implement a class that implements <code>IStandardMailer&lt;TSettings&gt;</code>. 
+
+If you don't care about templates, you can create a simple mailer by just implementing <code>ISimpleMailer&lt;TSettings&gt;</code>.
+
+For the above interfaces, <code>TSettings</code> is a custom DTO class containing any configuration settings your mailer requires.
+
+The NullDesk mailers include both a simple and full-featured mailer; the full-featured mailers typically inherit the simple mailer as a base class, then extend it to add additional tempalate features from <code>IStandardMailer&lt;TSettings&gt;</code>. Here is an example of how that looks:
+
+    public class MyMailerSettings : IMailerSettings
+    {
+        //... implementation here
+    }
+
+    public class MySimpleMailer : ISimpleMailer<MyMailerSettings>
+    {
+        //... implementation here
+    }
+
+    public class MyFullMailer : MySimpleMailer, IStandardMailer<MyMailerSettings>
+    {
+        //... implementation here
+    }

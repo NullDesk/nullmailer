@@ -68,11 +68,11 @@ namespace Sample.Mailer.Cli.Commands
             }, false);
         }
 
-        private ITemplateMailer Mailer { get; }
+        private IStandardMailer Mailer { get; }
 
         private SimpleMessageSettings Settings{get;}
 
-        public SendSimpleMessage(AnsiConsole console, ITemplateMailer mailer, IOptions<TestMessageSettings> settings) : base(console)
+        public SendSimpleMessage(AnsiConsole console, IStandardMailer mailer, IOptions<TestMessageSettings> settings) : base(console)
         {
             Mailer = mailer;
             Settings = settings.Value.SimpleMessageSettings;

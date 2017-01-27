@@ -24,7 +24,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 
             var isMailServerAlive = false;
             var lazy = new Lazy<OptionsWrapper<MkSmtpMailerSettings>>(() => SetupMailerOptions(out isMailServerAlive));
-            services.AddTransient<IMailer>(s =>
+            services.AddTransient<ISimpleMailer>(s =>
             {
                 var options = lazy.Value;
                 var client = Substitute.For<SmtpClient>();

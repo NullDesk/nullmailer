@@ -23,16 +23,10 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 
             services.AddOptions();
 
-            var templateOptions = new OptionsWrapper<FileTemplateMailerSettings>(
-                new FileTemplateMailerSettings
-                {
-                    TemplatePath = "../TestData/templates"
-                });
-
             var isMailServerAlive = false;
             var lazy = new Lazy<OptionsWrapper<MkSmtpMailerSettings>>(() => SetupMailerOptions(out isMailServerAlive));
 
-            services.AddTransient<ITemplateMailer>(s =>
+            services.AddTransient<IStandardMailer>(s =>
             {
                 var options = lazy.Value;
                 var client = Substitute.For<SmtpClient>();
@@ -40,8 +34,8 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                     .SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>())
                     .Returns(Task.CompletedTask);
                 return (isMailServerAlive)
-                    ? new MkSmtpMailer(options, templateOptions, s.GetService<ILogger<MkSmtpMailer>>())
-                    : new MkSmtpMailer(client, options, templateOptions, s.GetService<ILogger<MkSmtpMailer>>());
+                    ? new MkSmtpMailer(options, s.GetService<ILogger<MkSmtpMailer>>())
+                    : new MkSmtpMailer(client, options, s.GetService<ILogger<MkSmtpMailer>>());
             });
 
 

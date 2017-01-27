@@ -56,7 +56,6 @@ namespace Sample.Mailer.Cli
             services.AddLogging();
           
             services.Configure<MkSmtpMailerSettings>(Config.GetSection("MailSettings:MkSmtpMailerSettings"));
-            services.Configure<FileTemplateMailerSettings>(Config.GetSection("MailSettings:FileTemplateMailerSettings"));
             services.Configure<SendGridMailerSettings>(Config.GetSection("MailSettings:SendGridMailerSettings"));
             
             services.Configure<TestMessageSettings>(Config.GetSection("TestMessageSettings"));
@@ -73,7 +72,7 @@ namespace Sample.Mailer.Cli
                 : typeof(MkSmtpMailer);
 
             //add the actual interface type we'll use when asking for a template mailer
-            services.AddTransient(s => (ITemplateMailer)s.GetService(templateMailerType));
+            services.AddTransient(s => (IStandardMailer)s.GetService(templateMailerType));
 
 
             services.AddSingleton(provider => AnsiConsole.GetOutput(true));

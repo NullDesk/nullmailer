@@ -15,7 +15,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
     /// <summary>
     /// Simplified SMTP email service using MailKit.
     /// </summary>
-    public class MkSimpleSmtpMailer : IMailer<MkSmtpMailerSettings>, IDisposable
+    public class MkSimpleSmtpMailer : ISimpleMailer<MkSmtpMailerSettings>
     {
         /// <summary>
         /// Optional logger
@@ -23,7 +23,11 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <returns></returns>
         protected ILogger Logger { get; }
 
-        private SmtpClient MailClient { get; }
+        /// <summary>
+        /// Gets the mail client.
+        /// </summary>
+        /// <value>The mail client.</value>
+        public SmtpClient MailClient { get; }
 
         /// <summary>
         /// Settings for the mailer instance
@@ -40,7 +44,10 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="client">The smtp client instance to use for sending messages.</param>
         /// <param name="settings">The settings.</param>
         /// <param name="logger">Optional ILogger instance.</param>
-        public MkSimpleSmtpMailer(SmtpClient client, IOptions<MkSmtpMailerSettings> settings, ILogger<MkSimpleSmtpMailer> logger = null)
+        public MkSimpleSmtpMailer(
+            SmtpClient client, 
+            IOptions<MkSmtpMailerSettings> settings, 
+            ILogger<MkSimpleSmtpMailer> logger = null)
         {
             Settings = settings.Value;
             MailClient = client;
@@ -53,7 +60,10 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="settings">The settings.</param>
         /// <param name="logger">Optional ILogger instance.</param>
 
-        public MkSimpleSmtpMailer(IOptions<MkSmtpMailerSettings> settings, ILogger<MkSimpleSmtpMailer> logger = null) : this(new SmtpClient(), settings, logger) { }
+        public MkSimpleSmtpMailer(
+            IOptions<MkSmtpMailerSettings> settings, 
+            ILogger<MkSimpleSmtpMailer> logger = null) 
+        : this(new SmtpClient(), settings, logger) { }
 
         /// <summary>
         /// Send mail as an asynchronous operation.
@@ -180,15 +190,15 @@ namespace NullDesk.Extensions.Mailer.MailKit
             {
                 await MailClient.ConnectAsync(Settings.SmtpServer, Settings.SmtpPort, Settings.SmtpUseSsl, token);
 
-                if (Settings.Credentials != null)
+                if (Settings.AuthenticationSettings?.Credentials != null)
                 {
-                    MailClient.Authenticate(Settings.Credentials, token);
+                    MailClient.Authenticate(Settings.AuthenticationSettings.Credentials, token);
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(Settings.UserName) && !string.IsNullOrEmpty(Settings.UserName))
+                    if (!string.IsNullOrEmpty(Settings.AuthenticationSettings?.UserName) && !string.IsNullOrEmpty(Settings.AuthenticationSettings?.Password))
                     {
-                        MailClient.Authenticate(Settings.UserName, Settings.Password, token);
+                        MailClient.Authenticate(Settings.AuthenticationSettings.UserName, Settings.AuthenticationSettings.Password, token);
                     }
                 }
 
@@ -204,16 +214,6 @@ namespace NullDesk.Extensions.Mailer.MailKit
             }
             return false;
         }
-
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            MailClient.Dispose();
-        }
-
 
         /// <summary>
         /// Adds the attachment streams.

@@ -15,47 +15,30 @@ namespace NullDesk.Extensions.Mailer.MailKit
     /// <summary>
     /// Standard message and template SMTP mail service using MailKit.
     /// </summary>
-    public class MkSmtpMailer : MkSimpleSmtpMailer, ITemplateMailer<FileTemplateMailerSettings>
+    public class MkSmtpMailer : MkSimpleSmtpMailer, IStandardMailer<MkSmtpMailerSettings>
     {
-        /// <summary>
-        /// Template settings
-        /// </summary>
-        /// <value>The template settings.</value>
-        public FileTemplateMailerSettings TemplateSettings { get; set; }
-
-
         /// <summary>
         /// Initializes a new instance of the <see cref="MkSmtpMailer" /> class.
         /// </summary>
         /// <remarks>Overload used by unit tests</remarks>
         /// <param name="client">The smtp client instance to use for sending messages.</param>
         /// <param name="settings">The settings.</param>
-        /// <param name="templateSettings">The template settings.</param>
         /// <param name="logger">Optional ILogger instance.</param>
         public MkSmtpMailer(
             SmtpClient client,
             IOptions<MkSmtpMailerSettings> settings,
-            IOptions<FileTemplateMailerSettings> templateSettings,
             ILogger<MkSmtpMailer> logger = null)
-        : base(client, settings, logger)
-        {
-            TemplateSettings = templateSettings.Value;
-        }
+        : base(client, settings, logger) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MkSmtpMailer" /> class.
         /// </summary>
         /// <param name="settings">The settings.</param>
-        /// <param name="templateSettings">The template settings.</param>
         /// <param name="logger">Optional ILogger instance.</param>
         public MkSmtpMailer(
             IOptions<MkSmtpMailerSettings> settings,
-            IOptions<FileTemplateMailerSettings> templateSettings,
             ILogger<MkSmtpMailer> logger = null)
-        : base(settings, logger)
-        {
-            TemplateSettings = templateSettings.Value;
-        }
+        : base(settings, logger) { }
 
         /// <summary>
         /// Send mail using a template file.
@@ -70,7 +53,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="replacementVariables">The replacement variables. The key should include the delimiters needed to locate text which should be replaced.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        public async Task<bool> SendMailAsync(
+        public virtual async Task<bool> SendMailAsync(
             string template,
             string toEmailAddress,
             string toDisplayName,
@@ -103,7 +86,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="attachmentFiles">The full path for any attachment files to include in the outgoing message.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        public async Task<bool> SendMailAsync(
+        public virtual async Task<bool> SendMailAsync(
             string template,
             string toEmailAddress,
             string toDisplayName,
@@ -129,7 +112,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;System.Boolean&gt;.</returns>
         /// <remarks>It is up to the implementing class to decide how to locate and use the specified template.</remarks>
-        public async Task<bool> SendMailAsync(
+        public virtual async Task<bool> SendMailAsync(
             string template,
             string toEmailAddress,
             string toDisplayName,
@@ -144,19 +127,35 @@ namespace NullDesk.Extensions.Mailer.MailKit
 
         }
 
-        private async Task<MimeEntity> GetBodyForTemplate(
+        /// <summary>
+        /// Gets the body for template.
+        /// </summary>
+        /// <param name="template">The template.</param>
+        /// <param name="replacementVariables">The replacement variables.</param>
+        /// <param name="attachmentFiles">The attachment files.</param>
+        /// <param name="token">The token.</param>
+        /// <returns>Task&lt;MimeEntity&gt;.</returns>
+        protected virtual async Task<MimeEntity> GetBodyForTemplate(
             string template,
             IDictionary<string, string> replacementVariables,
             IEnumerable<string> attachmentFiles,
             CancellationToken token)
         {
             var attachments = attachmentFiles.GetStreamsForFileNames(Logger);
-      
+
             return await GetBodyForTemplate(template, replacementVariables, attachments, token);
         }
 
 
-        private async Task<MimeEntity> GetBodyForTemplate(
+        /// <summary>
+        /// Gets the body for template.
+        /// </summary>
+        /// <param name="template">The template.</param>
+        /// <param name="replacementVariables">The replacement variables.</param>
+        /// <param name="attachments">The attachments.</param>
+        /// <param name="token">The token.</param>
+        /// <returns>Task&lt;MimeEntity&gt;.</returns>
+        protected virtual async Task<MimeEntity> GetBodyForTemplate(
             string template,
             IDictionary<string, string> replacementVariables,
             IDictionary<string, Stream> attachments,
@@ -164,16 +163,16 @@ namespace NullDesk.Extensions.Mailer.MailKit
         {
             var bodyBuilder = new BodyBuilder();
             var templateExists = false;
-            var directory = new DirectoryInfo(TemplateSettings.TemplatePath);
+            var directory = new DirectoryInfo(Settings.TemplateSettings.TemplatePath);
 
-            var htmlTemplate = directory.GetFirstFileForExtensions(template, TemplateSettings.HtmlTemplateFileExtensions.ToArray());
+            var htmlTemplate = directory.GetFirstFileForExtensions(template, Settings.TemplateSettings.HtmlTemplateFileExtensions.ToArray());
             if (htmlTemplate != null)
             {
                 bodyBuilder.HtmlBody = await htmlTemplate.ToMessageAsync(replacementVariables, token);
                 templateExists = true;
             }
 
-            var textTemplate = directory.GetFirstFileForExtensions(template, TemplateSettings.TextTemplateFileExtension.ToArray());
+            var textTemplate = directory.GetFirstFileForExtensions(template, Settings.TemplateSettings.TextTemplateFileExtension.ToArray());
             if (textTemplate != null)
             {
                 bodyBuilder.TextBody = await textTemplate.ToMessageAsync(replacementVariables, token);
@@ -183,7 +182,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
             if (!templateExists)
             {
                 var ex = new ArgumentException($"No email message template found for TemplateId {template}");
-                Logger.LogError(1,ex, ex.Message);
+                Logger.LogError(1, ex, ex.Message);
                 throw ex;
             }
 

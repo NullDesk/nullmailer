@@ -26,10 +26,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
             var logger = loggerFactory.CreateLogger<MkSmtpMailer>();
             var simpleLogger = loggerFactory.CreateLogger<MkSimpleSmtpMailer>();
 
-            var mkTemplateSettings = new FileTemplateMailerSettings
-            {
-                TemplatePath = "../TestData/templates"
-            };
+           
 
             var isMailServerAlive = false;
             var mkSettings = SetupMailerOptions(out isMailServerAlive).Value;
@@ -40,18 +37,18 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                 .Returns(Task.CompletedTask);
             if (isMailServerAlive)
             {
-                Mail.AddMkSmtpMailer(mkSettings, mkTemplateSettings, logger);
+                Mail.AddMkSmtpMailer(mkSettings, logger);
                 Mail.AddMkSimpleSmtpMailer(mkSettings, simpleLogger);
 
-                TemplateMail.AddMkSmtpMailer(mkSettings, mkTemplateSettings, logger);
+                TemplateMail.AddMkSmtpMailer(mkSettings, logger);
 
             }
             else
             {
-                Mail.AddMkSmtpMailer(client, mkSettings, mkTemplateSettings, logger);
+                Mail.AddMkSmtpMailer(client, mkSettings, logger);
                 Mail.AddMkSimpleSmtpMailer(client, mkSettings, simpleLogger);
 
-                TemplateMail.AddMkSmtpMailer(client, mkSettings, mkTemplateSettings, logger);
+                TemplateMail.AddMkSmtpMailer(client, mkSettings, logger);
 
             }
         }

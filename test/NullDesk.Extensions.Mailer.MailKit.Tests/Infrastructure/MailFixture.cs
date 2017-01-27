@@ -15,7 +15,11 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                     FromDisplayName = "Xunit",
                     SmtpServer = "localhost",
                     SmtpPort = 25,
-                    SmtpUseSsl = false
+                    SmtpUseSsl = false,
+                    TemplateSettings = new MkFileTemplateSettings()
+                    {
+                        TemplatePath = "../TestData/templates"
+                    }
                 });
 
             isMailServerAlive = false;

@@ -16,7 +16,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
     /// <summary>
     /// Simplified email service for SendGrid. 
     /// </summary>
-    public class SendGridSimpleMailer : IMailer<SendGridMailerSettings>
+    public class SendGridSimpleMailer : ISimpleMailer<SendGridMailerSettings>
     {
 
         /// <summary>
@@ -47,7 +47,10 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="client">The SendGrid client instance</param>
         /// <param name="settings">The settings.</param>
         /// <param name="logger">Optional ILogger instance.</param>
-        public SendGridSimpleMailer(Client client, IOptions<SendGridMailerSettings> settings, ILogger<SendGridSimpleMailer> logger = null)
+        public SendGridSimpleMailer(
+            Client client, 
+            IOptions<SendGridMailerSettings> settings, 
+            ILogger<SendGridSimpleMailer> logger = null)
         {
             Settings = settings.Value;
             MailClient = client;
@@ -59,8 +62,10 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// </summary>
         /// <param name="settings">The settings.</param>
         /// <param name="logger">Optional ILogger instance.</param>
-        public SendGridSimpleMailer(IOptions<SendGridMailerSettings> settings, ILogger<SendGridSimpleMailer> logger = null)
-            : this(new Client(settings.Value.ApiKey), settings, logger) { }
+        public SendGridSimpleMailer(
+            IOptions<SendGridMailerSettings> settings, 
+            ILogger<SendGridSimpleMailer> logger = null)
+        : this(new Client(settings.Value.ApiKey), settings, logger) { }
 
         /// <summary>
         /// Send mail as an asynchronous operation.
@@ -211,7 +216,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;System.String&gt;.</returns>
         /// <remarks>Will read and dispose the stream</remarks>
-        protected async Task<string> StreamToBase64Async(Stream input, CancellationToken token)
+        protected virtual async Task<string> StreamToBase64Async(Stream input, CancellationToken token)
         {
             MemoryStream ms;
             if (input is MemoryStream)

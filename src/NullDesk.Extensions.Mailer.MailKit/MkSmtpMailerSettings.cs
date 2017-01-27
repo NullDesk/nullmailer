@@ -9,24 +9,15 @@ namespace NullDesk.Extensions.Mailer.MailKit
     public class MkSmtpMailerSettings: SmtpMailerSettings
     {
         /// <summary>
-        /// If provided, specifies the username used to authenticate with the SMTP server 
+        /// Gets or sets the template settings.
         /// </summary>
-        /// <returns>The username</returns>
-        public string UserName { get; set; }
+        /// <value>The template settings.</value>
+        public MkFileTemplateSettings TemplateSettings { get; set; }
 
         /// <summary>
-        /// If provided, specifies the password used to authenticate with the SMTP server 
+        /// Gets or sets the authentication settings.
         /// </summary>
-        /// <returns></returns>
-        public string Password { get; set; }
-
-        /// <summary>
-        /// If provided, specifies the credentials used to autheticate with the SMTP server.
-        /// </summary>
-        /// <remarks>
-        /// Will be used instead of username and password if provided.
-        /// </remarks>
-        /// <returns></returns>
-        public System.Net.ICredentials Credentials { get; set; }
+        /// <value>The authentication settings.</value>
+        public MkSmtpAuthenticationSettings AuthenticationSettings { get; set; }
     }
 }

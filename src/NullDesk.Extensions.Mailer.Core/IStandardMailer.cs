@@ -6,9 +6,18 @@ using System.Threading.Tasks;
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
-    /// Common template mailer interface
+    /// Standard template mailer interface
     /// </summary>
-    public interface ITemplateMailer: IMailer
+    /// <typeparam name="TSettings">The type of the mailer settings.</typeparam>
+    /// <seealso cref="NullDesk.Extensions.Mailer.Core.IStandardMailer" />
+    /// <seealso cref="NullDesk.Extensions.Mailer.Core.ISimpleMailer{TSettings}" />
+    public interface IStandardMailer<TSettings> : IStandardMailer, ISimpleMailer<TSettings>  where TSettings : class, IMailerSettings { }
+
+    /// <summary>
+    /// Standard template mailer interface
+    /// </summary>
+    /// <seealso cref="NullDesk.Extensions.Mailer.Core.ISimpleMailer" />
+    public interface IStandardMailer : ISimpleMailer
     {
         /// <summary>
         /// Send mail using a template.
@@ -77,15 +86,5 @@ namespace NullDesk.Extensions.Mailer.Core
 
     }
 
-    /// <summary>
-    /// Template Mailer with settings interface
-    /// </summary>
-    public interface ITemplateMailer<T>: ITemplateMailer where T : class, IMailerTemplateSettings
-    {
-        /// <summary>
-        /// Template settings 
-        /// </summary>
-        /// <returns></returns>
-        T TemplateSettings { get; set; }
-    }
+    
 }

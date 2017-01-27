@@ -70,11 +70,11 @@ namespace Sample.Mailer.Cli.Commands
             }, false);
         }
 
-        private ITemplateMailer Mailer { get; }
+        private IStandardMailer Mailer { get; }
 
         private TemplateMessageSettings Settings { get; }
 
-        public SendTemplateMessage(AnsiConsole console, ITemplateMailer mailer, IOptions<TestMessageSettings> settings) : base(console)
+        public SendTemplateMessage(AnsiConsole console, IStandardMailer mailer, IOptions<TestMessageSettings> settings) : base(console)
         {
             Mailer = mailer;
             if (mailer is SendGridMailer)

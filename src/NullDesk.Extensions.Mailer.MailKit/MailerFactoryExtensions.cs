@@ -53,18 +53,15 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// </summary>
         /// <param name="factory">The factory.</param>
         /// <param name="mailerSettings">The mailer settings.</param>
-        /// <param name="templateSettings">The template settings.</param>
         /// <param name="logger">The logger.</param>
         public static void AddMkSmtpMailer(
             this MailerFactory factory,
             MkSmtpMailerSettings mailerSettings,
-            FileTemplateMailerSettings templateSettings,
             ILogger<MkSmtpMailer> logger = null)
         {
             factory.Register(() =>
                 new MkSmtpMailer(
                     new OptionsWrapper<MkSmtpMailerSettings>(mailerSettings),
-                    new OptionsWrapper<FileTemplateMailerSettings>(templateSettings),
                     logger));
         }
 
@@ -74,20 +71,17 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="factory">The factory.</param>
         /// <param name="client">The SMTP client.</param>
         /// <param name="mailerSettings">The mailer settings.</param>
-        /// <param name="templateSettings">The template settings.</param>
         /// <param name="logger">The logger.</param>
         public static void AddMkSmtpMailer(
             this MailerFactory factory,
             SmtpClient client,
             MkSmtpMailerSettings mailerSettings,
-            FileTemplateMailerSettings templateSettings,
             ILogger<MkSmtpMailer> logger = null)
         {
             factory.Register(() =>
                 new MkSmtpMailer(
                     client,
                     new OptionsWrapper<MkSmtpMailerSettings>(mailerSettings),
-                    new OptionsWrapper<FileTemplateMailerSettings>(templateSettings),
                     logger));
 
         }
