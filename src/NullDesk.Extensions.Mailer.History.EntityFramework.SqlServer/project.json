@@ -19,7 +19,6 @@
       "type": "build"
     }
   },
-
   "frameworks": {
     "netstandard1.3": {}
   },
@@ -31,7 +30,6 @@
     "Stephen M. Redd"
   ],
   "description": "NullDesk Mailer Extension for SQL Server email messsage and delivery history storage using EntityFramework Core",
-
   "packOptions": {
     "packageType": "Dependency",
     "summary": "NullDesk email message and delivery history for SQL Server",
