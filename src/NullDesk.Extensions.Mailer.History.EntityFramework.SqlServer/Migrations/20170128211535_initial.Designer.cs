@@ -1,6 +1,5 @@
 ﻿// ReSharper disable All
 #pragma warning disable 1591
-
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -10,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migrations
 {
     [DbContext(typeof(SqlHistoryContext))]
-    [Migration("20170128194353_initial")]
+    [Migration("20170128211535_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,6 +25,9 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migration
 
                     b.Property<string>("DeliveryProvider")
                         .HasMaxLength(50);
+
+                    b.Property<string>("ExceptionMessage")
+                        .HasMaxLength(500);
 
                     b.Property<bool>("IsSuccess");
 

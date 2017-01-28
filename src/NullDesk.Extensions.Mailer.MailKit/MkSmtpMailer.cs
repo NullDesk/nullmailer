@@ -9,6 +9,7 @@ using MimeKit;
 using NullDesk.Extensions.Mailer.Core;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using NullDesk.Extensions.Mailer.Core.History;
 
 namespace NullDesk.Extensions.Mailer.MailKit
 {
@@ -24,21 +25,25 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="client">The smtp client instance to use for sending messages.</param>
         /// <param name="settings">The settings.</param>
         /// <param name="logger">Optional ILogger instance.</param>
+        /// <param name="historyStore">Optional history store provider.</param>
         public MkSmtpMailer(
             SmtpClient client,
             IOptions<MkSmtpMailerSettings> settings,
-            ILogger<MkSmtpMailer> logger = null)
-        : base(client, settings, logger) { }
+            ILogger<MkSmtpMailer> logger = null,
+            IHistoryStore historyStore = null)
+        : base(client, settings, logger, historyStore) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MkSmtpMailer" /> class.
         /// </summary>
         /// <param name="settings">The settings.</param>
         /// <param name="logger">Optional ILogger instance.</param>
+        /// <param name="historyStore">Optional history store provider.</param>
         public MkSmtpMailer(
             IOptions<MkSmtpMailerSettings> settings,
-            ILogger<MkSmtpMailer> logger = null)
-        : base(settings, logger) { }
+            ILogger<MkSmtpMailer> logger = null,
+            IHistoryStore historyStore = null)
+        : base(settings, logger, historyStore) { }
 
         /// <summary>
         /// Send mail using a template file.

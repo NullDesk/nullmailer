@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using Microsoft.Extensions.Logging;
+using NullDesk.Extensions.Mailer.Core.History;
 
 namespace NullDesk.Extensions.Mailer.SendGrid
 {
@@ -22,12 +23,14 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="client">The SendGrid client instance</param>
         /// <param name="settings">The settings.</param>
         /// <param name="logger">Optional ILogger instance.</param>
+        /// <param name="historyStore">Optional history store provider.</param>
         /// <remarks>Overload used by unit tests</remarks>
         public SendGridMailer(
             Client client,
             IOptions<SendGridMailerSettings> settings,
-            ILogger<SendGridMailer> logger = null) :
-        base(client, settings, logger)
+            ILogger<SendGridMailer> logger = null,
+            IHistoryStore historyStore = null) :
+        base(client, settings, logger, historyStore)
         { }
 
         /// <summary>
@@ -35,10 +38,12 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// </summary>
         /// <param name="settings"></param>
         /// <param name="logger">Optional ILogger instance.</param>
+        /// <param name="historyStore">Optional history store provider.</param>
         public SendGridMailer(
             IOptions<SendGridMailerSettings> settings,
-            ILogger<SendGridMailer> logger = null) :
-        this(new Client(settings.Value.ApiKey), settings, logger)
+            ILogger<SendGridMailer> logger = null,
+            IHistoryStore historyStore = null) :
+        this(new Client(settings.Value.ApiKey), settings, logger, historyStore)
         { }
 
         /// <summary>

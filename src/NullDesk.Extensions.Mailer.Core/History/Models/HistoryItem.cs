@@ -63,5 +63,12 @@ namespace NullDesk.Extensions.Mailer.History
         /// <value>The message json.</value>
         [StringLength(int.MaxValue)]
         public string MessageData { get; set; }
+
+        /// <summary>
+        /// Gets or sets the exception message if an exception occured.
+        /// </summary>
+        /// <value>The exception message.</value>
+        [StringLength(500)]
+        public string ExceptionMessage { get; set; }
     }
 }

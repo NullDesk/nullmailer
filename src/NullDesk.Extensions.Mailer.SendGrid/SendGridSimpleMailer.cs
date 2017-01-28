@@ -10,6 +10,8 @@ using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using Microsoft.Extensions.Logging;
+using NullDesk.Extensions.Mailer.Core.History;
+using NullDesk.Extensions.Mailer.History;
 
 namespace NullDesk.Extensions.Mailer.SendGrid
 {
@@ -18,6 +20,13 @@ namespace NullDesk.Extensions.Mailer.SendGrid
     /// </summary>
     public class SendGridSimpleMailer : ISimpleMailer<SendGridMailerSettings>
     {
+
+        /// <summary>
+        /// Gets the history store.
+        /// </summary>
+        /// <value>The history store.</value>
+        protected IHistoryStore HistoryStore { get; }
+
 
         /// <summary>
         /// Optional logger
@@ -47,14 +56,17 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="client">The SendGrid client instance</param>
         /// <param name="settings">The settings.</param>
         /// <param name="logger">Optional ILogger instance.</param>
+        /// <param name="historyStore">Optional history store provider.</param>
         public SendGridSimpleMailer(
-            Client client, 
-            IOptions<SendGridMailerSettings> settings, 
-            ILogger<SendGridSimpleMailer> logger = null)
+            Client client,
+            IOptions<SendGridMailerSettings> settings,
+            ILogger<SendGridSimpleMailer> logger = null,
+            IHistoryStore historyStore = null)
         {
             Settings = settings.Value;
             MailClient = client;
             Logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance as ILogger;
+            HistoryStore = historyStore ?? new NullHistoryStore();
         }
 
         /// <summary>
@@ -62,10 +74,12 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// </summary>
         /// <param name="settings">The settings.</param>
         /// <param name="logger">Optional ILogger instance.</param>
+        /// <param name="historyStore">Optional history store provider.</param>
         public SendGridSimpleMailer(
-            IOptions<SendGridMailerSettings> settings, 
-            ILogger<SendGridSimpleMailer> logger = null)
-        : this(new Client(settings.Value.ApiKey), settings, logger) { }
+            IOptions<SendGridMailerSettings> settings,
+            ILogger<SendGridSimpleMailer> logger = null,
+            IHistoryStore historyStore = null)
+        : this(new Client(settings.Value.ApiKey), settings, logger, historyStore) { }
 
         /// <summary>
         /// Send mail as an asynchronous operation.
@@ -175,14 +189,44 @@ namespace NullDesk.Extensions.Mailer.SendGrid
                     Enable = Settings.IsSandboxMode
                 }
             };
-            var message = mail.Get();
-            var response = await MailClient.RequestAsync(
+            
+            var historyItem = new HistoryItem()
+            {
+                DeliveryProvider = GetType().Name,
+                MessageDate = DateTimeOffset.Now,
+                Subject = string.IsNullOrEmpty(mail.Subject) ? mail.Personalization.FirstOrDefault()?.Subject : mail.Subject,
+                ToDisplayName = mail.Personalization.FirstOrDefault()?.Tos.FirstOrDefault()?.Name,
+                ToEmailAddress = mail.Personalization.FirstOrDefault()?.Tos.FirstOrDefault()?.Address,
+                IsSuccess = false
+            };
+            try
+            {
+                var message = mail.Get();
+                historyItem.MessageData = message;
+                var response = await SendToApi(message);
+                historyItem.IsSuccess = response.StatusCode == HttpStatusCode.Accepted ||
+                                        (Settings.IsSandboxMode && response.StatusCode == HttpStatusCode.OK);
+
+            }
+            catch (Exception ex)
+            {
+                historyItem.ExceptionMessage = ex.Message;
+                Logger.LogError(1, ex, ex.Message);
+            }
+            finally
+            {
+                await HistoryStore.AddAsync(historyItem, token);
+            }
+                                                                  
+            return historyItem.IsSuccess;
+        }
+
+        private async Task<Response> SendToApi(string message)
+        {
+            return await MailClient.RequestAsync(
                 Client.Methods.POST,
                 message,
                 urlPath: "mail/send");
-            //TODO: Log status                                                          
-            return response.StatusCode == HttpStatusCode.Accepted || (Settings.IsSandboxMode && response.StatusCode == HttpStatusCode.OK);
-
         }
 
         /// <summary>

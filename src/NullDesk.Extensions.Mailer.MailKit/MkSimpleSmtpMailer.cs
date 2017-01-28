@@ -9,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using NullDesk.Extensions.Mailer.Core;
+using NullDesk.Extensions.Mailer.Core.History;
+using NullDesk.Extensions.Mailer.History;
 
 namespace NullDesk.Extensions.Mailer.MailKit
 {
@@ -17,6 +19,13 @@ namespace NullDesk.Extensions.Mailer.MailKit
     /// </summary>
     public class MkSimpleSmtpMailer : ISimpleMailer<MkSmtpMailerSettings>
     {
+
+        /// <summary>
+        /// Gets the history store.
+        /// </summary>
+        /// <value>The history store.</value>
+        protected IHistoryStore HistoryStore { get; }
+
         /// <summary>
         /// Optional logger
         /// </summary>
@@ -36,22 +45,23 @@ namespace NullDesk.Extensions.Mailer.MailKit
         public MkSmtpMailerSettings Settings { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MkSimpleSmtpMailer"/> class.
+        /// Initializes a new instance of the <see cref="MkSimpleSmtpMailer" /> class.
         /// </summary>
-        /// <remarks>
-        /// Overload used by unit tests
-        /// </remarks>
         /// <param name="client">The smtp client instance to use for sending messages.</param>
         /// <param name="settings">The settings.</param>
         /// <param name="logger">Optional ILogger instance.</param>
+        /// <param name="historyStore">Optional history store provider.</param>
+        /// <remarks>Overload used by unit tests</remarks>
         public MkSimpleSmtpMailer(
-            SmtpClient client, 
-            IOptions<MkSmtpMailerSettings> settings, 
-            ILogger<MkSimpleSmtpMailer> logger = null)
+            SmtpClient client,
+            IOptions<MkSmtpMailerSettings> settings,
+            ILogger<MkSimpleSmtpMailer> logger = null,
+            IHistoryStore historyStore = null)
         {
             Settings = settings.Value;
             MailClient = client;
             Logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance as ILogger;
+            HistoryStore = historyStore ?? new NullHistoryStore();
         }
 
         /// <summary>
@@ -59,11 +69,12 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// </summary>
         /// <param name="settings">The settings.</param>
         /// <param name="logger">Optional ILogger instance.</param>
-
+        /// <param name="historyStore">Optional history store provider.</param>
         public MkSimpleSmtpMailer(
-            IOptions<MkSmtpMailerSettings> settings, 
-            ILogger<MkSimpleSmtpMailer> logger = null) 
-        : this(new SmtpClient(), settings, logger) { }
+            IOptions<MkSmtpMailerSettings> settings,
+            ILogger<MkSimpleSmtpMailer> logger = null,
+            IHistoryStore historyStore = null)
+        : this(new SmtpClient(), settings, logger, historyStore) { }
 
         /// <summary>
         /// Send mail as an asynchronous operation.
@@ -186,8 +197,27 @@ namespace NullDesk.Extensions.Mailer.MailKit
             message.Subject = subject;
             message.Priority = MessagePriority.Normal;
             message.Body = body;
+
+            var historyItem = new HistoryItem()
+            {
+                DeliveryProvider = GetType().Name,
+                MessageDate = DateTimeOffset.Now,
+                Subject = message.Subject,
+                ToDisplayName = toDisplayName,
+                ToEmailAddress = toEmailAddress,
+                IsSuccess = false
+            };
+
             try
             {
+                using (var ms = new MemoryStream())
+                {
+                    message.WriteTo(FormatOptions.Default, ms, token);
+                    var sr = new StreamReader(ms);
+                    var mData = await sr.ReadToEndAsync();
+                    historyItem.MessageData = mData;
+                }
+
                 await MailClient.ConnectAsync(Settings.SmtpServer, Settings.SmtpPort, Settings.SmtpUseSsl, token);
 
                 if (Settings.AuthenticationSettings?.Credentials != null)
@@ -196,23 +226,29 @@ namespace NullDesk.Extensions.Mailer.MailKit
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(Settings.AuthenticationSettings?.UserName) && !string.IsNullOrEmpty(Settings.AuthenticationSettings?.Password))
+                    if (!string.IsNullOrEmpty(Settings.AuthenticationSettings?.UserName) &&
+                        !string.IsNullOrEmpty(Settings.AuthenticationSettings?.Password))
                     {
-                        MailClient.Authenticate(Settings.AuthenticationSettings.UserName, Settings.AuthenticationSettings.Password, token);
+                        MailClient.Authenticate(Settings.AuthenticationSettings.UserName,
+                            Settings.AuthenticationSettings.Password, token);
                     }
                 }
 
                 await MailClient.SendAsync(message, token);
+                historyItem.IsSuccess = true;
 
                 await MailClient.DisconnectAsync(true, token);
-
-                return true;
             }
             catch (Exception ex)
             {
+                historyItem.ExceptionMessage = ex.Message;
                 Logger.LogError(1, ex, ex.Message);
             }
-            return false;
+            finally
+            {
+                await HistoryStore.AddAsync(historyItem, token);
+            }
+            return historyItem.IsSuccess;
         }
 
         /// <summary>

@@ -15,6 +15,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migration
                 {
                     Id = table.Column<Guid>(nullable: false),
                     DeliveryProvider = table.Column<string>(maxLength: 50, nullable: true),
+                    ExceptionMessage = table.Column<string>(maxLength: 500, nullable: true),
                     IsSuccess = table.Column<bool>(nullable: false),
                     MessageData = table.Column<string>(maxLength: 2147483647, nullable: true),
                     MessageDate = table.Column<DateTimeOffset>(nullable: false),
