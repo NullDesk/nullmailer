@@ -27,7 +27,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
         public async Task SendMailWithTemplate(string template, string[] attachments)
         {
 
-            var mailer = Fixture.Mail.Mailer;
+            var mailer = Fixture.Mail.StandardMailer;
             mailer.Should().BeOfType<MkSmtpMailer>();
             var result =
                 await

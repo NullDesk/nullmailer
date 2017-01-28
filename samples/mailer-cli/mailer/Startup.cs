@@ -54,26 +54,22 @@ namespace Sample.Mailer.Cli
         {
             services.AddOptions();
             services.AddLogging();
-          
+            services.Configure<TestMessageSettings>(Config.GetSection("TestMessageSettings"));
+            var activeMailService = Config.GetSection("MailSettings:ActiveMailService")?.Value.ToLowerInvariant();
+
             services.Configure<MkSmtpMailerSettings>(Config.GetSection("MailSettings:MkSmtpMailerSettings"));
             services.Configure<SendGridMailerSettings>(Config.GetSection("MailSettings:SendGridMailerSettings"));
-            
-            services.Configure<TestMessageSettings>(Config.GetSection("TestMessageSettings"));
 
-            var activeService = Config.GetSection("MailSettings:ActiveMailService").Value;
-
-            //add both template mailer types 
-            services.AddTransient<SendGridMailer>();
-            services.AddTransient<MkSmtpMailer>();
-
-            //check which is the active type based on config setting
-            var templateMailerType = activeService.Equals("sendgrid", StringComparison.OrdinalIgnoreCase)
-                ? typeof(SendGridMailer)
-                : typeof(MkSmtpMailer);
-
-            //add the actual interface type we'll use when asking for a template mailer
-            services.AddTransient(s => (IStandardMailer)s.GetService(templateMailerType));
-
+            //Configure a mailer 
+            switch (activeMailService)
+            {
+                case "sendgrid":
+                    services.AddMailer<SendGridMailer>();
+                    break;
+                case "mailkit":
+                    services.AddMailer<MkSmtpMailer>();
+                    break;
+            }
 
             services.AddSingleton(provider => AnsiConsole.GetOutput(true));
 
