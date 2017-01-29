@@ -1,0 +1,35 @@
+﻿{
+  "buildOptions": {
+    "debugType": "portable",
+    "emitEntryPoint": true,
+    "copyToOutput": {
+      "include": ["xunit.runner.json"]
+    }
+  },
+  "dependencies": {
+    "dotnet-test-xunit": "2.2.0-preview2-build1029",
+    "FluentAssertions": "4.18.0",
+    "Microsoft.CodeCoverage": "1.0.2",
+    "Microsoft.EntityFrameworkCore.InMemory": "1.1.0",
+    "Microsoft.Extensions.Configuration.Json": "1.1.0",
+    "Microsoft.Extensions.DependencyInjection": "1.1.0",
+    "Microsoft.Extensions.Logging": "1.1.0",
+    "Microsoft.Extensions.Logging.Abstractions": "1.1.0",
+    "Microsoft.Extensions.Logging.Debug": "1.1.0",
+    "Microsoft.Extensions.Options": "1.1.0",
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.1.0"
+    },
+    "NSubstitute": "2.0.1-rc",
+    "NullDesk.Extensions.Mailer.History.EntityFramework": "2.*",
+    "NullDesk.Extensions.Mailer.Tests.Common": "1.*",
+    "System.Net.Sockets": "4.3.0",
+    "xunit": "2.2.0-beta4-build3444"
+  },
+  "frameworks": {
+    "netcoreapp1.1": {}
+  },
+  "testRunner": "xunit",
+  "version": "1.0.0-*"
+}

@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NullDesk.Extensions.Mailer.Core;
-using NullDesk.Extensions.Mailer.Core.History;
 using SendGrid;
 
 namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
@@ -18,7 +17,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
             var services = new ServiceCollection();
             services.AddLogging();
             services.AddOptions();
-            services.AddSingleton<IHistoryStore, MemoryHistoryStore>();
+            services.AddSingleton<IHistoryStore, InMemoryHistoryStore>();
 
             services.Configure<SendGridMailerSettings>(s => s.ApiKey = "abc");
             services.AddTransient<Client>(s => new FakeClient("abc"));

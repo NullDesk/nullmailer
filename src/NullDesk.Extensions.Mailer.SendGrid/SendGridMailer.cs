@@ -7,7 +7,6 @@ using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using Microsoft.Extensions.Logging;
-using NullDesk.Extensions.Mailer.Core.History;
 
 namespace NullDesk.Extensions.Mailer.SendGrid
 {

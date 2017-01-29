@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NullDesk.Extensions.Mailer.Core;
-using NullDesk.Extensions.Mailer.Core.History;
 
 namespace NullDesk.Extensions.Mailer.MailKit
 {

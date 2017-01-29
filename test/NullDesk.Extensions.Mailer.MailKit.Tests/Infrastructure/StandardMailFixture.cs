@@ -8,7 +8,6 @@ using Microsoft.Extensions.Options;
 using MimeKit;
 using NSubstitute;
 using NullDesk.Extensions.Mailer.Core;
-using NullDesk.Extensions.Mailer.Core.History;
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 {
@@ -24,7 +23,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 
             services.AddOptions();
 
-            services.AddSingleton<IHistoryStore,MemoryHistoryStore>();
+            services.AddSingleton<IHistoryStore,InMemoryHistoryStore>();
 
             var isMailServerAlive = false;
             var lazy = new Lazy<OptionsWrapper<MkSmtpMailerSettings>>(() => SetupMailerOptions(out isMailServerAlive));

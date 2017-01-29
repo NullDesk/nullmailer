@@ -9,7 +9,6 @@ using MimeKit;
 using NullDesk.Extensions.Mailer.Core;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-using NullDesk.Extensions.Mailer.Core.History;
 
 namespace NullDesk.Extensions.Mailer.MailKit
 {

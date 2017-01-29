@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NullDesk.Extensions.Mailer.Core.History
+namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
     /// Interface for a message and delivery history store provider

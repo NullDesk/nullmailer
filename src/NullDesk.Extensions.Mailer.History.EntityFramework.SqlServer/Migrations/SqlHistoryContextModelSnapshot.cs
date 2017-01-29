@@ -16,10 +16,12 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migration
                 .HasAnnotation("ProductVersion", "1.1.0-rtm-22752")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("NullDesk.Extensions.Mailer.History.HistoryItem", b =>
+            modelBuilder.Entity("NullDesk.Extensions.Mailer.Core.MessageDeliveryItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<DateTimeOffset>("CreatedDate");
 
                     b.Property<string>("DeliveryProvider")
                         .HasMaxLength(50);
@@ -29,10 +31,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migration
 
                     b.Property<bool>("IsSuccess");
 
-                    b.Property<string>("MessageData")
-                        .HasMaxLength(2147483647);
-
-                    b.Property<DateTimeOffset>("MessageDate");
+                    b.Property<string>("MessageData");
 
                     b.Property<string>("Subject")
                         .HasMaxLength(250);
@@ -45,7 +44,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migration
 
                     b.HasKey("Id");
 
-                    b.ToTable("HistoryItems");
+                    b.ToTable("MessageHistory");
                 });
         }
     }

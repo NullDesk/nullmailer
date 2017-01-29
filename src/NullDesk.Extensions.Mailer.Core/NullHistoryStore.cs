@@ -1,25 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NullDesk.Extensions.Mailer.Core.History
+namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
-    /// In-memory History Store.
+    /// A HistoryStore that does nothing, used as a default when history is not enabled.
     /// </summary>
-    /// <remarks>
-    /// Useful for unit tests.
-    /// </remarks>
-    /// <seealso cref="NullDesk.Extensions.Mailer.Core.History.IHistoryStore" />
-    public class MemoryHistoryStore : IHistoryStore
+    /// <seealso cref="IHistoryStore" />
+    public class NullHistoryStore: IHistoryStore
     {
-        private List<MessageDeliveryItem> Items { get; } = new List<MessageDeliveryItem>();
-
-
         /// <summary>
-        /// Adds the history item to the history store.
+        /// Does nothing.
         /// </summary>
         /// <param name="item">The item to add.</param>
         /// <param name="token">A cancellation token.</param>
@@ -30,19 +22,18 @@ namespace NullDesk.Extensions.Mailer.Core.History
             {
                 item.Id = new Guid();
             }
-            Items.Add(item);
             return Task.FromResult(item.Id);
         }
 
         /// <summary>
-        /// Gets the history item from the store.
+        /// Does nothing, returns null.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="token">The token.</param>
-        /// <returns>Task&lt;HistoryItem&gt;.</returns>
+        /// <returns>Task&lt;HistoryItem&gt; always null.</returns>
         public Task<MessageDeliveryItem> GetAsync(Guid id, CancellationToken token)
         {
-            return Task.FromResult(Items.FirstOrDefault(i => i.Id == id));
+            return null;
         }
     }
 }

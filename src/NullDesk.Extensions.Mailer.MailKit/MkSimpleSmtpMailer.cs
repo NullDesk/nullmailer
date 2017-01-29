@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using NullDesk.Extensions.Mailer.Core;
-using NullDesk.Extensions.Mailer.Core.History;
 
 namespace NullDesk.Extensions.Mailer.MailKit
 {
@@ -200,7 +199,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
 
             historyItem.Id = Guid.NewGuid();
             historyItem.DeliveryProvider = GetType().Name;
-            historyItem.MessageDate = DateTimeOffset.Now;
+            historyItem.CreatedDate = DateTimeOffset.Now;
             historyItem.Subject = message.Subject;
             historyItem.ToDisplayName = toDisplayName;
             historyItem.ToEmailAddress = toEmailAddress;

@@ -22,7 +22,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// Gets or sets the history items.
         /// </summary>
         /// <value>The history items.</value>
-        public DbSet<MessageDeliveryItem> HistoryItems { get; set; }
+        public DbSet<MessageDeliveryItem> MessageHistory { get; set; }
 
         
 

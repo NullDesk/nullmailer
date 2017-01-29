@@ -23,13 +23,13 @@ namespace NullDesk.Extensions.Mailer.Core
         public string DeliveryProvider { get; set; }
 
         /// <summary>
-        /// Gets or sets the message date.
+        /// Gets or sets the message created date.
         /// </summary>
         /// <value>The message date.</value>
-        public DateTimeOffset MessageDate { get; set; }
+        public DateTimeOffset CreatedDate { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the message was successfully delivered.
+        /// Gets or sets a value indicating whether the message was successfully sent.
         /// </summary>
         public bool IsSuccess { get; set; } = false;
 
@@ -55,10 +55,9 @@ namespace NullDesk.Extensions.Mailer.Core
         public string Subject { get; set; }
 
         /// <summary>
-        /// The serialized message data in JSON.
+        /// Gets or sets the message data
         /// </summary>
-        /// <value>The message json.</value>
-        [StringLength(int.MaxValue)]
+        /// <returns></returns>
         public string MessageData { get; set; }
 
         /// <summary>

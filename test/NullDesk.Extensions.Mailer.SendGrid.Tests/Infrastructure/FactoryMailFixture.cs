@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 using NullDesk.Extensions.Mailer.Core;
-using NullDesk.Extensions.Mailer.Core.History;
 
 namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
 {
@@ -12,7 +11,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
 
         public MailerFactory TemplateMail { get; } = new MailerFactory();
 
-        public IHistoryStore Store { get; set; } = new MemoryHistoryStore();
+        public IHistoryStore Store { get; set; } = new InMemoryHistoryStore();
 
 
         public FactoryMailFixture()

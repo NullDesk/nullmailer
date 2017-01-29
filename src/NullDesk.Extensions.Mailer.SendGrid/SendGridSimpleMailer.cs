@@ -11,7 +11,6 @@ using SendGrid;
 using SendGrid.Helpers.Mail;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using NullDesk.Extensions.Mailer.Core.History;
 
 namespace NullDesk.Extensions.Mailer.SendGrid
 {
@@ -189,7 +188,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             };
 
             historyItem.DeliveryProvider = GetType().Name;
-            historyItem.MessageDate = DateTimeOffset.Now;
+            historyItem.CreatedDate = DateTimeOffset.Now;
             historyItem.Subject = string.IsNullOrEmpty(mail.Subject)
                 ? mail.Personalization.FirstOrDefault()?.Subject
                 : mail.Subject;

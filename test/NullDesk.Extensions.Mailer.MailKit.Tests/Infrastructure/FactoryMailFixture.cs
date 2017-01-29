@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using MimeKit;
 using NSubstitute;
 using NullDesk.Extensions.Mailer.Core;
-using NullDesk.Extensions.Mailer.Core.History;
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 {
@@ -17,7 +16,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 
         public MailerFactory TemplateMail { get; set; } = new MailerFactory();
 
-        public IHistoryStore Store { get; set; } = new MemoryHistoryStore();
+        public IHistoryStore Store { get; set; } = new InMemoryHistoryStore();
 
         public FactoryMailFixture()
         {
