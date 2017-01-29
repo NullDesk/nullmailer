@@ -1,22 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 // ReSharper disable once CheckNamespace
-namespace NullDesk.Extensions.Mailer.History
+namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
     /// Message Delivery History Record.
     /// </summary>
-    public class HistoryItem
+    public class MessageDeliveryItem
     {
         /// <summary>
         /// Gets or sets the identifier.
         /// </summary>
         /// <value>The identifier.</value>
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         /// <summary>
         /// Gets or sets the delivery provider.
@@ -34,7 +31,7 @@ namespace NullDesk.Extensions.Mailer.History
         /// <summary>
         /// Gets or sets a value indicating whether the message was successfully delivered.
         /// </summary>
-        public bool IsSuccess { get; set; }
+        public bool IsSuccess { get; set; } = false;
 
         /// <summary>
         /// Gets or sets the sent to email.
@@ -65,7 +62,7 @@ namespace NullDesk.Extensions.Mailer.History
         public string MessageData { get; set; }
 
         /// <summary>
-        /// Gets or sets the exception message if an exception occured.
+        /// Gets or sets the exception message if an exception occurred.
         /// </summary>
         /// <value>The exception message.</value>
         [StringLength(500)]

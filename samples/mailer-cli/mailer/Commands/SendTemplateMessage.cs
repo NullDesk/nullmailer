@@ -27,7 +27,7 @@ namespace Sample.Mailer.Cli.Commands
 
                 templateApp.OnExecute(async () =>
                 {
-                    var result = false;
+                    MessageDeliveryItem result = null;
                     try
                     {
 
@@ -60,7 +60,7 @@ namespace Sample.Mailer.Cli.Commands
                         Reporter.WriteLine($"[Error] {ex.Message}");
                         Reporter.WriteLine(string.Empty);
                     }
-                    var message = result ? "Email sent".Cyan() : "Failed to send email".Red();
+                    var message = result == null || !result.IsSuccess ? "Failed to send email".Red() : "Email sent".Cyan();
 
                     Reporter.WriteLine(message);
 

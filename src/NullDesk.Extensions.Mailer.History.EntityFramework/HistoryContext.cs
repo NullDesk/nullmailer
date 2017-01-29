@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using NullDesk.Extensions.Mailer.Core;
 
 namespace NullDesk.Extensions.Mailer.History.EntityFramework
 {
@@ -25,7 +22,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// Gets or sets the history items.
         /// </summary>
         /// <value>The history items.</value>
-        public DbSet<HistoryItem> HistoryItems { get; set; }
+        public DbSet<MessageDeliveryItem> HistoryItems { get; set; }
 
         
 

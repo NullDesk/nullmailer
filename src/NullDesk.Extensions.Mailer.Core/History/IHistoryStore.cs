@@ -1,6 +1,6 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
-using NullDesk.Extensions.Mailer.History;
 
 namespace NullDesk.Extensions.Mailer.Core.History
 {
@@ -14,7 +14,16 @@ namespace NullDesk.Extensions.Mailer.Core.History
         /// </summary>
         /// <param name="item">The item to add.</param>
         /// <param name="token">A cancellation token.</param>
-        /// <returns>Task.</returns>
-        Task AddAsync(HistoryItem item, CancellationToken token);
+        /// <returns>Task&lt;Guid&gt; the ID of the message.</returns>
+        Task<Guid> AddAsync(MessageDeliveryItem item, CancellationToken token);
+
+
+        /// <summary>
+        /// Gets the history item from the store.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="token">The token.</param>
+        /// <returns>Task&lt;HistoryItem&gt;.</returns>
+        Task<MessageDeliveryItem> GetAsync(Guid id, CancellationToken token);
     }
 }

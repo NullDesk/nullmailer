@@ -1,6 +1,5 @@
 ﻿using System.Net.Sockets;
 using Microsoft.Extensions.Options;
-using NullDesk.Extensions.Mailer.Core;
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 {

@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
 using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure;
 using NullDesk.Extensions.Mailer.Tests.Common;
@@ -42,7 +41,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
                         attachments,
                         CancellationToken.None);
 
-            result.Should().BeTrue();
+            result.Should().BeOfType<MessageDeliveryItem>().Which.IsSuccess.Should().BeTrue();
         }
 
         [Theory]
@@ -65,7 +64,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
                         attachments,
                         CancellationToken.None
                     );
-            result.Should().BeTrue();
+            result.Should().BeOfType<MessageDeliveryItem>().Which.IsSuccess.Should().BeTrue();
         }
 
         [Theory]
@@ -90,7 +89,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
                         attachments,
                         CancellationToken.None
                     );
-            result.Should().BeTrue();
+            result.Should().BeOfType<MessageDeliveryItem>().Which.IsSuccess.Should().BeTrue();
         }
     }
 }

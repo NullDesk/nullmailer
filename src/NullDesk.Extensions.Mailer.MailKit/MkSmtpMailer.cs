@@ -48,17 +48,15 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <summary>
         /// Send mail using a template file.
         /// </summary>
-        /// <remarks>
-        /// The template file will be located using the folder and filename from the supplied service settings. 
-        /// </remarks>
         /// <param name="template">The template file identifier; should be the filename without extension or file name suffix (specified in settings).</param>
         /// <param name="toEmailAddress">To email address.</param>
         /// <param name="toDisplayName">To display name.</param>
         /// <param name="subject">The subject.</param>
         /// <param name="replacementVariables">The replacement variables. The key should include the delimiters needed to locate text which should be replaced.</param>
         /// <param name="token">The cancellation token.</param>
-        /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        public virtual async Task<bool> SendMailAsync(
+        /// <returns>Task&lt;MessageDeliveryItem&gt;.</returns>
+        /// <remarks>The template file will be located using the folder and filename from the supplied service settings.</remarks>
+        public virtual async Task<MessageDeliveryItem> SendMailAsync(
             string template,
             string toEmailAddress,
             string toDisplayName,
@@ -72,7 +70,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
                 toDisplayName,
                 subject,
                 replacementVariables,
-                new List<string>() { },
+                new List<string>(),
                 token
             );
         }
@@ -80,9 +78,6 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <summary>
         /// Send mail using a template file.
         /// </summary>
-        /// <remarks>
-        /// The template file will be located using the folder and filename from the supplied service settings. 
-        /// </remarks>
         /// <param name="template">The template file identifier; should be the filename without extension or file name suffix (specified in settings).</param>
         /// <param name="toEmailAddress">To email address.</param>
         /// <param name="toDisplayName">To display name.</param>
@@ -90,8 +85,9 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="replacementVariables">The replacement variables. The key should include the delimiters needed to locate text which should be replaced.</param>
         /// <param name="attachmentFiles">The full path for any attachment files to include in the outgoing message.</param>
         /// <param name="token">The cancellation token.</param>
-        /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        public virtual async Task<bool> SendMailAsync(
+        /// <returns>Task&lt;MessageDeliveryItem&gt;.</returns>
+        /// <remarks>The template file will be located using the folder and filename from the supplied service settings.</remarks>
+        public virtual async Task<MessageDeliveryItem> SendMailAsync(
             string template,
             string toEmailAddress,
             string toDisplayName,
@@ -115,9 +111,9 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="replacementVariables">The replacement variables to use in the template.</param>
         /// <param name="attachments">A dictionary of attachments as streams</param>
         /// <param name="token">The cancellation token.</param>
-        /// <returns>Task&lt;System.Boolean&gt;.</returns>
+        /// <returns>Task&lt;MessageDeliveryItem&gt;.</returns>
         /// <remarks>It is up to the implementing class to decide how to locate and use the specified template.</remarks>
-        public virtual async Task<bool> SendMailAsync(
+        public virtual async Task<MessageDeliveryItem> SendMailAsync(
             string template,
             string toEmailAddress,
             string toDisplayName,

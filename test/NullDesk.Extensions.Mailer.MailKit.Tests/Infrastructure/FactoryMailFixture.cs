@@ -3,10 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using MimeKit;
 using NSubstitute;
 using NullDesk.Extensions.Mailer.Core;
+using NullDesk.Extensions.Mailer.Core.History;
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 {
@@ -17,16 +17,15 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 
         public MailerFactory TemplateMail { get; set; } = new MailerFactory();
 
+        public IHistoryStore Store { get; set; } = new MemoryHistoryStore();
+
         public FactoryMailFixture()
         {
-
             var loggerFactory = new LoggerFactory();
             loggerFactory.AddDebug(LogLevel.Debug);
 
             var logger = loggerFactory.CreateLogger<MkSmtpMailer>();
             var simpleLogger = loggerFactory.CreateLogger<MkSimpleSmtpMailer>();
-
-           
 
             var isMailServerAlive = false;
             var mkSettings = SetupMailerOptions(out isMailServerAlive).Value;
@@ -37,18 +36,18 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                 .Returns(Task.CompletedTask);
             if (isMailServerAlive)
             {
-                Mail.AddMkSmtpMailer(mkSettings, logger);
-                Mail.AddMkSimpleSmtpMailer(mkSettings, simpleLogger);
+                Mail.AddMkSmtpMailer(mkSettings, logger, Store);
+                Mail.AddMkSimpleSmtpMailer(mkSettings, simpleLogger, Store);
 
-                TemplateMail.AddMkSmtpMailer(mkSettings, logger);
+                TemplateMail.AddMkSmtpMailer(mkSettings, logger, Store);
 
             }
             else
             {
-                Mail.AddMkSmtpMailer(client, mkSettings, logger);
-                Mail.AddMkSimpleSmtpMailer(client, mkSettings, simpleLogger);
+                Mail.AddMkSmtpMailer(client, mkSettings, logger, Store);
+                Mail.AddMkSimpleSmtpMailer(client, mkSettings, simpleLogger, Store);
 
-                TemplateMail.AddMkSmtpMailer(client, mkSettings, logger);
+                TemplateMail.AddMkSmtpMailer(client, mkSettings, logger, Store);
 
             }
         }

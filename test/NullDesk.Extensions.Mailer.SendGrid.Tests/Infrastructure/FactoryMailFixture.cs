@@ -1,8 +1,7 @@
 ﻿using System;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NullDesk.Extensions.Mailer.Core;
-using SendGrid;
+using NullDesk.Extensions.Mailer.Core.History;
 
 namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
 {
@@ -12,6 +11,9 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
         public MailerFactory Mail { get; } = new MailerFactory();
 
         public MailerFactory TemplateMail { get; } = new MailerFactory();
+
+        public IHistoryStore Store { get; set; } = new MemoryHistoryStore();
+
 
         public FactoryMailFixture()
         {
@@ -26,11 +28,11 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
             var client = new FakeClient("abc");
 
 
-            Mail.AddSendGridMailer(client, sendGridSettings, logger);
-            Mail.AddSendGridSimpleMailer(client, sendGridSettings, simpleLogger);
+            Mail.AddSendGridMailer(client, sendGridSettings, logger, Store);
+            Mail.AddSendGridSimpleMailer(client, sendGridSettings, simpleLogger, Store);
 
             //only has template mailer, but still should be able to complete all tasks for simple mail
-            TemplateMail.AddSendGridMailer(client, sendGridSettings, logger);
+            TemplateMail.AddSendGridMailer(client, sendGridSettings, logger, Store);
 
         }
 

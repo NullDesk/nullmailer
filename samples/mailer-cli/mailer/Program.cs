@@ -1,11 +1,6 @@
 ﻿using Microsoft.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using NullDesk.Cli;
-using NullDesk.Extensions.Mailer.Core;
 using Sample.Mailer.Cli.Commands;
 
 namespace Sample.Mailer.Cli

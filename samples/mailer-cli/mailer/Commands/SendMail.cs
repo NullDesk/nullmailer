@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.CommandLineUtils;
-using NullDesk.Extensions.Mailer.Core;
 
 namespace Sample.Mailer.Cli.Commands
 {
