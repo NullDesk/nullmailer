@@ -1,12 +1,9 @@
 ﻿using Microsoft.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using NullDesk.Cli;
-using NullDesk.Extensions.Mailer.Core;
+using Microsoft.Extensions.Options;
 using Sample.Mailer.Cli.Commands;
+using Sample.Mailer.Cli.Configuration;
 
 namespace Sample.Mailer.Cli
 {
@@ -38,6 +35,11 @@ namespace Sample.Mailer.Cli
 
             app.ConfigureCliCommand<SendMail>();
 
+            var historySettings = ServiceProvider.GetService<IOptions<MailHistoryDbSettings>>();
+            if (historySettings.Value.EnableHistory)
+            {
+                app.ConfigureCliCommand<DropDb>();
+            }
             app.OnExecute(() =>
             {
                 app.ShowHelp();

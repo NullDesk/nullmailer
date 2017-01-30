@@ -8,7 +8,7 @@ namespace NullDesk.Extensions.Mailer.Core
     /// <summary>
     /// Factory class for obtaining mailer instances.
     /// </summary>
-    public class MailerFactory
+    public class MailerFactory : IMailerFactory
     {
         /// <summary>
         /// Gets a collection of registered mailer functions.
@@ -20,7 +20,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// Gets an instance of the first registered standard mailer.
         /// </summary>
         /// <value>The mailer.</value>
-        public virtual IStandardMailer Mailer
+        public virtual IStandardMailer StandardMailer
         {
             get
             {

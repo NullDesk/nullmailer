@@ -10,14 +10,21 @@ using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace NullDesk.Extensions.Mailer.SendGrid
 {
     /// <summary>
     /// Simplified email service for SendGrid. 
     /// </summary>
-    public class SendGridSimpleMailer : ISimpleMailer<SendGridMailerSettings>
+    public class SendGridSimpleMailer : ISimpleMailer<SendGridMailerSettings>, IHistoryMailer
     {
+
+        /// <summary>
+        /// Gets the history store.
+        /// </summary>
+        /// <value>The history store.</value>
+        public IHistoryStore HistoryStore { get; }
 
         /// <summary>
         /// Optional logger
@@ -47,14 +54,17 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="client">The SendGrid client instance</param>
         /// <param name="settings">The settings.</param>
         /// <param name="logger">Optional ILogger instance.</param>
+        /// <param name="historyStore">Optional history store provider.</param>
         public SendGridSimpleMailer(
-            Client client, 
-            IOptions<SendGridMailerSettings> settings, 
-            ILogger<SendGridSimpleMailer> logger = null)
+            Client client,
+            IOptions<SendGridMailerSettings> settings,
+            ILogger<SendGridSimpleMailer> logger = null,
+            IHistoryStore historyStore = null)
         {
             Settings = settings.Value;
             MailClient = client;
             Logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance as ILogger;
+            HistoryStore = historyStore ?? new NullHistoryStore();
         }
 
         /// <summary>
@@ -62,10 +72,12 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// </summary>
         /// <param name="settings">The settings.</param>
         /// <param name="logger">Optional ILogger instance.</param>
+        /// <param name="historyStore">Optional history store provider.</param>
         public SendGridSimpleMailer(
-            IOptions<SendGridMailerSettings> settings, 
-            ILogger<SendGridSimpleMailer> logger = null)
-        : this(new Client(settings.Value.ApiKey), settings, logger) { }
+            IOptions<SendGridMailerSettings> settings,
+            ILogger<SendGridSimpleMailer> logger = null,
+            IHistoryStore historyStore = null)
+        : this(new Client(settings.Value.ApiKey), settings, logger, historyStore) { }
 
         /// <summary>
         /// Send mail as an asynchronous operation.
@@ -76,9 +88,9 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="htmlBody">The HTML body.</param>
         /// <param name="textBody">The text body.</param>
         /// <param name="token">The cancellation token.</param>
-        /// <returns>Task&lt;System.Boolean&gt;.</returns>
+        /// <returns>Task&lt;MessageDeliveryItem&gt;.</returns>
         /// <exception cref="ArgumentException"></exception>
-        public virtual async Task<bool> SendMailAsync(
+        public virtual async Task<MessageDeliveryItem> SendMailAsync(
             string toEmailAddress,
             string toDisplayName,
             string subject,
@@ -97,7 +109,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         }
 
         /// <summary>
-        /// /// Send mail as an asynchronous operation.
+        /// Send mail as an asynchronous operation.
         /// </summary>
         /// <param name="toEmailAddress">To email address.</param>
         /// <param name="toDisplayName">To display name.</param>
@@ -106,9 +118,8 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="textBody">The text body.</param>
         /// <param name="attachmentFiles">The full path to any attachment files to include in the message.</param>
         /// <param name="token">The cancellation token.</param>
-        /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public virtual async Task<bool> SendMailAsync(
+        /// <returns>Task&lt;MessageDeliveryItem&gt;.</returns>
+        public virtual async Task<MessageDeliveryItem> SendMailAsync(
             string toEmailAddress,
             string toDisplayName,
             string subject,
@@ -132,9 +143,8 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="textBody">The text body.</param>
         /// <param name="attachments">A dictionary of attachments as streams</param>
         /// <param name="token">The token.</param>
-        /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public virtual async Task<bool> SendMailAsync(
+        /// <returns>Task&lt;MessageDeliveryItem&gt;.</returns>
+        public virtual async Task<MessageDeliveryItem> SendMailAsync(
             string toEmailAddress,
             string toDisplayName,
             string subject,
@@ -162,12 +172,13 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// </summary>
         /// <param name="mail">The mail object to sendx</param>
         /// <param name="token">The token.</param>
-        /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public virtual async Task<bool> SendMailAsync(
+        /// <returns>Task&lt;MessageDeliveryItem&gt;.</returns>
+        public virtual async Task<MessageDeliveryItem> SendMailAsync(
             Mail mail,
             CancellationToken token)
         {
+            var historyItem = new MessageDeliveryItem();
+
             mail.MailSettings = new MailSettings()
             {
                 SandboxMode = new SandboxMode()
@@ -175,14 +186,86 @@ namespace NullDesk.Extensions.Mailer.SendGrid
                     Enable = Settings.IsSandboxMode
                 }
             };
-            var message = mail.Get();
-            var response = await MailClient.RequestAsync(
+
+            historyItem.DeliveryProvider = GetType().Name;
+            historyItem.CreatedDate = DateTimeOffset.Now;
+            historyItem.Subject = string.IsNullOrEmpty(mail.Subject)
+                ? mail.Personalization.FirstOrDefault()?.Subject
+                : mail.Subject;
+            historyItem.ToDisplayName = mail.Personalization.FirstOrDefault()?.Tos.FirstOrDefault()?.Name;
+            historyItem.ToEmailAddress = mail.Personalization.FirstOrDefault()?.Tos.FirstOrDefault()?.Address;
+            
+            try
+            {
+                var message = mail.Get();
+                historyItem.MessageData = message;
+                var response = await SendToApiAsync(message);
+                historyItem.IsSuccess = response.StatusCode == HttpStatusCode.Accepted ||
+                                        (Settings.IsSandboxMode && response.StatusCode == HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+            {
+                historyItem.ExceptionMessage = ex.Message;
+                Logger.LogError(1, ex, ex.Message);
+            }
+            finally
+            {
+                await HistoryStore.AddAsync(historyItem, token);
+            }
+                                                                  
+            return historyItem;
+        }
+
+        /// <summary>
+        /// ReSends the message from the stored history data.
+        /// </summary>
+        /// <param name="id">The identifier for the message being resent.</param>
+        /// <param name="historyData">The history data.</param>
+        /// <param name="token">The token.</param>
+        /// <returns>Task&lt;System.Boolean&gt;.</returns>
+        public virtual async Task<bool> ReSend(Guid id, string historyData, CancellationToken token)
+        {
+            var isSuccess = false;
+            var mail = JsonConvert.DeserializeObject<Mail>(historyData,
+                new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    DefaultValueHandling = DefaultValueHandling.Include,
+                    StringEscapeHandling = StringEscapeHandling.EscapeHtml
+                });
+            var subject = string.IsNullOrEmpty(mail.Subject)
+                ? mail.Personalization.FirstOrDefault()?.Subject
+                : mail.Subject;
+            var toDisplay = mail.Personalization.FirstOrDefault()?.Tos.FirstOrDefault()?.Name;
+            var to = mail.Personalization.FirstOrDefault()?.Tos.FirstOrDefault()?.Address;
+              
+            Logger.LogInformation("Attempting to resend message {id} to {toDisplay}<{to}> about {subject}", id, toDisplay, to, subject);
+
+            try
+            {
+                var response = await SendToApiAsync(historyData);
+                isSuccess = response.StatusCode == HttpStatusCode.Accepted ||
+                                        (Settings.IsSandboxMode && response.StatusCode == HttpStatusCode.OK); ;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(1, ex, "Failed resending message {id} with exception {ex.Message}", id, ex.Message);
+            }
+
+            return isSuccess;
+        }
+
+        /// <summary>
+        /// Sends the message through the SendGrid API.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <returns>Task&lt;Response&gt;.</returns>
+        protected virtual async Task<Response> SendToApiAsync(string message)
+        {
+            return await MailClient.RequestAsync(
                 Client.Methods.POST,
                 message,
                 urlPath: "mail/send");
-            //TODO: Log status                                                          
-            return response.StatusCode == HttpStatusCode.Accepted || (Settings.IsSandboxMode && response.StatusCode == HttpStatusCode.OK);
-
         }
 
         /// <summary>

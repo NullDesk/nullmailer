@@ -1,33 +1,30 @@
-﻿using System;
+using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NullDesk.Extensions.Mailer.Core;
-using SendGrid;
 
-namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
+namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests.Infrastructure
 {
-
-    public class TemplateMailFixture : IDisposable
+    public class MemoryEfFixture : IDisposable
     {
         public IServiceProvider ServiceProvider { get; set; }
 
-        public TemplateMailFixture()
+        public MemoryEfFixture()
         {
 
             //setup the dependency injection service
             var services = new ServiceCollection();
             services.AddLogging();
-
             services.AddOptions();
 
-            services.Configure<SendGridMailerSettings>(s => s.ApiKey = "abc");
-            services.AddTransient<Client>(s => new FakeClient("abc"));
-            services.AddTransient<SendGridMailer>();
-            services.AddTransient<IStandardMailer>(s => s.GetService<SendGridMailer>());
-
+            var builder = new DbContextOptionsBuilder<TestHistoryContext>().UseInMemoryDatabase("TestHistoryDb");
+            services.AddSingleton<DbContextOptions>(s => builder.Options);
+            services.AddSingleton<IHistoryStore, EntityHistoryStore<TestHistoryContext>>();
+            services.AddTransient<ISimpleMailer, NullSimpleMailer>();
 
             ServiceProvider = services.BuildServiceProvider();
-
+            
             var logging = ServiceProvider.GetService<ILoggerFactory>();
             logging.AddDebug(LogLevel.Debug);
         }

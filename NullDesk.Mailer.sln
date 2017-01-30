@@ -37,6 +37,14 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "mailer", "samples\mailer-cl
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mailer-cli", "mailer-cli", "{FB0C79F6-C14B-44A5-8A5D-5C76C9998992}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NullDesk.Extensions.Mailer.History.EntityFramework", "src\NullDesk.Extensions.Mailer.History.EntityFramework\NullDesk.Extensions.Mailer.History.EntityFramework.xproj", "{91BC9376-2FF0-4F63-BD7B-88B8DC684B53}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer", "src\NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer\NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.xproj", "{237D2587-C8FF-43CC-AD59-8507C01658FA}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests", "test\NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests\NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.xproj", "{50EC513A-2AD6-4163-B464-4709F7C822F3}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NullDesk.Extensions.Mailer.History.EntityFramework.Tests", "test\NullDesk.Extensions.Mailer.History.EntityFramework.Tests\NullDesk.Extensions.Mailer.History.EntityFramework.Tests.xproj", "{C32FDEEE-D75A-40D5-A0F3-1656B95CDFC4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +79,22 @@ Global
 		{ECDB4144-AD8F-48A2-B674-6F358D8A3047}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECDB4144-AD8F-48A2-B674-6F358D8A3047}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ECDB4144-AD8F-48A2-B674-6F358D8A3047}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91BC9376-2FF0-4F63-BD7B-88B8DC684B53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91BC9376-2FF0-4F63-BD7B-88B8DC684B53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91BC9376-2FF0-4F63-BD7B-88B8DC684B53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91BC9376-2FF0-4F63-BD7B-88B8DC684B53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{237D2587-C8FF-43CC-AD59-8507C01658FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{237D2587-C8FF-43CC-AD59-8507C01658FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{237D2587-C8FF-43CC-AD59-8507C01658FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{237D2587-C8FF-43CC-AD59-8507C01658FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50EC513A-2AD6-4163-B464-4709F7C822F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50EC513A-2AD6-4163-B464-4709F7C822F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50EC513A-2AD6-4163-B464-4709F7C822F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50EC513A-2AD6-4163-B464-4709F7C822F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C32FDEEE-D75A-40D5-A0F3-1656B95CDFC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C32FDEEE-D75A-40D5-A0F3-1656B95CDFC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C32FDEEE-D75A-40D5-A0F3-1656B95CDFC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C32FDEEE-D75A-40D5-A0F3-1656B95CDFC4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,5 +108,9 @@ Global
 		{FB824A9F-2BAA-49CB-9114-5F3CE639CC25} = {18D6B9AA-C6A4-43C3-B530-CD5839147452}
 		{ECDB4144-AD8F-48A2-B674-6F358D8A3047} = {FB0C79F6-C14B-44A5-8A5D-5C76C9998992}
 		{FB0C79F6-C14B-44A5-8A5D-5C76C9998992} = {B8C11E70-753A-4E23-BC91-DBDCD2C8B3E6}
+		{91BC9376-2FF0-4F63-BD7B-88B8DC684B53} = {A7F6046E-2F93-4D8E-94A3-56D0027C0D8F}
+		{237D2587-C8FF-43CC-AD59-8507C01658FA} = {A7F6046E-2F93-4D8E-94A3-56D0027C0D8F}
+		{50EC513A-2AD6-4163-B464-4709F7C822F3} = {18D6B9AA-C6A4-43C3-B530-CD5839147452}
+		{C32FDEEE-D75A-40D5-A0F3-1656B95CDFC4} = {18D6B9AA-C6A4-43C3-B530-CD5839147452}
 	EndGlobalSection
 EndGlobal

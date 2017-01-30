@@ -1,0 +1,42 @@
+﻿{
+  "dependencies": {
+    "Microsoft.EntityFrameworkCore": "1.1.0",
+    "Microsoft.Extensions.Logging.Abstractions": "1.1.0",
+    "Microsoft.Extensions.Options": "1.1.0",
+    "NullDesk.Extensions.Mailer.Core": "2.*",
+    "System.Reflection.Extensions": "4.3.0"
+  },
+
+  "frameworks": {
+    "netstandard1.3": {}
+  },
+  "buildOptions": {
+    "xmlDoc": true,
+    "debugType": "portable"
+  },
+  "authors": [
+    "Stephen M. Redd"
+  ],
+  "description": "NullDesk Mailer Extensions base implementation of messsage and delivery history storage with EntityFramework Core.",
+
+  "packOptions": {
+    "packageType": "Dependency",
+    "summary": "NullDesk base implementaion of email message and delivery history using EntityFramework Core",
+    "projectUrl": "https://github.com/NullDesk/NullMailer",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/NullDesk/NullMailer"
+    },
+    "licenseUrl": "https://raw.githubusercontent.com/NullDesk/NullMailer/master/LICENSE",
+    "owners": [
+      "Stephen M. Redd",
+      "NullDesk Solutions"
+    ],
+    "tags": [
+      "email",
+      "nulldesk",
+      "entityframework"
+    ]
+  },
+  "version": "2.0.0-*"
+}

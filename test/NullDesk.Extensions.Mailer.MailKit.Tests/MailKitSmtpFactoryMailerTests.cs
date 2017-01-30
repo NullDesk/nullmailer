@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure;
 using NullDesk.Extensions.Mailer.Tests.Common;
 using Xunit;
@@ -21,13 +22,15 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
             Fixture = fixture;
         }
 
+       
+
         [Theory]
         [Trait("TestType", "Unit")]
         [ClassData(typeof(TemplateMailerTestData))]
         public async Task SendMailWithTemplate(string template, string[] attachments)
         {
 
-            var mailer = Fixture.Mail.Mailer;
+            var mailer = Fixture.Mail.StandardMailer;
             mailer.Should().BeOfType<MkSmtpMailer>();
             var result =
                 await
@@ -40,7 +43,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
                         attachments,
                         CancellationToken.None);
 
-            result.Should().BeTrue();
+            result.Should().BeOfType<MessageDeliveryItem>().Which.IsSuccess.Should().BeTrue();
         }
 
         [Theory]
@@ -63,7 +66,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
                         attachments,
                         CancellationToken.None
                     );
-            result.Should().BeTrue();
+            result.Should().BeOfType<MessageDeliveryItem>().Which.IsSuccess.Should().BeTrue();
         }
 
         [Theory]
@@ -73,7 +76,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
         {
             //this mailer should only have one registered mailer, and it's a template mailer
             var mailer = Fixture.TemplateMail.SimpleMailer;
-            
+
             //check that we got the fallback template mailer anyway
             mailer.Should().BeOfType<MkSmtpMailer>();
             mailer.Should().NotBeOfType<MkSimpleSmtpMailer>();
@@ -88,7 +91,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
                         attachments,
                         CancellationToken.None
                     );
-            result.Should().BeTrue();
+            result.Should().BeOfType<MessageDeliveryItem>().Which.IsSuccess.Should().BeTrue();
         }
     }
 }

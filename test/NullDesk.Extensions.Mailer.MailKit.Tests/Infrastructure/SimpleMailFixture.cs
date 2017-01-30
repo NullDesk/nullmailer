@@ -11,38 +11,39 @@ using NullDesk.Extensions.Mailer.Core;
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 {
-    public class TemplateMailFixture : MailFixture, IDisposable
+    public class SimpleMailFixture : MailFixture, IDisposable
     {
         public IServiceProvider ServiceProvider { get; set; }
 
-        public TemplateMailFixture()
+        public SimpleMailFixture()
         {
-            //setup the dependency injection service
             var services = new ServiceCollection();
             services.AddLogging();
 
             services.AddOptions();
+           
+            services.AddSingleton<IHistoryStore, InMemoryHistoryStore>();
 
             var isMailServerAlive = false;
             var lazy = new Lazy<OptionsWrapper<MkSmtpMailerSettings>>(() => SetupMailerOptions(out isMailServerAlive));
-
-            services.AddTransient<IStandardMailer>(s =>
+            services.AddTransient<ISimpleMailer>(s =>
             {
                 var options = lazy.Value;
                 var client = Substitute.For<SmtpClient>();
                 client
-                    .SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>())
-                    .Returns(Task.CompletedTask);
+                  .SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>())
+                  .Returns(Task.CompletedTask);
                 return (isMailServerAlive)
-                    ? new MkSmtpMailer(options, s.GetService<ILogger<MkSmtpMailer>>())
-                    : new MkSmtpMailer(client, options, s.GetService<ILogger<MkSmtpMailer>>());
+                    ? new MkSimpleSmtpMailer(options, s.GetService<ILogger<MkSimpleSmtpMailer>>(), s.GetService<IHistoryStore>() )
+                    : new MkSimpleSmtpMailer(client, options, s.GetService<ILogger<MkSimpleSmtpMailer>>(), s.GetService<IHistoryStore>());
             });
-
-
+            
             ServiceProvider = services.BuildServiceProvider();
+            
             var logging = ServiceProvider.GetService<ILoggerFactory>();
             logging.AddDebug(LogLevel.Debug);
         }
+
         public void Dispose() { }
     }
 }

@@ -24,7 +24,8 @@
     },
     "Newtonsoft.Json": "9.0.1",
     "NullDesk.Extensions.Mailer.MailKit": "2.*",
-    "NullDesk.Extensions.Mailer.SendGrid": "2.*" 
+    "NullDesk.Extensions.Mailer.SendGrid": "2.*",
+    "NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer": "2.*"
   },
 
   "frameworks": {

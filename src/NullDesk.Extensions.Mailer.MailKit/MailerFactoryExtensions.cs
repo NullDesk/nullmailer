@@ -17,15 +17,18 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="factory">The factory.</param>
         /// <param name="settings">The mailer settings.</param>
         /// <param name="logger">The logger.</param>
+        /// <param name="store">The history store.</param>
         public static void AddMkSimpleSmtpMailer(
             this MailerFactory factory,
             MkSmtpMailerSettings settings,
-            ILogger<MkSimpleSmtpMailer> logger = null)
+            ILogger<MkSimpleSmtpMailer> logger = null,
+            IHistoryStore store = null)
         {
             factory.Register(() =>
                 new MkSimpleSmtpMailer(
                     new OptionsWrapper<MkSmtpMailerSettings>(settings),
-                    logger));
+                    logger,
+                    store));
         }
 
         /// <summary>
@@ -35,17 +38,20 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="client">The SMTP client.</param>
         /// <param name="settings">The mailer settings.</param>
         /// <param name="logger">The logger.</param>
+        /// <param name="store">The history store.</param>
         public static void AddMkSimpleSmtpMailer(
             this MailerFactory factory,
             SmtpClient client,
             MkSmtpMailerSettings settings,
-            ILogger<MkSimpleSmtpMailer> logger = null)
+            ILogger<MkSimpleSmtpMailer> logger = null,
+            IHistoryStore store = null)
         {
             factory.Register(() =>
                 new MkSimpleSmtpMailer(
                     client,
                     new OptionsWrapper<MkSmtpMailerSettings>(settings),
-                    logger));
+                    logger,
+                    store));
         }
 
         /// <summary>
@@ -54,15 +60,18 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="factory">The factory.</param>
         /// <param name="mailerSettings">The mailer settings.</param>
         /// <param name="logger">The logger.</param>
+        /// <param name="store">The history store.</param>
         public static void AddMkSmtpMailer(
             this MailerFactory factory,
             MkSmtpMailerSettings mailerSettings,
-            ILogger<MkSmtpMailer> logger = null)
+            ILogger<MkSmtpMailer> logger = null, 
+            IHistoryStore store = null)
         {
             factory.Register(() =>
                 new MkSmtpMailer(
                     new OptionsWrapper<MkSmtpMailerSettings>(mailerSettings),
-                    logger));
+                    logger, 
+                    store));
         }
 
         /// <summary>
@@ -72,17 +81,20 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="client">The SMTP client.</param>
         /// <param name="mailerSettings">The mailer settings.</param>
         /// <param name="logger">The logger.</param>
+        /// <param name="store">The history store.</param>
         public static void AddMkSmtpMailer(
             this MailerFactory factory,
             SmtpClient client,
             MkSmtpMailerSettings mailerSettings,
-            ILogger<MkSmtpMailer> logger = null)
+            ILogger<MkSmtpMailer> logger = null,
+            IHistoryStore store = null)
         {
             factory.Register(() =>
                 new MkSmtpMailer(
                     client,
                     new OptionsWrapper<MkSmtpMailerSettings>(mailerSettings),
-                    logger));
+                    logger,
+                    store));
 
         }
     }

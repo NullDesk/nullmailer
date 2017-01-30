@@ -17,11 +17,17 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="factory">The factory.</param>
         /// <param name="settings">The mailer settings.</param>
         /// <param name="logger">The logger.</param>
-        public static void AddSendGridSimpleMailer(this MailerFactory factory, SendGridMailerSettings settings, ILogger<SendGridSimpleMailer> logger = null)
+        /// <param name="store">The history store.</param>
+        public static void AddSendGridSimpleMailer(
+            this MailerFactory factory, 
+            SendGridMailerSettings settings, 
+            ILogger<SendGridSimpleMailer> logger = null,
+            IHistoryStore store = null)
         {
             factory.Register(() => new SendGridSimpleMailer(
                 new OptionsWrapper<SendGridMailerSettings>(settings),
-                logger));
+                logger,
+                store));
         }
 
         /// <summary>
@@ -31,12 +37,19 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="client">The client.</param>
         /// <param name="settings">The mailer settings.</param>
         /// <param name="logger">The logger.</param>
-        public static void AddSendGridSimpleMailer(this MailerFactory factory, Client client, SendGridMailerSettings settings, ILogger<SendGridSimpleMailer> logger = null)
+        /// <param name="store">The history store.</param>
+        public static void AddSendGridSimpleMailer(
+            this MailerFactory factory, 
+            Client client, 
+            SendGridMailerSettings settings, 
+            ILogger<SendGridSimpleMailer> logger = null,
+            IHistoryStore store = null)
         {
             factory.Register(() => new SendGridSimpleMailer(
                 client,
                 new OptionsWrapper<SendGridMailerSettings>(settings),
-                logger));
+                logger,
+                store));
         }
 
         /// <summary>
@@ -45,11 +58,17 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="factory">The factory.</param>
         /// <param name="settings">The mailer settings.</param>
         /// <param name="logger">The logger.</param>
-        public static void AddSendGridMailer(this MailerFactory factory, SendGridMailerSettings settings, ILogger<SendGridMailer> logger = null)
+        /// <param name="store">The history store.</param>
+        public static void AddSendGridMailer(
+            this MailerFactory factory, 
+            SendGridMailerSettings settings, 
+            ILogger<SendGridMailer> logger = null,
+            IHistoryStore store = null)
         {
             factory.Register(() => new SendGridMailer(
                 new OptionsWrapper<SendGridMailerSettings>(settings),
-                logger));
+                logger,
+                store));
         }
 
         /// <summary>
@@ -59,15 +78,19 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="client">The sendgrid client.</param>
         /// <param name="settings">The mailer settings.</param>
         /// <param name="logger">The logger.</param>
-        public static void AddSendGridMailer(this MailerFactory factory, 
+        /// <param name="store">The history store.</param>
+        public static void AddSendGridMailer(
+            this MailerFactory factory, 
             Client client,
             SendGridMailerSettings settings, 
-            ILogger<SendGridMailer> logger = null)
+            ILogger<SendGridMailer> logger = null,
+            IHistoryStore store = null)
         {
             factory.Register(() => new SendGridMailer(
                 client,
                 new OptionsWrapper<SendGridMailerSettings>(settings),
-                logger));
+                logger,
+                store));
         }
     }
 }
