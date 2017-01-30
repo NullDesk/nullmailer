@@ -44,11 +44,11 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// <param name="id">The identifier.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
-        public Task<MessageDeliveryItem> GetAsync(Guid id, CancellationToken token)
+        public async Task<MessageDeliveryItem> GetAsync(Guid id, CancellationToken token)
         {
             using (var context = (TContext)Activator.CreateInstance(typeof(TContext), DbOptions))
             {
-                return context.FindAsync<MessageDeliveryItem>(new object[] { id }, token);
+                return await context.FindAsync<MessageDeliveryItem>(new object[] { id }, token);
             }
         }
     }

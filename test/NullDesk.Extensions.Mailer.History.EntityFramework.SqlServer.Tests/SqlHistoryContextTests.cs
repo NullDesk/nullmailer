@@ -1,31 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NullDesk.Extensions.Mailer.Core;
-using NullDesk.Extensions.Mailer.History.EntityFramework.Tests.Infrastructure;
-using NullDesk.Extensions.Mailer.Tests.Common;
+using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Infrastructure;
 using Xunit;
+using NullDesk.Extensions.Mailer.Tests.Common;
+using FluentAssertions;
 
-namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests
+namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
 {
-    public class HistoryContextTests : IClassFixture<MemoryEfFixture>
+    public class SqlHistoryContextTests : IClassFixture<SqlIntegrationFixture>
     {
         private const string Subject = "xunit Test run: no template - history";
 
-        private MemoryEfFixture Fixture { get; }
+        private SqlIntegrationFixture Fixture { get; }
 
-        public HistoryContextTests(MemoryEfFixture fixture)
+        public SqlHistoryContextTests(SqlIntegrationFixture fixture)
         {
             Fixture = fixture;
         }
 
         [Theory]
-        [Trait("TestType", "Unit")]
+        [Trait("TestType", "Integration")]
         [ClassData(typeof(StandardMailerTestData))]
         public async Task SendMailWithHistory(string html, string text, string[] attachments)
         {
@@ -45,7 +41,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests
 
             var store = Fixture.ServiceProvider.GetService<IHistoryStore>();
 
-            store.Should().BeOfType<EntityHistoryStore<TestHistoryContext>>();
+            store.Should().BeOfType<EntityHistoryStore<SqlHistoryContext>>();
 
             var item = await store.GetAsync(result.Id, CancellationToken.None);
 

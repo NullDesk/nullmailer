@@ -6,11 +6,11 @@ using NullDesk.Extensions.Mailer.Core;
 
 namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests.Infrastructure
 {
-    public class NullMailMemoryEfFixture : IDisposable
+    public class MemoryEfFixture : IDisposable
     {
         public IServiceProvider ServiceProvider { get; set; }
 
-        public NullMailMemoryEfFixture()
+        public MemoryEfFixture()
         {
 
             //setup the dependency injection service

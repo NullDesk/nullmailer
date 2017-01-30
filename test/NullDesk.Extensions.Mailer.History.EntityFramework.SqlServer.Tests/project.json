@@ -22,6 +22,7 @@
     },
     "NSubstitute": "2.0.1-rc",
     "NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer": "2.*",
+    "NullDesk.Extensions.Mailer.Tests.Common": "1.*",
     "System.Net.Sockets": "4.3.0",
     "xunit": "2.2.0-beta4-build3444"
   },

@@ -54,7 +54,7 @@ namespace NullDesk.Extensions.Mailer.Core
                 ToDisplayName = toDisplayName,
                 ToEmailAddress = toEmailAddress,
             };
-            HistoryStore.AddAsync(hi, token).Wait();
+            HistoryStore.AddAsync(hi, token).Wait(token);
             return Task.FromResult(hi);
         }
         /// <summary>
