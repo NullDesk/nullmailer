@@ -36,6 +36,7 @@ Email extension service packages for quickly integrating common mail scenarios i
 - Use with or without DI frameworks 
 - Sample applications demonstrating common integration scenarios
 - Editor support for Visual Studio Code or Visual Studio 2015
+- Store message and delivery history
 
 ## **WARNING:** SendGrid Beta Package
 
