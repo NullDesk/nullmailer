@@ -209,6 +209,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
                 using (var ms = new MemoryStream())
                 {
                     message.WriteTo(FormatOptions.Default, ms, token);
+                    ms.Position = 0;
                     var sr = new StreamReader(ms);
                     var mData = await sr.ReadToEndAsync();
                     historyItem.MessageData = mData;
