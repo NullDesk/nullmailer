@@ -49,7 +49,9 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests
 
             var item = await store.GetAsync(result.Id, CancellationToken.None);
 
-            item.Should().NotBeNull().And.BeOfType<MessageDeliveryItem>().Which.Subject.Should().Be(Subject);
+            var m = item.Should().NotBeNull().And.BeOfType<MessageDeliveryItem>().Which;
+            m.Subject.Should().Be(Subject);
+            m.MessageData.Should().NotBeNullOrEmpty();
         }
     }
 }

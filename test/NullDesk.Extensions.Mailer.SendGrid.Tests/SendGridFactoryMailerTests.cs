@@ -41,7 +41,9 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
                         attachments,
                         CancellationToken.None);
 
-            result.Should().BeOfType<MessageDeliveryItem>().Which.IsSuccess.Should().BeTrue();
+            var m = result.Should().NotBeNull().And.BeOfType<MessageDeliveryItem>().Which;
+            m.IsSuccess.Should().BeTrue();
+            m.MessageData.Should().NotBeNullOrEmpty();
         }
 
         [Theory]
@@ -64,7 +66,9 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
                         attachments,
                         CancellationToken.None
                     );
-            result.Should().BeOfType<MessageDeliveryItem>().Which.IsSuccess.Should().BeTrue();
+            var m = result.Should().NotBeNull().And.BeOfType<MessageDeliveryItem>().Which;
+            m.IsSuccess.Should().BeTrue();
+            m.MessageData.Should().NotBeNullOrEmpty();
         }
 
         [Theory]
@@ -74,7 +78,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
         {
             //this mailer should only have one registered mailer, and it's a template mailer
             var mailer = Fixture.TemplateMail.SimpleMailer;
-            
+
             //check that we got the fallback template mailer anyway
             mailer.Should().BeOfType<SendGridMailer>();
             mailer.Should().NotBeOfType<SendGridSimpleMailer>();
@@ -89,7 +93,9 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
                         attachments,
                         CancellationToken.None
                     );
-            result.Should().BeOfType<MessageDeliveryItem>().Which.IsSuccess.Should().BeTrue();
+            var m = result.Should().NotBeNull().And.BeOfType<MessageDeliveryItem>().Which;
+            m.IsSuccess.Should().BeTrue();
+            m.MessageData.Should().NotBeNullOrEmpty();
         }
     }
 }

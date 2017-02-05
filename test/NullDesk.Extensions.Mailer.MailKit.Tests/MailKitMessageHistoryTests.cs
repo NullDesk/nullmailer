@@ -41,7 +41,9 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
                     );
             result.Should().BeOfType<MessageDeliveryItem>();
             var history = await Fixture.Store.GetAsync(result.Id, CancellationToken.None);
-            history.Should().NotBeNull().And.BeOfType<MessageDeliveryItem>().Which.Subject.Should().Be(Subject);
+            var m = history.Should().NotBeNull().And.BeOfType<MessageDeliveryItem>().Which;
+            m.IsSuccess.Should().BeTrue();
+            m.MessageData.Should().NotBeNullOrEmpty();
         }
     }
 }

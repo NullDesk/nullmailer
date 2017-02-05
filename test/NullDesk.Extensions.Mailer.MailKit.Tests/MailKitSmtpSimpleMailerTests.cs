@@ -36,6 +36,9 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
                         CancellationToken.None
                     );
             result.Should().BeOfType<MessageDeliveryItem>().Which.IsSuccess.Should().BeTrue();
+            var m = result.Should().NotBeNull().And.BeOfType<MessageDeliveryItem>().Which;
+            m.IsSuccess.Should().BeTrue();
+            m.MessageData.Should().NotBeNullOrEmpty();
         }
     }
 }
