@@ -12,9 +12,9 @@ namespace NullDesk.Extensions.Mailer.Tests.Common
         private readonly List<object[]> _data = new List<object[]>
         {
             new object[] { HtmlBody, TextBody, new string[] { } },
-            new object[] { HtmlBody, TextBody, new[] { "../TestData/attachments/testFile.1.txt" } },
-            new object[] { HtmlBody, TextBody, new[] { "../TestData/attachments/testFile.1.txt", "../TestData/attachments/testFile.2.txt" }},
-            new object[] { null, TextBody, new[] { "../TestData/attachments/testFile.1.txt" }},
+            new object[] { HtmlBody, TextBody, new[] { @"..\..\..\..\TestData\attachments\testFile.1.txt" } },
+            new object[] { HtmlBody, TextBody, new[] { @"..\..\..\..\TestData\attachments\testFile.1.txt", @"..\..\..\..\TestData\attachments\testFile.2.txt" } },
+            new object[] { null, TextBody, new[] { @"..\..\..\..\TestData\attachments\testFile.1.txt" } },
             new object[] { HtmlBody, null, null }
         };
 

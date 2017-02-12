@@ -1,4 +1,6 @@
-﻿using System.Net.Sockets;
+﻿using System;
+using System.IO;
+using System.Net.Sockets;
 using Microsoft.Extensions.Options;
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
@@ -17,7 +19,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                     SmtpUseSsl = false,
                     TemplateSettings = new MkFileTemplateSettings()
                     {
-                        TemplatePath = "../TestData/templates"
+                        TemplatePath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,@"..\..\..\..\TestData\templates"))
                     }
                 });
 

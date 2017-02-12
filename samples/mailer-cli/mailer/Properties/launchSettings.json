@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "mailer": {
-      "commandName": "Project",
-      "commandLineArgs": "send simple"
-    }
-  }
-}

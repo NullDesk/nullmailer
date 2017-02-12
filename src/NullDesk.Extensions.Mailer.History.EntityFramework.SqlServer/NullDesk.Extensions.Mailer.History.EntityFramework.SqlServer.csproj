@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Description>NullDesk Mailer Extension for SQL Server email messsage and delivery history storage using EntityFramework Core</Description>
+        <VersionPrefix>2.1.0</VersionPrefix>
+        <Authors>Stephen M. Redd</Authors>
+        <TargetFramework>netstandard1.3</TargetFramework>
+        <DebugType>portable</DebugType>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <AssemblyName>NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer</AssemblyName>
+        <PackageId>NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer</PackageId>
+        <PackageTags>email;nulldesk;entityframework;sqlserver</PackageTags>
+        <PackageProjectUrl>https://github.com/NullDesk/NullMailer</PackageProjectUrl>
+        <PackageLicenseUrl>https://raw.githubusercontent.com/NullDesk/NullMailer/master/LICENSE</PackageLicenseUrl>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/NullDesk/NullMailer</RepositoryUrl>
+        <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+        <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+        <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+        <Copyright>Stephen M. Redd 2017</Copyright>
+        <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\NullDesk.Extensions.Mailer.History.EntityFramework\NullDesk.Extensions.Mailer.History.EntityFramework.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="1.1.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="1.0.0-msbuild3-final">
+            <PrivateAssets>All</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.0" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.0" />
+        <PackageReference Include="System.Reflection.Extensions" Version="4.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.1.0-preview4-final" />
+    </ItemGroup>
+
+</Project>

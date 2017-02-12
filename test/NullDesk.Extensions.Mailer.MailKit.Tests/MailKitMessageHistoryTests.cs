@@ -1,4 +1,7 @@
-﻿using System.Threading;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure;
 using NullDesk.Extensions.Mailer.Tests.Common;
@@ -25,6 +28,8 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
         [ClassData(typeof(StandardMailerTestData))]
         public async Task ReSendMail(string html, string text, string[] attachments)
         {
+            attachments = attachments?.Select(a => Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, a))).ToArray();
+
             var mailer = Fixture.Mail.SimpleMailer;
             mailer.Should().BeOfType<MkSimpleSmtpMailer>();
             mailer.Should().NotBeOfType<MkSmtpMailer>();
