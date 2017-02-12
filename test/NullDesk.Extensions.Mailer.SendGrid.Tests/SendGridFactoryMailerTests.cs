@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -27,6 +30,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
         [ClassData(typeof(TemplateMailerTestData))]
         public async Task SendMailWithTemplate(string template, string[] attachments)
         {
+            attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
 
             var mailer = Fixture.Mail.StandardMailer;
             mailer.Should().BeOfType<SendGridMailer>();
@@ -51,6 +55,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
         [ClassData(typeof(StandardMailerTestData))]
         public async Task SendMail(string html, string text, string[] attachments)
         {
+            attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
 
             var mailer = Fixture.Mail.SimpleMailer;
             mailer.Should().BeOfType<SendGridSimpleMailer>();
@@ -76,6 +81,8 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
         [ClassData(typeof(StandardMailerTestData))]
         public async Task SendMailWithSurrogateSimpleMailer(string html, string text, string[] attachments)
         {
+            attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
+
             //this mailer should only have one registered mailer, and it's a template mailer
             var mailer = Fixture.TemplateMail.SimpleMailer;
 

@@ -26,7 +26,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
             var logger = loggerFactory.CreateLogger<MkSmtpMailer>();
             var simpleLogger = loggerFactory.CreateLogger<MkSimpleSmtpMailer>();
 
-            var isMailServerAlive = false;
+            bool isMailServerAlive = false;
             var mkSettings = SetupMailerOptions(out isMailServerAlive).Value;
 
             var client = Substitute.For<SmtpClient>();

@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Provides common implementations for mailer testing </Description>
+    <Authors>Stephen M. Redd</Authors>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <AssemblyName>NullDesk.Extensions.Mailer.Tests.Common</AssemblyName>
+    <PackageId>NullDesk.Extensions.Mailer.Tests.Common</PackageId>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+      <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+
+  </PropertyGroup>
+
+</Project>

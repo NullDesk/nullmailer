@@ -1,4 +1,7 @@
-﻿using System.Threading;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
@@ -24,6 +27,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
         [ClassData(typeof(StandardMailerTestData))]
         public async Task SendMail(string html, string text, string[] attachments)
         {
+            attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
 
             var mailer = Fixture.ServiceProvider.GetService<ISimpleMailer>();
 

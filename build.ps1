@@ -1,3 +1,5 @@
+
+
 <#  
 .SYNOPSIS
     You can add this to you build script to ensure that psbuild is available before calling
@@ -71,6 +73,7 @@ EnsurePsbuildInstalled
 exec { & dotnet restore }
 
 $rootDir = Get-Location
+$distDir = Join-Path -Path $rootDir -ChildPath 'dist'
 $srcDir = Get-ChildItem ./src
 
 [object[]]$projectFolders = $NULL
@@ -82,8 +85,8 @@ if(!$config){
 
 # loop through projects and collect src and test project paths
 foreach ($folder in $srcDir) {
-    $p = Join-Path -Path $folder.FullName -ChildPath 'project.json';
-    # only src project folders -> folders with a project.json file 
+    $p = Join-Path -Path $folder.FullName -ChildPath '*.csproj';
+    # only src project folders -> folders with a csproj file 
     if (Test-Path $p -PathType Leaf) {
         $projectFolders += $folder.FullName
         # find the test project, if one exists, and run each
@@ -104,7 +107,7 @@ foreach($testFolder in $testFolders){
     Write-Output "testing : $testFolder"
     Write-Output "--------"
     Set-Location $testFolder
-    exec { & dotnet test --configuration $config -trait "TestType=Unit" }
+    exec { & dotnet test --configuration $config -- -trait "TestType=Unit" }
     Set-Location $rootDir
 }
 
@@ -115,11 +118,10 @@ foreach($srcFolder in $projectFolders){
     Write-Output "packing : $srcFolder"
     Write-Output "--------"
     if($isBeta){
-        exec { & dotnet pack $srcFolder -c $config -o .\dist --version-suffix=$revision }
+        exec { & dotnet pack $srcFolder -c $config -o $distDir --version-suffix=$revision --include-symbols }
     }
     else {
-        exec { & dotnet pack $srcFolder -c $config -o .\dist }
-
+        exec { & dotnet pack $srcFolder -c $config -o $distDir --include-symbols}
     }
 }
 

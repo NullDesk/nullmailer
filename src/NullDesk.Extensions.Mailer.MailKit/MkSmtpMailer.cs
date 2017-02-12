@@ -95,7 +95,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
             IEnumerable<string> attachmentFiles,
             CancellationToken token)
         {
-            var body = await GetBodyForTemplate(template, replacementVariables, attachmentFiles, token);
+            var body = await GetBodyForTemplateAsync(template, replacementVariables, attachmentFiles, token);
             subject = subject.TemplateReplace(replacementVariables);
             return await SendMailAsync(toEmailAddress, toDisplayName, subject, body, token);
         }
@@ -121,7 +121,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
             IDictionary<string, Stream> attachments,
             CancellationToken token)
         {
-            var body = await GetBodyForTemplate(template, replacementVariables, attachments, token);
+            var body = await GetBodyForTemplateAsync(template, replacementVariables, attachments, token);
             subject = subject.TemplateReplace(replacementVariables);
             return await SendMailAsync(toEmailAddress, toDisplayName, subject, body, token);
 
@@ -135,7 +135,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="attachmentFiles">The attachment files.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;MimeEntity&gt;.</returns>
-        protected virtual async Task<MimeEntity> GetBodyForTemplate(
+        protected virtual async Task<MimeEntity> GetBodyForTemplateAsync(
             string template,
             IDictionary<string, string> replacementVariables,
             IEnumerable<string> attachmentFiles,
@@ -143,7 +143,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         {
             var attachments = attachmentFiles.GetStreamsForFileNames(Logger);
 
-            return await GetBodyForTemplate(template, replacementVariables, attachments, token);
+            return await GetBodyForTemplateAsync(template, replacementVariables, attachments, token);
         }
 
 
@@ -155,7 +155,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="attachments">The attachments.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;MimeEntity&gt;.</returns>
-        protected virtual async Task<MimeEntity> GetBodyForTemplate(
+        protected virtual async Task<MimeEntity> GetBodyForTemplateAsync(
             string template,
             IDictionary<string, string> replacementVariables,
             IDictionary<string, Stream> attachments,
