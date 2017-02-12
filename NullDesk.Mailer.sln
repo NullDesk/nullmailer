@@ -13,12 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A7F6046E-2F9
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{18D6B9AA-C6A4-43C3-B530-CD5839147452}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "library", "library", "{29322684-5025-4129-A2BA-70EA61E41193}"
-	ProjectSection(SolutionItems) = preProject
-		library\SendGrid.9.0.0-beta-9.nupkg = library\SendGrid.9.0.0-beta-9.nupkg
-		library\SendGrid.9.0.0-beta-9.symbols.nupkg = library\SendGrid.9.0.0-beta-9.symbols.nupkg
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{B8C11E70-753A-4E23-BC91-DBDCD2C8B3E6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mailer-cli", "mailer-cli", "{FB0C79F6-C14B-44A5-8A5D-5C76C9998992}"
