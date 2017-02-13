@@ -18,13 +18,15 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <summary>
         /// Initializes a new instance of the <see cref="SendGridMailer" /> class.
         /// </summary>
+        /// <remarks>
+        /// This overload could be used by unit tests, but the sendgrid client doesn't lend well to testability as of beta 9.0.5.
+        /// </remarks>
         /// <param name="client">The SendGrid client instance</param>
         /// <param name="settings">The settings.</param>
         /// <param name="logger">Optional ILogger instance.</param>
         /// <param name="historyStore">Optional history store provider.</param>
-        /// <remarks>Overload used by unit tests</remarks>
         public SendGridMailer(
-            Client client,
+            SendGridClient client,
             IOptions<SendGridMailerSettings> settings,
             ILogger<SendGridMailer> logger = null,
             IHistoryStore historyStore = null) :
@@ -41,7 +43,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             IOptions<SendGridMailerSettings> settings,
             ILogger<SendGridMailer> logger = null,
             IHistoryStore historyStore = null) :
-        this(new Client(settings.Value.ApiKey), settings, logger, historyStore)
+        this(new SendGridClient(settings.Value.ApiKey), settings, logger, historyStore)
         { }
 
         /// <summary>
@@ -69,7 +71,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
                 toDisplayName,
                 subject,
                 replacementVariables,
-                new List<string>() { },
+                new List<string>(),
                 token
             );
         }
@@ -121,20 +123,24 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             IDictionary<string, Stream> attachments,
             CancellationToken token)
         {
-            var mfrom = new Email(Settings.FromEmailAddress, Settings.FromDisplayName);
-            var mto = new Email(toEmailAddress, toDisplayName);
+            var mfrom = new EmailAddress(Settings.FromEmailAddress, Settings.FromDisplayName);
+            var mto = new EmailAddress(toEmailAddress, toDisplayName);
 
-            var mail = new Mail
+            var mail = new SendGridMessage
             {
                 From = mfrom,
-                TemplateId = template
+                TemplateId = template,
+                Personalizations = new List<Personalization>()
+                {
+                    new Personalization
+                    {
+                        Tos = new List<EmailAddress> {mto},
+                        Subject = subject,
+                        Substitutions = new Dictionary<string, string>(replacementVariables)
+                    }
+                }
             };
-            mail.AddPersonalization(new Personalization
-            {
-                Tos = new List<Email> { mto },
-                Subject = subject,
-                Substitutions = new Dictionary<string, string>(replacementVariables)
-            });
+
 
             await AddAttachmentStreamsAsync(mail, attachments, token);
 

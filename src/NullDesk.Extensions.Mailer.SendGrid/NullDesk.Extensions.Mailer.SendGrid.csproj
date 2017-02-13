@@ -27,7 +27,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.0" />
-        <PackageReference Include="SendGrid" Version="9.0.0-beta-9" />
+        <PackageReference Include="SendGrid" Version="9.0.5-beta" />
     </ItemGroup>
 
 </Project>

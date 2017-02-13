@@ -27,7 +27,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
         [ClassData(typeof(StandardMailerTestData))]
         public async Task SendMail(string html, string text, string[] attachments)
         {
-            attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
+            attachments = attachments?.Select(a => Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, a))).ToArray();
 
             var mailer = Fixture.ServiceProvider.GetService<ISimpleMailer>();
 

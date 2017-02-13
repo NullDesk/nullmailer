@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure;
@@ -31,8 +32,8 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
             attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
 
             var mailer = Fixture.Mail.SimpleMailer;
-            mailer.Should().BeOfType<SendGridSimpleMailer>();
-            mailer.Should().NotBeOfType<SendGridMailer>();
+            mailer.GetType().GetTypeInfo().IsSubclassOf(typeof(SendGridSimpleMailer)).Should().BeTrue();
+
             var result =
                 await
                     mailer.SendMailAsync(
