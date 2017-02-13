@@ -37,7 +37,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// Gets or sets the mail client.
         /// </summary>
         /// <value>The mail client.</value>
-        public Client MailClient { get; set; }
+        public SendGridClient MailClient { get; set; }
 
         /// <summary>
         /// Settings for the mailer instance
@@ -49,14 +49,14 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// Initializes a new instance of the <see cref="SendGridSimpleMailer"/> class.
         /// </summary>
         /// <remarks>
-        /// Overload used by unit tests
+        /// This overload could be used by unit tests, but the sendgrid client doesn't lend well to testability as of beta 9.0.5.
         /// </remarks>
         /// <param name="client">The SendGrid client instance</param>
         /// <param name="settings">The settings.</param>
         /// <param name="logger">Optional ILogger instance.</param>
         /// <param name="historyStore">Optional history store provider.</param>
         public SendGridSimpleMailer(
-            Client client,
+            SendGridClient client,
             IOptions<SendGridMailerSettings> settings,
             ILogger<SendGridSimpleMailer> logger = null,
             IHistoryStore historyStore = null)
@@ -77,7 +77,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             IOptions<SendGridMailerSettings> settings,
             ILogger<SendGridSimpleMailer> logger = null,
             IHistoryStore historyStore = null)
-        : this(new Client(settings.Value.ApiKey), settings, logger, historyStore) { }
+        : this(new SendGridClient(settings.Value.ApiKey), settings, logger, historyStore) { }
 
         /// <summary>
         /// Send mail as an asynchronous operation.
@@ -153,13 +153,10 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             IDictionary<string, Stream> attachments,
             CancellationToken token)
         {
-            var from = new Email(Settings.FromEmailAddress, Settings.FromDisplayName);
-            var to = new Email(toEmailAddress, toDisplayName);
-            var textContent = new Content("text/plain", textBody);
-            var htmlContent = new Content("text/html", htmlBody);
+            var from = new EmailAddress(Settings.FromEmailAddress, Settings.FromDisplayName);
+            var to = new EmailAddress(toEmailAddress, toDisplayName);
 
-            var mail = new Mail(from, subject, to, textContent);
-            mail.AddContent(htmlContent);
+            var mail = MailHelper.CreateSingleEmail(from, to, subject, textBody, htmlBody);
 
             await AddAttachmentStreamsAsync(mail, attachments, token);
 
@@ -174,7 +171,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;MessageDeliveryItem&gt;.</returns>
         public virtual async Task<MessageDeliveryItem> SendMailAsync(
-            Mail mail,
+            SendGridMessage mail,
             CancellationToken token)
         {
             var historyItem = new MessageDeliveryItem();
@@ -190,16 +187,15 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             historyItem.DeliveryProvider = GetType().Name;
             historyItem.CreatedDate = DateTimeOffset.Now;
             historyItem.Subject = string.IsNullOrEmpty(mail.Subject)
-                ? mail.Personalization.FirstOrDefault()?.Subject
+                ? mail.Personalizations.FirstOrDefault()?.Subject
                 : mail.Subject;
-            historyItem.ToDisplayName = mail.Personalization.FirstOrDefault()?.Tos.FirstOrDefault()?.Name;
-            historyItem.ToEmailAddress = mail.Personalization.FirstOrDefault()?.Tos.FirstOrDefault()?.Address;
-            
+            historyItem.ToDisplayName = mail.Personalizations.FirstOrDefault()?.Tos.FirstOrDefault()?.Name;
+            historyItem.ToEmailAddress = mail.Personalizations.FirstOrDefault()?.Tos.FirstOrDefault()?.Email;
+
             try
             {
-                var message = mail.Get();
-                historyItem.MessageData = message;
-                var response = await SendToApiAsync(message);
+                historyItem.MessageData = mail.Serialize();
+                var response = await SendToApiAsync(mail);
                 historyItem.IsSuccess = response.StatusCode == HttpStatusCode.Accepted ||
                                         (Settings.IsSandboxMode && response.StatusCode == HttpStatusCode.OK);
             }
@@ -212,7 +208,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             {
                 await HistoryStore.AddAsync(historyItem, token);
             }
-                                                                  
+
             return historyItem;
         }
 
@@ -226,7 +222,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         public virtual async Task<bool> ReSend(Guid id, string historyData, CancellationToken token)
         {
             var isSuccess = false;
-            var mail = JsonConvert.DeserializeObject<Mail>(historyData,
+            var mail = JsonConvert.DeserializeObject<SendGridMessage>(historyData,
                 new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore,
@@ -234,18 +230,18 @@ namespace NullDesk.Extensions.Mailer.SendGrid
                     StringEscapeHandling = StringEscapeHandling.EscapeHtml
                 });
             var subject = string.IsNullOrEmpty(mail.Subject)
-                ? mail.Personalization.FirstOrDefault()?.Subject
+                ? mail.Personalizations.FirstOrDefault()?.Subject
                 : mail.Subject;
-            var toDisplay = mail.Personalization.FirstOrDefault()?.Tos.FirstOrDefault()?.Name;
-            var to = mail.Personalization.FirstOrDefault()?.Tos.FirstOrDefault()?.Address;
-              
+            var toDisplay = mail.Personalizations.FirstOrDefault()?.Tos.FirstOrDefault()?.Name;
+            var to = mail.Personalizations.FirstOrDefault()?.Tos.FirstOrDefault()?.Email;
+
             Logger.LogInformation("Attempting to resend message {id} to {toDisplay}<{to}> about {subject}", id, toDisplay, to, subject);
 
             try
             {
-                var response = await SendToApiAsync(historyData);
+                var response = await SendToApiAsync(mail);
                 isSuccess = response.StatusCode == HttpStatusCode.Accepted ||
-                                        (Settings.IsSandboxMode && response.StatusCode == HttpStatusCode.OK); ;
+                                        (Settings.IsSandboxMode && response.StatusCode == HttpStatusCode.OK);
             }
             catch (Exception ex)
             {
@@ -260,12 +256,10 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// </summary>
         /// <param name="message">The message.</param>
         /// <returns>Task&lt;Response&gt;.</returns>
-        protected virtual async Task<Response> SendToApiAsync(string message)
+        protected virtual async Task<Response> SendToApiAsync(SendGridMessage message)
         {
-            return await MailClient.RequestAsync(
-                Client.Methods.POST,
-                message,
-                urlPath: "mail/send");
+            
+            return await MailClient.SendEmailAsync(message);
         }
 
         /// <summary>
@@ -275,20 +269,23 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="attachments">The attachments.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task.</returns>
-        protected virtual async Task AddAttachmentStreamsAsync(Mail mail, IDictionary<string, Stream> attachments, CancellationToken token)
+        protected virtual async Task AddAttachmentStreamsAsync(SendGridMessage mail, IDictionary<string, Stream> attachments, CancellationToken token)
         {
             if (attachments != null && attachments.Any())
             {
+                var sgAttachments = new List<Attachment>();
                 foreach (var stream in attachments)
                 {
-                    var attachment = new Attachment
+                    sgAttachments.Add(new Attachment
                     {
                         Content = await StreamToBase64Async(stream.Value, token),
                         Filename = stream.Key,
                         Disposition = "attachment"
-                    };
-                    mail.AddAttachment(attachment);
+                    });
+
                 }
+
+                mail.AddAttachments(sgAttachments);
             }
         }
 

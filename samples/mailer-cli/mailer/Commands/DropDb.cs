@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.CommandLineUtils;
+﻿using Microsoft.Extensions.CommandLineUtils;
 using NullDesk.Cli;
 using NullDesk.Extensions.Mailer.History.EntityFramework;
 

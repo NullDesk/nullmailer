@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 using NullDesk.Extensions.Mailer.Core;
+using Microsoft.Extensions.Options;
 
 namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
 {
@@ -24,15 +25,23 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
 
             var logger = loggerFactory.CreateLogger<SendGridMailer>();
             var simpleLogger = loggerFactory.CreateLogger<SendGridSimpleMailer>();
-            var client = new FakeClient("abc");
 
+            Mail.Register(() => new SendGridMailerFake(
+               new OptionsWrapper<SendGridMailerSettings>(sendGridSettings),
+               logger,
+               Store));
 
-            Mail.AddSendGridMailer(client, sendGridSettings, logger, Store);
-            Mail.AddSendGridSimpleMailer(client, sendGridSettings, simpleLogger, Store);
+            Mail.Register(() => new SendGridSimpleMailerFake(
+                new OptionsWrapper<SendGridMailerSettings>(sendGridSettings),
+                simpleLogger, 
+                Store));
+
 
             //only has template mailer, but still should be able to complete all tasks for simple mail
-            TemplateMail.AddSendGridMailer(client, sendGridSettings, logger, Store);
-
+            TemplateMail.Register(() => new SendGridMailerFake(
+              new OptionsWrapper<SendGridMailerSettings>(sendGridSettings),
+              logger,
+              Store));
         }
 
 
@@ -44,4 +53,5 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
 
 
     }
+
 }
