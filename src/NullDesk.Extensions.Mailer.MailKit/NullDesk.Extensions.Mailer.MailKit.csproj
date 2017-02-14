@@ -1,34 +1,29 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <Description>NullDesk Mailer Extensions for SMTP Email messaging using MailKit</Description>
-        <VersionPrefix>2.1.0</VersionPrefix>
-        <Authors>Stephen M. Redd</Authors>
-        <TargetFramework>netstandard1.3</TargetFramework>
-        <DebugType>portable</DebugType>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <AssemblyName>NullDesk.Extensions.Mailer.MailKit</AssemblyName>
-        <PackageId>NullDesk.Extensions.Mailer.MailKit</PackageId>
-        <PackageTags>email;nulldesk;mailkit</PackageTags>
-        <PackageProjectUrl>https://github.com/NullDesk/NullMailer</PackageProjectUrl>
-        <PackageLicenseUrl>https://raw.githubusercontent.com/NullDesk/NullMailer/master/LICENSE</PackageLicenseUrl>
-        <RepositoryType>git</RepositoryType>
-        <RepositoryUrl>https://github.com/NullDesk/NullMailer</RepositoryUrl>
-        <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-        <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-        <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-        <Copyright>Stephen M. Redd 2017</Copyright>
-        <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
-
-    </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="MailKit" Version="1.10.2" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\NullDesk.Extensions.Mailer.Core\NullDesk.Extensions.Mailer.Core.csproj" />
-    </ItemGroup>
-
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>NullDesk Mailer Extensions for SMTP Email messaging using MailKit</Description>
+    <VersionPrefix>2.2.0</VersionPrefix>
+    <Authors>Stephen M. Redd</Authors>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <DebugType>portable</DebugType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>NullDesk.Extensions.Mailer.MailKit</AssemblyName>
+    <PackageId>NullDesk.Extensions.Mailer.MailKit</PackageId>
+    <PackageTags>email;nulldesk;mailkit</PackageTags>
+    <PackageProjectUrl>https://github.com/NullDesk/NullMailer</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/NullDesk/NullMailer/master/LICENSE</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/NullDesk/NullMailer</RepositoryUrl>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <Copyright>Stephen M. Redd 2017</Copyright>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="1.10.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NullDesk.Extensions.Mailer.Core\NullDesk.Extensions.Mailer.Core.csproj" />
+  </ItemGroup>
 </Project>
