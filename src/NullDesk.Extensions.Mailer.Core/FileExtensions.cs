@@ -17,11 +17,14 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="replacementVariables">The replacement variables.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;System.String&gt;.</returns>
-        public static async Task<string> ToMessageAsync(this FileInfo templateFile, IDictionary<string, string> replacementVariables, CancellationToken token)
+        public static async Task<string> ToMessageAsync(this FileInfo templateFile, IDictionary<string, string> replacementVariables, CancellationToken token = default(CancellationToken))
         {
-            
-            var fileContents = await templateFile.OpenText().ReadToEndAsync();
-            return fileContents.TemplateReplace(replacementVariables);
+            if (!token.IsCancellationRequested)
+            {
+                var fileContents = await templateFile.OpenText().ReadToEndAsync();
+                return fileContents.TemplateReplace(replacementVariables);
+            }
+            return null;
         }
     }
 }

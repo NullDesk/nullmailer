@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -18,7 +19,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
         {
         }
 
-        protected override Task<Response> SendToApiAsync(SendGridMessage message)
+        protected override Task<Response> SendToApiAsync(SendGridMessage message, CancellationToken token = default(CancellationToken))
         {
             return Task.FromResult(new Response(HttpStatusCode.Accepted, null, null));
         }
@@ -34,7 +35,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
         {
         }
 
-        protected override Task<Response> SendToApiAsync(SendGridMessage message)
+        protected override Task<Response> SendToApiAsync(SendGridMessage message, CancellationToken token = default(CancellationToken))
         {
             return Task.FromResult(new Response(HttpStatusCode.Accepted, null, null));
         }

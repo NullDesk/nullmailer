@@ -96,7 +96,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             string subject,
             string htmlBody,
             string textBody,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             return await SendMailAsync(
                 toEmailAddress,
@@ -126,7 +126,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             string htmlBody,
             string textBody,
             IEnumerable<string> attachmentFiles,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             var attachments = attachmentFiles.GetStreamsForFileNames(Logger);
 
@@ -151,7 +151,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             string htmlBody,
             string textBody,
             IDictionary<string, Stream> attachments,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             var from = new EmailAddress(Settings.FromEmailAddress, Settings.FromDisplayName);
             var to = new EmailAddress(toEmailAddress, toDisplayName);
@@ -172,7 +172,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <returns>Task&lt;MessageDeliveryItem&gt;.</returns>
         public virtual async Task<MessageDeliveryItem> SendMailAsync(
             SendGridMessage mail,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             var historyItem = new MessageDeliveryItem();
 
@@ -195,7 +195,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             try
             {
                 historyItem.MessageData = mail.Serialize();
-                var response = await SendToApiAsync(mail);
+                var response = await SendToApiAsync(mail, token);
                 historyItem.IsSuccess = response.StatusCode == HttpStatusCode.Accepted ||
                                         (Settings.IsSandboxMode && response.StatusCode == HttpStatusCode.OK);
             }
@@ -219,7 +219,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="historyData">The history data.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        public virtual async Task<bool> ReSend(Guid id, string historyData, CancellationToken token)
+        public virtual async Task<bool> ReSend(Guid id, string historyData, CancellationToken token = default(CancellationToken))
         {
             var isSuccess = false;
             var mail = JsonConvert.DeserializeObject<SendGridMessage>(historyData,
@@ -239,7 +239,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
 
             try
             {
-                var response = await SendToApiAsync(mail);
+                var response = await SendToApiAsync(mail, token);
                 isSuccess = response.StatusCode == HttpStatusCode.Accepted ||
                                         (Settings.IsSandboxMode && response.StatusCode == HttpStatusCode.OK);
             }
@@ -255,11 +255,12 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// Sends the message through the SendGrid API.
         /// </summary>
         /// <param name="message">The message.</param>
+        /// <param name="token">The token.</param>
         /// <returns>Task&lt;Response&gt;.</returns>
-        protected virtual async Task<Response> SendToApiAsync(SendGridMessage message)
+        protected virtual async Task<Response> SendToApiAsync(SendGridMessage message, CancellationToken token = default(CancellationToken))
         {
             
-            return await MailClient.SendEmailAsync(message);
+            return await MailClient.SendEmailAsync(message, token);
         }
 
         /// <summary>
@@ -269,7 +270,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="attachments">The attachments.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task.</returns>
-        protected virtual async Task AddAttachmentStreamsAsync(SendGridMessage mail, IDictionary<string, Stream> attachments, CancellationToken token)
+        protected virtual async Task AddAttachmentStreamsAsync(SendGridMessage mail, IDictionary<string, Stream> attachments, CancellationToken token = default(CancellationToken))
         {
             if (attachments != null && attachments.Any())
             {
@@ -296,7 +297,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;System.String&gt;.</returns>
         /// <remarks>Will read and dispose the stream</remarks>
-        protected virtual async Task<string> StreamToBase64Async(Stream input, CancellationToken token)
+        protected virtual async Task<string> StreamToBase64Async(Stream input, CancellationToken token = default(CancellationToken))
         {
             MemoryStream ms;
             if (input is MemoryStream)

@@ -41,7 +41,7 @@ namespace NullDesk.Extensions.Mailer.Core
             string toEmailAddress,
             string toDisplayName,
             string subject,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             var hi = new MessageDeliveryItem
             {
@@ -73,7 +73,7 @@ namespace NullDesk.Extensions.Mailer.Core
             string subject,
             string htmlBody,
             string textBody,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             return PretendToSendAsync(toEmailAddress, toDisplayName, subject, token);
         }
@@ -96,7 +96,7 @@ namespace NullDesk.Extensions.Mailer.Core
             string htmlBody,
             string textBody,
             IEnumerable<string> attachmentFiles,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             return PretendToSendAsync(toEmailAddress, toDisplayName, subject, token);
         }
@@ -119,7 +119,7 @@ namespace NullDesk.Extensions.Mailer.Core
             string htmlBody,
             string textBody,
             IDictionary<string, Stream> attachments,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             return PretendToSendAsync(toEmailAddress, toDisplayName, subject, token);
         }
@@ -131,7 +131,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="historyData">The history data.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        public Task<bool> ReSend(Guid id, string historyData, CancellationToken token)
+        public Task<bool> ReSend(Guid id, string historyData, CancellationToken token = default(CancellationToken))
         {
             return Task.FromResult(true);
         }

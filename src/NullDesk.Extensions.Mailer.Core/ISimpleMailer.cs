@@ -40,7 +40,7 @@ namespace NullDesk.Extensions.Mailer.Core
             string subject,
             string htmlBody,
             string textBody,
-            CancellationToken token);
+            CancellationToken token = default(CancellationToken));
 
         /// <summary>
         /// Send mail as an asynchronous operation.
@@ -60,7 +60,7 @@ namespace NullDesk.Extensions.Mailer.Core
             string htmlBody,
             string textBody,
             IEnumerable<string> attachmentFiles,
-            CancellationToken token);
+            CancellationToken token = default(CancellationToken));
 
         /// <summary>
         /// Send mail as an asynchronous operation.
@@ -80,7 +80,7 @@ namespace NullDesk.Extensions.Mailer.Core
             string htmlBody,
             string textBody,
             IDictionary<string, Stream> attachments,
-            CancellationToken token);
+            CancellationToken token = default(CancellationToken));
     }
 
    

@@ -61,7 +61,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
             string toDisplayName,
             string subject,
             IDictionary<string, string> replacementVariables,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             return await SendMailAsync(
                 template,
@@ -93,7 +93,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
             string subject,
             IDictionary<string, string> replacementVariables,
             IEnumerable<string> attachmentFiles,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             var body = await GetBodyForTemplateAsync(template, replacementVariables, attachmentFiles, token);
             subject = subject.TemplateReplace(replacementVariables);
@@ -119,7 +119,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
             string subject,
             IDictionary<string, string> replacementVariables,
             IDictionary<string, Stream> attachments,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             var body = await GetBodyForTemplateAsync(template, replacementVariables, attachments, token);
             subject = subject.TemplateReplace(replacementVariables);
@@ -139,7 +139,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
             string template,
             IDictionary<string, string> replacementVariables,
             IEnumerable<string> attachmentFiles,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             var attachments = attachmentFiles.GetStreamsForFileNames(Logger);
 
@@ -159,7 +159,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
             string template,
             IDictionary<string, string> replacementVariables,
             IDictionary<string, Stream> attachments,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             var bodyBuilder = new BodyBuilder();
             var templateExists = false;

@@ -38,7 +38,7 @@ namespace NullDesk.Extensions.Mailer.Core
             string toDisplayName,
             string subject,
             IDictionary<string, string> replacementVariables,
-            CancellationToken token);
+            CancellationToken token = default(CancellationToken));
 
         /// <summary>
         /// Send mail using a template.
@@ -59,7 +59,7 @@ namespace NullDesk.Extensions.Mailer.Core
             string subject,
             IDictionary<string, string> replacementVariables,
             IEnumerable<string> attachmentFiles,
-            CancellationToken token);
+            CancellationToken token = default(CancellationToken));
 
         /// <summary>
         /// Send mail using a template.
@@ -80,7 +80,7 @@ namespace NullDesk.Extensions.Mailer.Core
             string subject,
             IDictionary<string, string> replacementVariables,
             IDictionary<string, Stream> attachments,
-            CancellationToken token);
+            CancellationToken token = default(CancellationToken));
 
     }
 

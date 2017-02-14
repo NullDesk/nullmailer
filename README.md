@@ -1,9 +1,5 @@
 # NullDesk Email Extensions
 
- 
-
-
-
 ## Overview
 Email extension service packages for quickly integrating common mail scenarios into any .Net Core or .Net project using a variety of message delivery frameworks and cloud service providers.
 

@@ -91,7 +91,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
             string subject,
             string htmlBody,
             string textBody,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             return await SendMailAsync(
                 toEmailAddress,
@@ -121,7 +121,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
             string htmlBody,
             string textBody,
             IEnumerable<string> attachmentFiles,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             var attachments = attachmentFiles.GetStreamsForFileNames(Logger);
 
@@ -146,7 +146,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
             string htmlBody,
             string textBody,
             IDictionary<string, Stream> attachments,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             var bodyBuilder = new BodyBuilder()
             {
@@ -174,7 +174,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
             string toDisplayName,
             string subject,
             MimeEntity body,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             var historyItem = new MessageDeliveryItem();
             var message = new MimeMessage();
@@ -237,7 +237,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="historyData">The history data.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        public virtual async Task<bool> ReSend(Guid id, string historyData, CancellationToken token)
+        public virtual async Task<bool> ReSend(Guid id, string historyData, CancellationToken token = default(CancellationToken))
         {
             var isSuccess = false;
             MimeMessage message;
@@ -288,7 +288,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="message">The message.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task.</returns>
-        protected async Task SendSmtpMessageAsync(MimeMessage message, CancellationToken token)
+        protected async Task SendSmtpMessageAsync(MimeMessage message, CancellationToken token = default(CancellationToken))
         {
             await MailClient.ConnectAsync(Settings.SmtpServer, Settings.SmtpPort, Settings.SmtpUseSsl, token);
             if (Settings.AuthenticationSettings?.Credentials != null)

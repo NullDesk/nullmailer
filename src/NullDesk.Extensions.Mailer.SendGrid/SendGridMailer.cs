@@ -63,7 +63,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             string toDisplayName,
             string subject,
             IDictionary<string, string> replacementVariables,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             return await SendMailAsync(
                 template,
@@ -95,7 +95,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             string subject,
             IDictionary<string, string> replacementVariables,
             IEnumerable<string> attachmentFiles,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             var attachments = attachmentFiles.GetStreamsForFileNames(Logger);
 
@@ -121,7 +121,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             string subject,
             IDictionary<string, string> replacementVariables,
             IDictionary<string, Stream> attachments,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             var mfrom = new EmailAddress(Settings.FromEmailAddress, Settings.FromDisplayName);
             var mto = new EmailAddress(toEmailAddress, toDisplayName);
