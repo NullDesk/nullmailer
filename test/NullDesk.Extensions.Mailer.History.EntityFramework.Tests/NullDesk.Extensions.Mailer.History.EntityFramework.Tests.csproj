@@ -29,7 +29,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0-preview-20170210-02" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0-beta5-build1225" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0-rc3-build1252" />
         <PackageReference Include="FluentAssertions" Version="4.19.0" />
         <PackageReference Include="Microsoft.CodeCoverage" Version="1.0.2" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="1.1.0" />
@@ -41,7 +41,7 @@
         <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.0" />
         <PackageReference Include="NSubstitute" Version="2.0.1-rc" />
         <PackageReference Include="System.Net.Sockets" Version="4.3.0" />
-        <PackageReference Include="xunit" Version="2.2.0-beta5-build3474" />
+        <PackageReference Include="xunit" Version="2.2.0-rc3-build3528" />
     </ItemGroup>
 
     <ItemGroup>
