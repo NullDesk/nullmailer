@@ -308,5 +308,13 @@ namespace NullDesk.Extensions.Mailer.MailKit
             await MailClient.SendAsync(message, token);
             await MailClient.DisconnectAsync(true, token);
         }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            MailClient.Dispose();
+        }
     }
 }

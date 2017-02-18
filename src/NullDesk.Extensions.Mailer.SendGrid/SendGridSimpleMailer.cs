@@ -314,5 +314,13 @@ namespace NullDesk.Extensions.Mailer.SendGrid
                 return Convert.ToBase64String(ms.ToArray());
             }
         }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            MailClient = null;
+        }
     }
 }

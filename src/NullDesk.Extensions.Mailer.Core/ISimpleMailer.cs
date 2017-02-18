@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +23,8 @@ namespace NullDesk.Extensions.Mailer.Core
     /// <summary>
     /// Simplified mailer
     /// </summary>
-    public interface ISimpleMailer
+    /// <seealso cref="NullDesk.Extensions.Mailer.Core.ISimpleMailer" />
+    public interface ISimpleMailer: IDisposable
     {
         /// <summary>
         /// Send mail as an asynchronous operation.
