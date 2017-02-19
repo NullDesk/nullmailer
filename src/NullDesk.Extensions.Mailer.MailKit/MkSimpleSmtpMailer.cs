@@ -17,6 +17,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
     /// </summary>
     public class MkSimpleSmtpMailer : ISimpleMailer<MkSmtpMailerSettings>, IHistoryMailer
     {
+        private readonly AsyncLock _mLock = new AsyncLock();
 
         /// <summary>
         /// Gets the history store.
@@ -60,6 +61,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
             MailClient = client;
             Logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance as ILogger;
             HistoryStore = historyStore ?? new NullHistoryStore();
+            
         }
 
         /// <summary>
@@ -258,7 +260,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
                 await SendSmtpMessageAsync(message, token);
                 isSuccess = true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.LogError(1, ex, "Failed resending message {id} with exception {ex.Message}", id, ex.Message);
             }
@@ -280,8 +282,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
                 }
             }
         }
-
-
+        
         /// <summary>
         /// Send an SMTP message as an asynchronous operation.
         /// </summary>
@@ -290,23 +291,25 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <returns>Task.</returns>
         protected async Task SendSmtpMessageAsync(MimeMessage message, CancellationToken token = default(CancellationToken))
         {
-            await MailClient.ConnectAsync(Settings.SmtpServer, Settings.SmtpPort, Settings.SmtpUseSsl, token);
-            if (Settings.AuthenticationSettings?.Credentials != null)
+            using (await _mLock.LockAsync())
             {
-                MailClient.Authenticate(Settings.AuthenticationSettings.Credentials, token);
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(Settings.AuthenticationSettings?.UserName) &&
-                    !string.IsNullOrEmpty(Settings.AuthenticationSettings?.Password))
+                await MailClient.ConnectAsync(Settings.SmtpServer, Settings.SmtpPort, Settings.SmtpUseSsl, token);
+                if (Settings.AuthenticationSettings?.Credentials != null)
                 {
-                    MailClient.Authenticate(Settings.AuthenticationSettings.UserName,
-                        Settings.AuthenticationSettings.Password, token);
+                    await MailClient.AuthenticateAsync(Settings.AuthenticationSettings.Credentials, token);
                 }
+                else
+                {
+                    if (!string.IsNullOrEmpty(Settings.AuthenticationSettings?.UserName) &&
+                        !string.IsNullOrEmpty(Settings.AuthenticationSettings?.Password))
+                    {
+                        await MailClient.AuthenticateAsync(Settings.AuthenticationSettings.UserName,
+                            Settings.AuthenticationSettings.Password, token);
+                    }
+                }
+                await MailClient.SendAsync(message, token);
+                await MailClient.DisconnectAsync(false, token);
             }
-
-            await MailClient.SendAsync(message, token);
-            await MailClient.DisconnectAsync(true, token);
         }
 
         /// <summary>
