@@ -40,6 +40,59 @@ Email extension service packages for quickly integrating common mail scenarios i
 - Editor support for Visual Studio Code or Visual Studio 2017
 - Store message and delivery history
 
+## Basic Usage
+
+The simplest usage is to just instantiate the mailer of your choice and go:
+
+         var settings = new SendGridMailerSettings
+         {
+             ApiKey = "123",
+             FromDisplayName = "Person Name",
+             FromEmailAddress = "someone@toast.com",
+             IsSandboxMode = false
+         };
+         using (var mailer = new SendGridMailer(new OptionsWrapper<SendGridMailerSettings>(settings)))
+         {
+             var result = await mailer.SendMailAsync(
+                 "recipient@toast.com",
+                 "Recipient Name", 
+                 "Message Subject", 
+                 thig.GenerateHtmlBody(), 
+                 "plain text body", 
+                 CancellationToken.None);
+         }
+
+> The built-in Mailers are reusable by default; however, it is recommended to create a new instance each time instead. There is rarely a performance advantage to reuse, and some mail frameworks are less friendly toward reuse and thread safety. Also, some mailers (like the MailKit SMTP mailers) can suffer a performance penalty if multiple callers are trying to send mail in parallel using the same instance.
+
+For most real-world scenarios though, you would either use a dependency injection or the provided mailer factory instead.
+
+This next example shows registering a mailer with the built-in mailer factory, and with sending a simple template based message:
+
+        var settings = new SendGridMailerSettings
+        {
+            ApiKey = "123",
+            FromDisplayName = "Person Name",
+            FromEmailAddress = "someone@toast.com",
+            IsSandboxMode = false
+        };
+
+        var factory = new MailerFactory();
+        factory.AddSendGridMailer(sendGridSettings);
+        
+        var replacementVars = new Dictionary<string, string>()
+        replacementVars.Add("%name%", "Mr. Toast"); 
+        
+        var result = await
+            factory.StandardMailer.SendMailAsync(
+                "TemplateName",
+                "recipient@toast.com",
+                "Recipient Name", 
+                "Message Subject", 
+                ReplacementVars,
+                CancellationToken.None);
+
+The provided samples and unit tests illustrate more complex scenarios. 
+
 ## Creating your own mailers
 
 To implement your own full-featured mailer, simply implement a class that implements <code>IStandardMailer&lt;TSettings&gt;</code>. 
@@ -48,19 +101,29 @@ If you don't care about templates, you can create a simple mailer by just implem
 
 For the above interfaces, <code>TSettings</code> is a custom DTO class containing any configuration settings your mailer requires.
 
-The NullDesk mailers include both a simple and full-featured mailer; the full-featured mailers typically inherit the simple mailer as a base class, then extend it to add additional tempalate features from <code>IStandardMailer&lt;TSettings&gt;</code>. Here is an example of how that looks:
+The NullDesk mailers include both a simple and full-featured mailer; the full-featured mailers inherit from a simple mailer as a base class, then extend it to add additional tempalate features from <code>IStandardMailer&lt;TSettings&gt;</code>. Here is an example of how that looks:
 
-    public class MyMailerSettings : IMailerSettings
-    {
-        //... implementation here
-    }
+        public class MyMailerSettings : IMailerSettings
+        {
+            //... implementation here
+        }
+    
+        public class MySimpleMailer : ISimpleMailer<MyMailerSettings>
+        {
+            //... implementation here
+        }
+    
+        public class MyFullMailer : MySimpleMailer, IStandardMailer<MyMailerSettings>
+        {
+            //... implementation here
+        }
 
-    public class MySimpleMailer : ISimpleMailer<MyMailerSettings>
-    {
-        //... implementation here
-    }
+When implementing your own mailers, there is no need to necessarily follow the same pattern. You could just as easily create a single class that handles all mail functions.
 
-    public class MyFullMailer : MySimpleMailer, IStandardMailer<MyMailerSettings>
-    {
-        //... implementation here
-    }
+This example shows a class implementing all mailer functions, as well as the interface for message delivery history
+
+        public class MyAmazingMailer : IStandardMailer<MyAmazingMailerSettings>, IHistoryMailer
+        {
+            //... implementation here
+        } 
+

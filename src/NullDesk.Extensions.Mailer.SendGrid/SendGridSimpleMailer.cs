@@ -300,9 +300,9 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         protected virtual async Task<string> StreamToBase64Async(Stream input, CancellationToken token = default(CancellationToken))
         {
             MemoryStream ms;
-            if (input is MemoryStream)
+            if (input is MemoryStream stream)
             {
-                ms = (MemoryStream)input;
+                ms = stream;
             }
             else
             {

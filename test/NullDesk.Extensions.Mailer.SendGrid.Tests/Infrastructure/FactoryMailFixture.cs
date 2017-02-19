@@ -17,10 +17,10 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
 
         public FactoryMailFixture()
         {
-
+            
             var loggerFactory = new LoggerFactory();
             loggerFactory.AddDebug(LogLevel.Debug);
-
+            
             var sendGridSettings = new SendGridMailerSettings { ApiKey = "abc" };
 
             var logger = loggerFactory.CreateLogger<SendGridMailer>();

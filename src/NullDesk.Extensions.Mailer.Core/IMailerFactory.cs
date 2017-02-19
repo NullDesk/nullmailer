@@ -13,7 +13,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// Gets a collection of registered mailer functions.
         /// </summary>
         /// <value>The mailers.</value>
-        List<Func<ISimpleMailer>> Mailers { get; }
+        List<Func<ISimpleMailer>> MailerRegistrations { get; }
 
         /// <summary>
         /// Gets an instance of the first registered standard mailer.
