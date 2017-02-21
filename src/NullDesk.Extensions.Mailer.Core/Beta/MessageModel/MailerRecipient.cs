@@ -1,6 +1,5 @@
-﻿using System;
+﻿// ReSharper disable CheckNamespace
 using System.Collections.Generic;
-using System.Text;
 
 namespace NullDesk.Extensions.Mailer.Core
 {
@@ -29,6 +28,6 @@ namespace NullDesk.Extensions.Mailer.Core
         /// When sending email, the values specified here will be merged with, and override, any replacement variables defined on for message as a whole. Use this to supply replacment substitutions that vary from one recipient to another. 
         /// </remarks>
         /// <value>Template substitutions to use for this recipient only.</value>
-        public IDictionary<string, string> PersonalizedSubstitutions { get; set; }
+        public IDictionary<string, string> PersonalizedSubstitutions { get; set; } = new Dictionary<string, string>();
     }
 }

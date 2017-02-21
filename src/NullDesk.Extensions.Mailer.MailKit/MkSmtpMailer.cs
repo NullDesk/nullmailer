@@ -141,7 +141,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
             IEnumerable<string> attachmentFiles,
             CancellationToken token = default(CancellationToken))
         {
-            var attachments = attachmentFiles.GetStreamsForFileNames(Logger);
+            var attachments = attachmentFiles.GetAttachmentStreamsForFile();
 
             return await GetBodyForTemplateAsync(template, replacementVariables, attachments, token);
         }

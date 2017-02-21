@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+// ReSharper disable CheckNamespace
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
@@ -12,6 +13,25 @@ namespace NullDesk.Extensions.Mailer.Core
     /// </summary>
     public abstract class MailerMessage
     {
+        /// <summary>
+        /// Creates a mailer message.
+        /// </summary>
+        /// <returns>MailerContentMessage.</returns>
+        public static MailerContentMessage Create()
+        {
+            return new MailerContentMessage();
+        }
+
+        /// <summary>
+        /// Creates a message using the specified template name.
+        /// </summary>
+        /// <param name="templateName">Name of the template.</param>
+        /// <returns>MailerTemplateMessage.</returns>
+        public static MailerTemplateMessage Create(string templateName)
+        {
+            return new MailerTemplateMessage(){TemplateName = templateName};
+        }
+
         /// <summary>
         /// The reply to information for the message.
         /// </summary>
@@ -22,7 +42,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// The message recipients.
         /// </summary>
         /// <value>The recipients.</value>
-        public IEnumerable<MailerRecipient> Recipients { get; set; }
+        public ICollection<MailerRecipient> Recipients { get; set; } = new Collection<MailerRecipient>();
 
         /// <summary>
         /// The message subject.
@@ -40,12 +60,14 @@ namespace NullDesk.Extensions.Mailer.Core
         /// To override any of these values on a per-recipient basis, supply overriding values to the recipients' PersonalizedSubstitutions property
         /// </remarks>
         /// <value>The substitution tokens and replacement values.</value>
-        public IDictionary<string, string> Substitutions { get; set; }
+        public IDictionary<string, string> Substitutions { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         /// A collection of attachments to include with the message.
         /// </summary>
         /// <value>The attachments.</value>
-        public IDictionary<string, Stream> Attachments { get; set; }
+        public IDictionary<string, Stream> Attachments { get; set; } = new Dictionary<string, Stream>();
+
+
     }
 }

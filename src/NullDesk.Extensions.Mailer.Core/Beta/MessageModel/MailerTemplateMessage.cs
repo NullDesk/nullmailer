@@ -1,9 +1,10 @@
-﻿namespace NullDesk.Extensions.Mailer.Core
+﻿// ReSharper disable CheckNamespace
+namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
     /// A mail message where external templates provide the message's contents.
     /// </summary>
-    /// <seealso cref="NullDesk.Extensions.Mailer.Core.MailerMessage" />
+    /// <seealso cref="MailerMessage" />
     public class MailerTemplateMessage : MailerMessage
     {
         /// <summary>

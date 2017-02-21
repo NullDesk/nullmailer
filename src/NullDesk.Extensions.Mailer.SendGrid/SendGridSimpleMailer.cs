@@ -128,7 +128,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             IEnumerable<string> attachmentFiles,
             CancellationToken token = default(CancellationToken))
         {
-            var attachments = attachmentFiles.GetStreamsForFileNames(Logger);
+            var attachments = attachmentFiles.GetAttachmentStreamsForFile();
 
             return await SendMailAsync(toEmailAddress, toDisplayName, subject, htmlBody, textBody, attachments, token);
         }
