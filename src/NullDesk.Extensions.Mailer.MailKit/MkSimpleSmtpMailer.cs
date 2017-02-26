@@ -60,7 +60,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
             Settings = settings.Value;
             MailClient = client;
             Logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance as ILogger;
-            HistoryStore = historyStore ?? new NullHistoryStore();
+            HistoryStore = historyStore ?? NullHistoryStore.Instance;
             
         }
 

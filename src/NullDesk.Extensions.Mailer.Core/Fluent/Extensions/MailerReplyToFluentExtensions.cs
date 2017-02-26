@@ -1,5 +1,4 @@
-// ReSharper disable CheckNamespace
-namespace NullDesk.Extensions.Mailer.Core
+namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
 {
     /// <summary>
     /// MailerReplyTo Fluent API.
@@ -24,7 +23,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="sender">The sender.</param>
         /// <param name="displayName">The display name.</param>
         /// <returns>NullDesk.Extensions.Mailer.Core.Beta.MailerReplyTo.</returns>
-        public static MailerReplyTo WithName(this MailerReplyTo sender, string displayName)
+        public static MailerReplyTo WithDisplayName(this MailerReplyTo sender, string displayName)
         {
             sender.DisplayName = displayName;
             return sender;

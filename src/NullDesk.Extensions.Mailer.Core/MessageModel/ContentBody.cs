@@ -2,10 +2,9 @@
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
-    /// A mail message where the body is provided by the caller.
+    /// A message body containing html and/or plain text content
     /// </summary>
-    /// <seealso cref="MailerMessage" />
-    public class MailerContentMessage : MailerMessage
+    public class ContentBody : IMessageBody
     {
         /// <summary>
         /// An HTML message body.
@@ -25,4 +24,5 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <value>The content of the plain text.</value>
         public string PlainTextContent { get; set; }
     }
+
 }

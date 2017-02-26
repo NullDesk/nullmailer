@@ -1,7 +1,6 @@
-﻿// ReSharper disable CheckNamespace
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace NullDesk.Extensions.Mailer.Core
+namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
 {
     /// <summary>
     /// MailerRecipient Fluent API.
@@ -14,7 +13,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="recipient">The sender.</param>
         /// <param name="emailAddress">The email address.</param>
         /// <returns>NullDesk.Extensions.Mailer.Core.Beta.MailerReplyTo.</returns>
-        public static MailerRecipient FromAddress(this MailerRecipient recipient, string emailAddress)
+        public static MailerRecipient ToAddress(this MailerRecipient recipient, string emailAddress)
         {
             recipient.EmailAddress = emailAddress;
             return recipient;
@@ -26,7 +25,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="recipient">The sender.</param>
         /// <param name="displayName">The display name.</param>
         /// <returns>NullDesk.Extensions.Mailer.Core.Beta.MailerReplyTo.</returns>
-        public static MailerRecipient WithName(this MailerRecipient recipient, string displayName)
+        public static MailerRecipient WithDisplayName(this MailerRecipient recipient, string displayName)
         {
             recipient.DisplayName = displayName;
             return recipient;

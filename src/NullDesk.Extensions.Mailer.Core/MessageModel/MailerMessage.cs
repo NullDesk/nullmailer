@@ -1,36 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 // ReSharper disable CheckNamespace
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
     /// Represents an email message compatible with all NullDesk Mailers.
     /// </summary>
-    public abstract class MailerMessage
+    public class MailerMessage
     {
         /// <summary>
         /// Creates a mailer message.
         /// </summary>
         /// <returns>MailerContentMessage.</returns>
-        public static MailerContentMessage Create()
+        public static MailerMessage Create()
         {
-            return new MailerContentMessage();
+            return new MailerMessage();
         }
 
         /// <summary>
-        /// Creates a message using the specified template name.
+        /// Gets or sets the message body.
         /// </summary>
-        /// <param name="templateName">Name of the template.</param>
-        /// <returns>MailerTemplateMessage.</returns>
-        public static MailerTemplateMessage Create(string templateName)
-        {
-            return new MailerTemplateMessage(){TemplateName = templateName};
-        }
+        /// <value>The body.</value>
+        public IMessageBody Body { get; set; }
 
         /// <summary>
         /// The reply to information for the message.

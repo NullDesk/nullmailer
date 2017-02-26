@@ -1,9 +1,8 @@
-﻿// ReSharper disable CheckNamespace
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace NullDesk.Extensions.Mailer.Core
+namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
 {
     /// <summary>
     /// Fluent mailer API.
@@ -11,75 +10,56 @@ namespace NullDesk.Extensions.Mailer.Core
     public static class MailerMessageFluentExtensions
     {
         /// <summary>
-        /// Adds body content to the message, will convert a MailerTemplateMessage to a MailerContentMessage.
+        /// Creates a body of the specified type and adds it to the message.
         /// </summary>
+        /// <typeparam name="T">The body type</typeparam>
         /// <param name="message">The message.</param>
-        /// <param name="htmlContent">Content of the HTML body.</param>
-        /// <param name="plainTextContent">Content of the plain text body.</param>
+        /// <param name="bodyAction">Configure the new message body.</param>
         /// <returns>MailerContentMessage.</returns>
-        public static MailerContentMessage WithBody(
-            this MailerMessage message,
-            string htmlContent,
-            string plainTextContent)
+        public static MailerMessage WithBody<T>(
+            this MailerMessage message, Action<T> bodyAction) where T : class, IMessageBody
         {
-            if (message is null)
-            {
-                message = new MailerContentMessage();
-            }
-            MailerContentMessage cMessage;
-            if (message is MailerTemplateMessage)
-            {
-                cMessage = new MailerContentMessage()
-                {
-                    Subject = message.Subject,
-                    From = message.From,
-                    Recipients = message.Recipients,
-                    Attachments = message.Attachments,
-                    Substitutions = message.Substitutions,
-
-                };
-            }
-            else
-            {
-                cMessage = (MailerContentMessage)message;
-            }
-
-            cMessage.HtmlContent = htmlContent;
-            cMessage.PlainTextContent = plainTextContent;
-            return cMessage;
+            var body = Activator.CreateInstance<T>();
+            bodyAction(body);
+            message.Body = body;
+            return message;
         }
 
         /// <summary>
-        /// Adds the template name to the message, will convert MailerContentMessage to MailerTemplateMessage if necessary.
+        /// Adds the specified body to the message.
         /// </summary>
         /// <param name="message">The message.</param>
-        /// <param name="templateName">Name of the template.</param>
-        /// <returns>MailerTemplateMessage.</returns>
-        public static MailerTemplateMessage ForTemplate(this MailerMessage message, string templateName)
+        /// <param name="body">The body.</param>
+        /// <returns>MailerMessage.</returns>
+        public static MailerMessage WithBody(this MailerMessage message, IMessageBody body)
         {
-            if (message is null)
-            {
-                message = new MailerTemplateMessage();
-            }
-            MailerTemplateMessage tMessage;
-            if (message is MailerContentMessage)
-            {
-                tMessage = new MailerTemplateMessage()
-                {
+            message.Body = body;
+            return message;
+        }
 
-                    Subject = message.Subject,
-                    From = message.From,
-                    Recipients = message.Recipients,
-                    Attachments = message.Attachments,
-                    Substitutions = message.Substitutions
-                };
-            }
-            else
-            {
-                tMessage = (MailerTemplateMessage)message;
-            }
-            tMessage.TemplateName = templateName;
-            return tMessage;
+        ///// <summary>
+        ///// Adds the template name to the message, will convert MailerContentMessage to MailerTemplateMessage if necessary.
+        ///// </summary>
+        ///// <param name="message">The message.</param>
+        ///// <param name="templateName">Name of the template.</param>
+        ///// <returns>MailerTemplateMessage.</returns>
+        //public static MailerMessage WithBody(this MailerMessage message, string templateName)
+        //{
+        //    message.Body = new TemplateBody { TemplateName = "templateName" };
+        //    return message;
+        //}
+
+        /// <summary>
+        /// Add the sender's info to the specified message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="replyTo">The reply to.</param>
+        /// <returns>NullDesk.Extensions.Mailer.Core.Beta.MailerMessage.</returns>
+        public static MailerMessage From(this MailerMessage message, Action<MailerReplyTo> replyTo)
+        {
+            message.From = new MailerReplyTo();
+            replyTo(message.From);
+            return message;
         }
 
         /// <summary>
@@ -104,6 +84,21 @@ namespace NullDesk.Extensions.Mailer.Core
         public static MailerMessage From(this MailerMessage message, string emailAddress, string displayName = null)
         {
             message.From = new MailerReplyTo() { EmailAddress = emailAddress, DisplayName = displayName };
+            return message;
+        }
+
+
+        /// <summary>
+        /// Add the sender's info to the specified message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="recipientAction">The recipient action.</param>
+        /// <returns>NullDesk.Extensions.Mailer.Core.Beta.MailerMessage.</returns>
+        public static MailerMessage To(this MailerMessage message, Action<MailerRecipient> recipientAction)
+        {
+            var newRecipient = new MailerRecipient();
+            recipientAction(newRecipient);
+            message.Recipients.Add(newRecipient);
             return message;
         }
 

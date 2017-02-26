@@ -13,6 +13,17 @@ namespace NullDesk.Extensions.Mailer.Core
     public class NullHistoryStore: IHistoryStore
     {
         /// <summary>
+        /// Gets a shared instance of the history store.
+        /// </summary>
+        /// <value>The instance.</value>
+        public static NullHistoryStore Instance { get; } = new NullHistoryStore();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NullHistoryStore"/> class.
+        /// </summary>
+        internal NullHistoryStore(){}
+
+        /// <summary>
         /// Does nothing.
         /// </summary>
         /// <param name="item">The item to add.</param>
