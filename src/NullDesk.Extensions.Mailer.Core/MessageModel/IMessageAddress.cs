@@ -4,7 +4,7 @@ namespace NullDesk.Extensions.Mailer.Core
     /// <summary>
     /// Interface IMailerAddress
     /// </summary>
-    public interface IMailerAddress
+    public interface IMessageAddress
     {
         /// <summary>
         /// Gets or sets the email address.

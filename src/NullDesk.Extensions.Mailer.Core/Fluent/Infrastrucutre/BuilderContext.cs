@@ -2,13 +2,15 @@
 // ReSharper disable CheckNamespace
 namespace NullDesk.Extensions.Mailer.Core.Fluent
 {
-    public abstract class BuilderContext
+    public abstract class BuilderContext : IBuilderContext
     {
-        protected MailerMessage Context { get; }
+        MailerMessage IBuilderContext.Message { get; set; }
 
         internal BuilderContext(MailerMessage context)
         {
-            Context = context;
+            ((IBuilderContext) this).Message = context;
         }
+
+        protected MailerMessage Context => ((IBuilderContext) this).Message;
     }
 }

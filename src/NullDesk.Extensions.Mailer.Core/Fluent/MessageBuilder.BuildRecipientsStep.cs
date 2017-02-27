@@ -15,14 +15,14 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
 
             public class BuildToStep : BuilderContext
             {
-                private MailerRecipient Recipient { get; }
+                private MessageRecipient Recipient { get; }
 
                 internal BuildToStep(MailerMessage context, string recipientAddress) : base(context)
                 {
                     Recipient = Context.Recipients.FirstOrDefault(r => r.EmailAddress == recipientAddress);
                     if (Recipient == null)
                     {
-                        Recipient = new MailerRecipient() { EmailAddress = recipientAddress };
+                        Recipient = new MessageRecipient() { EmailAddress = recipientAddress };
                         context.To(Recipient);
                     }
                 }
@@ -39,7 +39,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
 
                 public class BuiltToWithDisplayStep : BuilderRecipientContext
                 {
-                    internal BuiltToWithDisplayStep(MailerMessage context, MailerRecipient recipient)
+                    internal BuiltToWithDisplayStep(MailerMessage context, MessageRecipient recipient)
                         : base(context, recipient) { }
 
                     public BuildRecipientWithDisplaySubstitutionStep WithPersonalizedSubstitution(string replacementToken, string replacementValue)
@@ -51,7 +51,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
 
                 public class BuildRecipientSubstitutionStep : BuilderRecipientContext
                 {
-                    internal BuildRecipientSubstitutionStep(MailerMessage context, MailerRecipient recipient)
+                    internal BuildRecipientSubstitutionStep(MailerMessage context, MessageRecipient recipient)
                         : base(context, recipient) { }
 
                     public BuiltToWithDisplayStep WithDisplayName(string displayName)
@@ -66,7 +66,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
 
                 public class BuildRecipientWithDisplaySubstitutionStep : BuilderRecipientContext
                 {
-                    internal BuildRecipientWithDisplaySubstitutionStep(MailerMessage context, MailerRecipient recipient)
+                    internal BuildRecipientWithDisplaySubstitutionStep(MailerMessage context, MessageRecipient recipient)
                         : base(context, recipient) { }
 
                     public BuildRecipientWithDisplaySubstitutionStep WithPersonalizedSubstitution(string replacementToken, string replacementValue)

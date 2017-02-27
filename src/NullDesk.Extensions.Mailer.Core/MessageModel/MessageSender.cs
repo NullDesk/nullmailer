@@ -4,7 +4,7 @@ namespace NullDesk.Extensions.Mailer.Core
     /// <summary>
     /// The email sender's address and information.
     /// </summary>
-    public class MailerReplyTo : IMailerAddress
+    public class MessageSender : IMessageAddress
     {
         /// <summary>
         /// Gets or sets the email address.

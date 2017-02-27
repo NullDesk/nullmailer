@@ -2,9 +2,9 @@
 
 namespace NullDesk.Extensions.Mailer.Core.Fluent
 {
-    public partial class MessageBuilder //root
+    public partial class MessageBuilder : BuilderContext
     {
-        private MailerMessage Context { get; } = new MailerMessage();
+        public MessageBuilder() : base(new MailerMessage()) { }
 
         public BuildFromStep From(string emailAddress)
             => new BuildFromStep(Context.From(emailAddress));

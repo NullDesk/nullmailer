@@ -7,7 +7,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
     {
         public class BuildFromStep : BuilderContext
         {
-            internal BuildFromStep(MailerMessage context) : base(context) { }
+            public BuildFromStep(MailerMessage context) : base(context) { }
 
             //TODO: ReplyTo
 
@@ -19,7 +19,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
 
             public class BuildFromWithDisplayStep : BuilderContext
             {
-                internal BuildFromWithDisplayStep(MailerMessage context) : base(context) { }
+                public BuildFromWithDisplayStep(MailerMessage context) : base(context) { }
 
                 public BuildSubjectStep And
                     => new BuildSubjectStep(Context);

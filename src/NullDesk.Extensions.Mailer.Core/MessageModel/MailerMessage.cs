@@ -29,13 +29,13 @@ namespace NullDesk.Extensions.Mailer.Core
         /// The reply to information for the message.
         /// </summary>
         /// <value>From.</value>
-        public MailerReplyTo From { get; set; }
+        public MessageSender From { get; set; }
 
         /// <summary>
         /// The message recipients.
         /// </summary>
         /// <value>The recipients.</value>
-        public ICollection<MailerRecipient> Recipients { get; set; } = new Collection<MailerRecipient>();
+        public ICollection<MessageRecipient> Recipients { get; set; } = new Collection<MessageRecipient>();
 
         /// <summary>
         /// The message subject.

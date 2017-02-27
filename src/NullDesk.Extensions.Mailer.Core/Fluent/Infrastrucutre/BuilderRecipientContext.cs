@@ -4,9 +4,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
 {
     public abstract class BuilderRecipientContext : BuilderContext
     {
-        protected MailerRecipient Recipient { get; }
+        protected MessageRecipient Recipient { get; }
 
-        internal BuilderRecipientContext(MailerMessage context, MailerRecipient recipient) : base(context)
+        internal BuilderRecipientContext(MailerMessage context, MessageRecipient recipient) : base(context)
         {
             Recipient = recipient;
         }

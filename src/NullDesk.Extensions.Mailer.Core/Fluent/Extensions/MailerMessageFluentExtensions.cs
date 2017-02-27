@@ -55,9 +55,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
         /// <param name="message">The message.</param>
         /// <param name="replyTo">The reply to.</param>
         /// <returns>NullDesk.Extensions.Mailer.Core.Beta.MailerMessage.</returns>
-        public static MailerMessage From(this MailerMessage message, Action<MailerReplyTo> replyTo)
+        public static MailerMessage From(this MailerMessage message, Action<MessageSender> replyTo)
         {
-            message.From = new MailerReplyTo();
+            message.From = new MessageSender();
             replyTo(message.From);
             return message;
         }
@@ -68,7 +68,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
         /// <param name="message">The message.</param>
         /// <param name="sender">The sender.</param>
         /// <returns>NullDesk.Extensions.Mailer.Core.Beta.MailerMessage.</returns>
-        public static MailerMessage From(this MailerMessage message, MailerReplyTo sender)
+        public static MailerMessage From(this MailerMessage message, MessageSender sender)
         {
             message.From = sender;
             return message;
@@ -83,7 +83,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
         /// <returns>NullDesk.Extensions.Mailer.Core.Beta.MailerMessage.</returns>
         public static MailerMessage From(this MailerMessage message, string emailAddress, string displayName = null)
         {
-            message.From = new MailerReplyTo() { EmailAddress = emailAddress, DisplayName = displayName };
+            message.From = new MessageSender() { EmailAddress = emailAddress, DisplayName = displayName };
             return message;
         }
 
@@ -94,9 +94,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
         /// <param name="message">The message.</param>
         /// <param name="recipientAction">The recipient action.</param>
         /// <returns>NullDesk.Extensions.Mailer.Core.Beta.MailerMessage.</returns>
-        public static MailerMessage To(this MailerMessage message, Action<MailerRecipient> recipientAction)
+        public static MailerMessage To(this MailerMessage message, Action<MessageRecipient> recipientAction)
         {
-            var newRecipient = new MailerRecipient();
+            var newRecipient = new MessageRecipient();
             recipientAction(newRecipient);
             message.Recipients.Add(newRecipient);
             return message;
@@ -108,7 +108,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
         /// <param name="message">The message.</param>
         /// <param name="recipient">The recipient.</param>
         /// <returns>NullDesk.Extensions.Mailer.Core.Beta.MailerMessage.</returns>
-        public static MailerMessage To(this MailerMessage message, MailerRecipient recipient)
+        public static MailerMessage To(this MailerMessage message, MessageRecipient recipient)
         {
             message.Recipients.Add(recipient);
             return message;
@@ -124,7 +124,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
         /// <returns>NullDesk.Extensions.Mailer.Core.Beta.MailerMessage.</returns>
         public static MailerMessage To(this MailerMessage message, string emailAddress, string displayName = null, IDictionary<string, string> personalizedSubstitutions = null)
         {
-            var recipient = new MailerRecipient()
+            var recipient = new MessageRecipient()
             {
                 EmailAddress = emailAddress,
                 DisplayName = displayName,
@@ -140,7 +140,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
         /// <param name="message">The message.</param>
         /// <param name="recipients">The recipients.</param>
         /// <returns>NullDesk.Extensions.Mailer.Core.Beta.MailerMessage.</returns>
-        public static MailerMessage To(this MailerMessage message, IEnumerable<MailerRecipient> recipients)
+        public static MailerMessage To(this MailerMessage message, IEnumerable<MessageRecipient> recipients)
         {
             foreach (var recipient in recipients)
             {

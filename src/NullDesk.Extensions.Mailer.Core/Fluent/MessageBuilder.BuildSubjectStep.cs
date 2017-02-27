@@ -7,7 +7,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
     {
         public class BuildSubjectStep : BuilderContext
         {
-            internal BuildSubjectStep(MailerMessage context) : base(context) { }
+            public BuildSubjectStep(MailerMessage context) : base(context) { }
 
             public BuildWithSubjectStep Subject(string subject)
                 => new BuildWithSubjectStep(Context.WithSubject(subject));
@@ -17,7 +17,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
 
             public class BuildWithSubjectStep : BuilderContext
             {
-                internal BuildWithSubjectStep(MailerMessage context) : base(context) { }
+                public BuildWithSubjectStep(MailerMessage context) : base(context) { }
 
                 public BuildRecipientsStep And
                     => new BuildRecipientsStep(Context);

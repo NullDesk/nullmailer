@@ -5,7 +5,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
     /// <summary>
     /// MailerRecipient Fluent API.
     /// </summary>
-    public static class MailerRecipientFluentExtensions
+    public static class MessageRecipientFluentExtensions
     {
         /// <summary>
         /// Adds the specified email address to the sender's info.
@@ -13,7 +13,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
         /// <param name="recipient">The sender.</param>
         /// <param name="emailAddress">The email address.</param>
         /// <returns>NullDesk.Extensions.Mailer.Core.Beta.MailerReplyTo.</returns>
-        public static MailerRecipient ToAddress(this MailerRecipient recipient, string emailAddress)
+        public static MessageRecipient ToAddress(this MessageRecipient recipient, string emailAddress)
         {
             recipient.EmailAddress = emailAddress;
             return recipient;
@@ -25,7 +25,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
         /// <param name="recipient">The sender.</param>
         /// <param name="displayName">The display name.</param>
         /// <returns>NullDesk.Extensions.Mailer.Core.Beta.MailerReplyTo.</returns>
-        public static MailerRecipient WithDisplayName(this MailerRecipient recipient, string displayName)
+        public static MessageRecipient WithDisplayName(this MessageRecipient recipient, string displayName)
         {
             recipient.DisplayName = displayName;
             return recipient;
@@ -39,7 +39,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
         /// <param name="recipient">The message.</param>
         /// <param name="substitutions">The substitutions.</param>
         /// <returns>NullDesk.Extensions.Mailer.Core.Beta.MailerMessage.</returns>
-        public static MailerRecipient WithSubstitutions(this MailerRecipient recipient, IDictionary<string, string> substitutions)
+        public static MessageRecipient WithSubstitutions(this MessageRecipient recipient, IDictionary<string, string> substitutions)
         {
             foreach (var substitution in substitutions)
             {
@@ -56,7 +56,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
         /// <param name="value">The value to substitue for the token.</param>
         /// <returns>NullDesk.Extensions.Mailer.Core.Beta.MailerMessage.</returns>
         /// <remarks>Substitutions can be applied to the subject, html body, text body, and templates</remarks>
-        public static MailerRecipient WithSubstitution(this MailerRecipient recipient, string key, string value)
+        public static MessageRecipient WithSubstitution(this MessageRecipient recipient, string key, string value)
         {
             recipient.PersonalizedSubstitutions.Add(new KeyValuePair<string, string>(key, value));
 

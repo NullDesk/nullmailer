@@ -23,9 +23,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
         /// </summary>
         /// <param name="mailer">The mailer.</param>
         /// <returns>MailerReplyTo.</returns>
-        public static MailerReplyTo CreateSender(this IMailer mailer)
+        public static MessageSender CreateSender(this IMailer mailer)
         {
-            return new MailerReplyTo();
+            return new MessageSender();
         }
 
         /// <summary>
@@ -33,9 +33,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
         /// </summary>
         /// <param name="mailer">The mailer.</param>
         /// <returns>MailerRecipient.</returns>
-        public static MailerRecipient CreateRecipient(this IMailer mailer)
+        public static MessageRecipient CreateRecipient(this IMailer mailer)
         {
-            return new MailerRecipient();
+            return new MessageRecipient();
         }
     }
 }
