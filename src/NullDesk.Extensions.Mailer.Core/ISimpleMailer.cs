@@ -7,27 +7,27 @@ using System.Threading.Tasks;
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
-    /// Simplified mailer interface
+    ///     Simplified mailer interface
     /// </summary>
     /// <typeparam name="TSettings">The type of the mailer settings.</typeparam>
     /// <seealso cref="NullDesk.Extensions.Mailer.Core.ISimpleMailer" />
     public interface ISimpleMailer<TSettings> : ISimpleMailer where TSettings : class, IMailerSettings
     {
         /// <summary>
-        /// Settings for the mailer service
+        ///     Settings for the mailer service
         /// </summary>
         /// <returns></returns>
         TSettings Settings { get; set; }
     }
 
     /// <summary>
-    /// Simplified mailer
+    ///     Simplified mailer
     /// </summary>
     /// <seealso cref="NullDesk.Extensions.Mailer.Core.ISimpleMailer" />
-    public interface ISimpleMailer: IDisposable
+    public interface ISimpleMailer : IDisposable
     {
         /// <summary>
-        /// Send mail as an asynchronous operation.
+        ///     Send mail as an asynchronous operation.
         /// </summary>
         /// <param name="toEmailAddress">To email address.</param>
         /// <param name="toDisplayName">To display name.</param>
@@ -45,7 +45,7 @@ namespace NullDesk.Extensions.Mailer.Core
             CancellationToken token = default(CancellationToken));
 
         /// <summary>
-        /// Send mail as an asynchronous operation.
+        ///     Send mail as an asynchronous operation.
         /// </summary>
         /// <param name="toEmailAddress">To email address.</param>
         /// <param name="toDisplayName">To display name.</param>
@@ -65,7 +65,7 @@ namespace NullDesk.Extensions.Mailer.Core
             CancellationToken token = default(CancellationToken));
 
         /// <summary>
-        /// Send mail as an asynchronous operation.
+        ///     Send mail as an asynchronous operation.
         /// </summary>
         /// <param name="toEmailAddress">To email address.</param>
         /// <param name="toDisplayName">To display name.</param>
@@ -84,6 +84,4 @@ namespace NullDesk.Extensions.Mailer.Core
             IDictionary<string, Stream> attachments,
             CancellationToken token = default(CancellationToken));
     }
-
-   
 }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
-    /// Class AsyncSemaphore.
+    ///     Class AsyncSemaphore.
     /// </summary>
     public class AsyncSemaphore
     {
@@ -19,21 +19,19 @@ namespace NullDesk.Extensions.Mailer.Core
         private int _mCurrentCount;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AsyncSemaphore"/> class.
+        ///     Initializes a new instance of the <see cref="AsyncSemaphore" /> class.
         /// </summary>
         /// <param name="initialCount">The initial count.</param>
         /// <exception cref="System.ArgumentOutOfRangeException">initialCount</exception>
         public AsyncSemaphore(int initialCount)
         {
             if (initialCount < 0)
-            {
                 throw new ArgumentOutOfRangeException(nameof(initialCount));
-            }
             _mCurrentCount = initialCount;
         }
 
         /// <summary>
-        /// Async wait.
+        ///     Async wait.
         /// </summary>
         /// <returns>Task.</returns>
         public Task WaitAsync()
@@ -52,7 +50,7 @@ namespace NullDesk.Extensions.Mailer.Core
         }
 
         /// <summary>
-        /// Releases this instance.
+        ///     Releases this instance.
         /// </summary>
         public void Release()
         {
@@ -60,13 +58,9 @@ namespace NullDesk.Extensions.Mailer.Core
             lock (_mWaiters)
             {
                 if (_mWaiters.Count > 0)
-                {
                     toRelease = _mWaiters.Dequeue();
-                }
                 else
-                {
                     ++_mCurrentCount;
-                }
             }
             toRelease?.SetResult(true);
         }

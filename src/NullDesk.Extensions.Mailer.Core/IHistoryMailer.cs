@@ -5,19 +5,18 @@ using System.Threading.Tasks;
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
-    /// Interface for mailers that support message and delivery history stores
+    ///     Interface for mailers that support message and delivery history stores
     /// </summary>
     public interface IHistoryMailer
     {
-
         /// <summary>
-        /// Gets the history store.
+        ///     Gets the history store.
         /// </summary>
         /// <value>The history store.</value>
         IHistoryStore HistoryStore { get; }
 
         /// <summary>
-        /// ReSends the message from history data.
+        ///     ReSends the message from history data.
         /// </summary>
         /// <param name="id">The identifier for the message being resent.</param>
         /// <param name="historyData">The history data.</param>

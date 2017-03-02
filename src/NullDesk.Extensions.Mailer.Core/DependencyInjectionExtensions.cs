@@ -1,16 +1,16 @@
 ﻿using System.Linq;
-using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
-    /// Class MailerServiceCollectionExtensions.
+    ///     Class MailerServiceCollectionExtensions.
     /// </summary>
     public static class DependencyInjectionExtensions
     {
         /// <summary>
-        /// Adds the mailer system to dependency injection.
+        ///     Adds the mailer system to dependency injection.
         /// </summary>
         /// <remarks>Will setup the mailer as the default</remarks>
         /// <typeparam name="T"></typeparam>
@@ -34,9 +34,7 @@ namespace NullDesk.Extensions.Mailer.Core
         {
             if (typeof(T).GetTypeInfo().ImplementedInterfaces.Any(i => i == typeof(IStandardMailer)) &&
                 services.All(d => d.ServiceType != typeof(IStandardMailer)))
-            {
                 services.Add(ServiceDescriptor.Transient(typeof(IStandardMailer), typeof(T)));
-            }
         }
 
         private static void TrySetupAsSimpleMailer<T>(this IServiceCollection services)
@@ -44,9 +42,7 @@ namespace NullDesk.Extensions.Mailer.Core
         {
             var simpleDescriptor = ServiceDescriptor.Transient(typeof(ISimpleMailer), typeof(T));
             if (services.All(d => d.ServiceType != simpleDescriptor.ServiceType))
-            {
                 services.Add(simpleDescriptor);
-            }
         }
     }
 }

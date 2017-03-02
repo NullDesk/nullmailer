@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
-    /// AsyncLock.
+    ///     AsyncLock.
     /// </summary>
     public class AsyncLock
     {
-        private readonly AsyncSemaphore _mSemaphore;
         private readonly Task<Releaser> _mReleaser;
+        private readonly AsyncSemaphore _mSemaphore;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AsyncLock"/> class.
+        ///     Initializes a new instance of the <see cref="AsyncLock" /> class.
         /// </summary>
         public AsyncLock()
         {
@@ -26,7 +26,7 @@ namespace NullDesk.Extensions.Mailer.Core
         }
 
         /// <summary>
-        /// Create an async lock.
+        ///     Create an async lock.
         /// </summary>
         /// <returns>Task&lt;Releaser&gt;.</returns>
         public Task<Releaser> LockAsync()
@@ -40,7 +40,7 @@ namespace NullDesk.Extensions.Mailer.Core
         }
 
         /// <summary>
-        /// Struct Releaser
+        ///     Struct Releaser
         /// </summary>
         /// <seealso cref="System.IDisposable" />
         public struct Releaser : IDisposable
@@ -53,7 +53,7 @@ namespace NullDesk.Extensions.Mailer.Core
             }
 
             /// <summary>
-            /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
             /// </summary>
             public void Dispose()
             {

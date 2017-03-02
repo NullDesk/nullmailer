@@ -6,18 +6,18 @@ using System.Reflection;
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
-    /// Factory class for obtaining mailer instances.
+    ///     Factory class for obtaining mailer instances.
     /// </summary>
     public class MailerFactory : IMailerFactory
     {
         /// <summary>
-        /// Gets a collection of registered mailer functions.
+        ///     Gets a collection of registered mailer functions.
         /// </summary>
         /// <value>The mailers.</value>
         public List<Func<ISimpleMailer>> MailerRegistrations { get; } = new List<Func<ISimpleMailer>>();
 
         /// <summary>
-        /// Gets an instance of the first registered standard mailer.
+        ///     Gets an instance of the first registered standard mailer.
         /// </summary>
         /// <value>The mailer.</value>
         public virtual IStandardMailer StandardMailer
@@ -25,17 +25,18 @@ namespace NullDesk.Extensions.Mailer.Core
             get
             {
                 var func = MailerRegistrations.FirstOrDefault(m => m
-                    .GetType().GetTypeInfo()
-                    .GenericTypeArguments
-                    .FirstOrDefault()?
-                    .GetTypeInfo()
-                    .ImplementedInterfaces.Any(i => i == typeof(IStandardMailer)) ?? false);
+                                                                       .GetType().GetTypeInfo()
+                                                                       .GenericTypeArguments
+                                                                       .FirstOrDefault()?
+                                                                       .GetTypeInfo()
+                                                                       .ImplementedInterfaces.Any(
+                                                                           i => i == typeof(IStandardMailer)) ?? false);
                 return func?.Invoke() as IStandardMailer;
             }
         }
 
         /// <summary>
-        /// Gets an instance of the first registered simple mailer.
+        ///     Gets an instance of the first registered simple mailer.
         /// </summary>
         /// <value>The simple mailer.</value>
         public virtual ISimpleMailer SimpleMailer
@@ -43,12 +44,13 @@ namespace NullDesk.Extensions.Mailer.Core
             get
             {
                 var func = MailerRegistrations.FirstOrDefault(m => m
-                            .GetType().GetTypeInfo()
-                            .GenericTypeArguments
-                            .FirstOrDefault()?
-                            .GetTypeInfo()
-                            .ImplementedInterfaces.All(i => i != typeof(IStandardMailer)) ??
-                        false);
+                                                                       .GetType().GetTypeInfo()
+                                                                       .GenericTypeArguments
+                                                                       .FirstOrDefault()?
+                                                                       .GetTypeInfo()
+                                                                       .ImplementedInterfaces.All(
+                                                                           i => i != typeof(IStandardMailer)) ??
+                                                                   false);
                 // template mailers also implement IMailer, and can act as a surrogate if a simple mailer wasn't explicitly registered.
                 //if simple mailer isn't registered, return a template mailer if one is registered.
                 var simple = func?.Invoke() ?? MailerRegistrations.FirstOrDefault()?.Invoke();
@@ -57,7 +59,7 @@ namespace NullDesk.Extensions.Mailer.Core
         }
 
         /// <summary>
-        /// Registers a function that can be use to create a configured mailer instance.
+        ///     Registers a function that can be use to create a configured mailer instance.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="mailerFunc">The mailer function.</param>
@@ -67,18 +69,21 @@ namespace NullDesk.Extensions.Mailer.Core
         }
 
         /// <summary>
-        /// Gets an instance of a registered mailer for the specified type.
+        ///     Gets an instance of a registered mailer for the specified type.
         /// </summary>
         /// <remarks>
-        /// If more than one function for the mailer type exists, will use the first matching function.
+        ///     If more than one function for the mailer type exists, will use the first matching function.
         /// </remarks>
         /// <typeparam name="T">The type of mailer instance you wish to create</typeparam>
         /// <returns>T.</returns>
         public virtual T GetMailer<T>() where T : class, ISimpleMailer
         {
-            var mailer = MailerRegistrations.FirstOrDefault(m => m.GetType().GenericTypeArguments.FirstOrDefault()?.AssemblyQualifiedName == typeof(T).AssemblyQualifiedName);
+            var mailer =
+                MailerRegistrations.FirstOrDefault(
+                    m =>
+                        m.GetType().GenericTypeArguments.FirstOrDefault()?.AssemblyQualifiedName ==
+                        typeof(T).AssemblyQualifiedName);
             return mailer?.Invoke() as T;
         }
-
     }
 }

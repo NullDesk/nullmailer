@@ -1,20 +1,54 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
+using NullDesk.Extensions.Mailer.Core.Fluent;
 
-// ReSharper disable once CheckNamespace
+// ReSharper disable CheckNamespace
 
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
-    ///     Message Delivery History Record.
+    ///     Mailer message and delivery info.
     /// </summary>
-    public class MessageDeliveryItem
+    public class DeliveryItem
     {
         /// <summary>
-        ///     Gets or sets the identifier.
+        ///     Initializes a new instance of the <see cref="DeliveryItem" /> class.
+        /// </summary>
+        protected DeliveryItem()
+        {
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="DeliveryItem" /> class.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        public DeliveryItem(MailerMessage message)
+        {
+            Message = message;
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="DeliveryItem" /> class.
+        /// </summary>
+        /// <param name="messageBuidler">The message buidler.</param>
+        public DeliveryItem(IBuilderStepsCompleted messageBuidler)
+        {
+            Message = messageBuidler.Build();
+        }
+
+        /// <summary>
+        ///     Gets the identifier.
         /// </summary>
         /// <value>The identifier.</value>
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id => Message.Id;
+
+        /// <summary>
+        ///     Gets the message.
+        /// </summary>
+        /// <value>The message.</value>
+        [JsonIgnore]
+        public MailerMessage Message { get; }
 
         /// <summary>
         ///     Gets or sets the delivery provider.
@@ -59,7 +93,7 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Gets or sets the message data
         /// </summary>
         /// <returns></returns>
-        public string MessageData { get; set; }
+        public string MessageData => JsonConvert.SerializeObject(Message);
 
         /// <summary>
         ///     Gets or sets the exception message if an exception occurred.
