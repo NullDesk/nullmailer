@@ -89,7 +89,6 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="textBody">The text body.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;MessageDeliveryItem&gt;.</returns>
-        /// <exception cref="ArgumentException"></exception>
         public virtual async Task<MessageDeliveryItem> SendMailAsync(
             string toEmailAddress,
             string toDisplayName,

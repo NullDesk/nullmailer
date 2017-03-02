@@ -7,37 +7,28 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
     {
         public class BuildPostContentStep : BuilderContext
         {
-            internal BuildPostContentStep(MailerMessage context) : base(context) { }
+            public BuildPostContentStep(MailerMessage context) : base(context) { }
 
-            public BuildAttachmentStep WithAttachment(string fileName)
-                => new BuildAttachmentStep(Context.WithAttachment(fileName));
+            public BuildAttachmentOrSubstitutionStep WithAttachment(string fileName)
+                => new BuildAttachmentOrSubstitutionStep(Context.WithAttachment(fileName));
 
-            public BuildSubstitutionStep WithSubstitution(string replacementToken, string replacementValue)
-                => new BuildSubstitutionStep(Context.WithSubstitution(replacementToken, replacementValue));
+            public BuildAttachmentOrSubstitutionStep WithSubstitution(string replacementToken, string replacementValue)
+                => new BuildAttachmentOrSubstitutionStep(Context.WithSubstitution(replacementToken, replacementValue));
 
-            public MailerMessage Build() => new MailerMessage();
+            public MailerMessage Build() => Context;
 
-            public class BuildAttachmentStep : BuilderContext
+            public class BuildAttachmentOrSubstitutionStep : BuilderContext
             {
-                internal BuildAttachmentStep(MailerMessage context) : base(context) { }
+                public BuildAttachmentOrSubstitutionStep(MailerMessage context) : base(context) { }
 
                 public BuildPostContentStep And
                     => new BuildPostContentStep(Context);
 
                 public MailerMessage Build()
-                    => new MailerMessage();
+                    => Context;
             }
 
-            public class BuildSubstitutionStep : BuilderContext
-            {
-                public BuildSubstitutionStep(MailerMessage context) : base(context) { }
-
-                public BuildPostContentStep And
-                   => new BuildPostContentStep(Context);
-
-                public MailerMessage Build()
-                    => new MailerMessage();
-            }
+         
         }
     }
 }

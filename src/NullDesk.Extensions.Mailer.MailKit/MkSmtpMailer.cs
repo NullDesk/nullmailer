@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -181,7 +180,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
 
             if (!templateExists)
             {
-                var ex = new ArgumentException($"No email message template found for TemplateId {template}");
+                var ex = new FileNotFoundException($"No email message template found for TemplateId {template}");
                 Logger.LogError(1, ex, ex.Message);
                 throw ex;
             }

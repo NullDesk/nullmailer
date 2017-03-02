@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -52,12 +51,12 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <param name="attachmentFile">The attachment filename.</param>
         /// <returns>KeyValuePair&lt;System.String, Stream&gt;.</returns>
-        /// <exception cref="System.ArgumentException"></exception>
+        /// <exception cref="System.IO.FileNotFoundException"></exception>
         public static KeyValuePair<string, Stream> GetAttachmentStreamForFile(this string attachmentFile)
         {
             if (!File.Exists(attachmentFile))
             {
-                throw new ArgumentException($"Unable to find email attachment with file name: {attachmentFile}");
+                throw new FileNotFoundException($"Unable to find email attachment with file name: {attachmentFile}");
             }
             var f = new FileInfo(attachmentFile);
             return f.GetAttachmentStreamForFile();

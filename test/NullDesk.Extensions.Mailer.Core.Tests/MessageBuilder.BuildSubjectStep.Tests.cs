@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NullDesk.Extensions.Mailer.Core.Fluent;
-using NullDesk.Extensions.Mailer.Core.Fluent.Extensions;
 using Xunit;
 
 namespace NullDesk.Extensions.Mailer.Core.Tests
@@ -16,7 +10,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData("Some Subject")]
         [InlineData("")]
         [InlineData(null)]
-        public void BuildSubjectStep_Subject(string subject)
+        public void Subject(string subject)
         {
             var stepBuilder = new MessageBuilder.BuildSubjectStep(new MailerMessage());
             var subStep = stepBuilder.Subject(subject);
@@ -29,7 +23,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         }
 
         [Fact]
-        public void BuildSubjectStep_WithoutSubject()
+        public void WithoutSubject()
         {
             var stepBuilder = new MessageBuilder.BuildSubjectStep(new MailerMessage());
             var subStep = stepBuilder.WithOutSubject();

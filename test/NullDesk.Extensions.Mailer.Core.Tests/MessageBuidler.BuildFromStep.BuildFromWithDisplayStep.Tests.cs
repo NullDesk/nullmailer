@@ -7,7 +7,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
     public class BuildFromWithDisplayStepTests
     {
         [Fact]
-        public void BuildFromWithDisplayStepTests_And()
+        public void And()
         {
             var stepBuilder = new MessageBuilder.BuildFromStep.BuildFromWithDisplayStep(new MailerMessage());
             var subStep = stepBuilder.And;

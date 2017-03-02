@@ -9,6 +9,15 @@ namespace NullDesk.Extensions.Mailer.Core
     public class TemplateBody : IMessageBody
     {
         /// <summary>
+        /// Creates a message body.
+        /// </summary>
+        /// <returns>TemplateBody.</returns>
+        public static TemplateBody Create()
+        {
+            return new TemplateBody();
+        }
+
+        /// <summary>
         /// The name of the template to send.
         /// </summary>
         /// <value>The template.</value>

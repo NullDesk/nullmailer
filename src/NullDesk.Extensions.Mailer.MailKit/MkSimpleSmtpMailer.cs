@@ -86,7 +86,6 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="textBody">The text body.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;MessageDeliveryItem&gt;.</returns>
-        /// <exception cref="ArgumentException"></exception>
         public virtual async Task<MessageDeliveryItem> SendMailAsync(
             string toEmailAddress,
             string toDisplayName,
@@ -115,7 +114,6 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="attachmentFiles">A collection of paths to attachment files to include in the message.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;MessageDeliveryItem&gt;.</returns>
-        /// <exception cref="ArgumentException"></exception>
         public virtual async Task<MessageDeliveryItem> SendMailAsync(
             string toEmailAddress,
             string toDisplayName,

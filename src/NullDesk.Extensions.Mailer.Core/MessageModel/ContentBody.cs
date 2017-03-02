@@ -7,6 +7,15 @@ namespace NullDesk.Extensions.Mailer.Core
     public class ContentBody : IMessageBody
     {
         /// <summary>
+        /// Creates a message body.
+        /// </summary>
+        /// <returns>ContentBody.</returns>
+        public static ContentBody Create()
+        {
+            return new ContentBody();
+        }
+
+        /// <summary>
         /// An HTML message body.
         /// </summary>
         /// <remarks>

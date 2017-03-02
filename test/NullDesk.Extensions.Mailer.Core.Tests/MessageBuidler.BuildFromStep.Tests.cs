@@ -12,7 +12,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData("Mr Toast")]
         [InlineData("")]
         [InlineData(null)]
-        public void BuldFromStepTests_WithDisplayName(string name)
+        public void WithDisplayName(string name)
         {
             var stepBuilder = new MessageBuilder.BuildFromStep(new MailerMessage().From("toast@toast.com"));
             var subStep = stepBuilder.WithDisplayName(name);
@@ -32,7 +32,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         }
 
 		[Fact]
-        public void BuldFromStepTests_And()
+        public void And()
         {
             var stepBuilder = new MessageBuilder.BuildFromStep(new MailerMessage().From("toast@toast.com"));
             var subStep = stepBuilder.And;

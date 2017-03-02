@@ -6,7 +6,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
     {
         public class BuildContentStep : BuilderContext
         {
-            internal BuildContentStep(MailerMessage context) : base(context) { }
+            public BuildContentStep(MailerMessage context) : base(context) { }
 
             public BuildRecipientsStep.BuildToStep To(string emailAddress)
                 => new BuildRecipientsStep.BuildToStep(Context, emailAddress);
@@ -19,20 +19,20 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
 
             public class BuildContentTemplateStep : BuilderContext
             {
-                internal BuildContentTemplateStep(MailerMessage context) : base(context) { }
+                public BuildContentTemplateStep(MailerMessage context) : base(context) { }
 
                 public BuildPostContentStep And
                     => new BuildPostContentStep(Context);
 
                 public MailerMessage Build()
-                    => new MailerMessage();
+                    => Context;
             }
 
             public class BuildBodyStep : BuilderContext
             {
                 private ContentBody Body { get; }
 
-                internal BuildBodyStep(MailerMessage context) : base(context)
+                public BuildBodyStep(MailerMessage context) : base(context)
                 {
                     Body = new ContentBody();
                     Context.Body = Body;
@@ -59,12 +59,12 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
                         => new BuildPostContentStep(Context);
 
                     public MailerMessage Build()
-                        => new MailerMessage();
+                        => Context;
                 }
 
                 public class BuildTextBodyStep : BuilderContentBodyContext
                 {
-                    private ContentBody Body;
+
                     public BuildTextBodyStep(MailerMessage context, ContentBody body) : base(context, body) { }
 
                     public BuildBodyCompleteStep AndHtml(string html)
@@ -77,7 +77,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
                         => new BuildPostContentStep(Context);
 
                     public MailerMessage Build()
-                        => new MailerMessage();
+                        => Context;
                 }
 
                 public class BuildBodyCompleteStep : BuilderContext
@@ -88,7 +88,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
                         => new BuildPostContentStep(Context);
 
                     public MailerMessage Build()
-                        => new MailerMessage();
+                        => Context;
                 }
             }
         }
