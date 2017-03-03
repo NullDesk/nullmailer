@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -19,11 +20,13 @@ namespace NullDesk.Extensions.Mailer.Core
     public abstract class Mailer<TSettings> : IMailer<TSettings> where TSettings : class, IMailerSettings
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Mailer" /> class.
+        /// Initializes a new instance of the <see cref="Mailer" /> class.
         /// </summary>
+        /// <param name="settings">The mailer settings.</param>
         /// <param name="logger">The logger.</param>
-        protected Mailer(ILogger logger = null)
+        protected Mailer(TSettings settings, ILogger logger = null)
         {
+            Settings = settings;
             Logger = logger ?? NullLogger.Instance;
         }
 
@@ -37,7 +40,7 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Settings for the mailer service
         /// </summary>
         /// <value>The settings.</value>
-        public abstract TSettings Settings { get; set; }
+        public TSettings Settings { get; set; }
 
         /// <summary>
         ///     Optional logger
@@ -50,9 +53,9 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <param name="messageBuilder">The message builder.</param>
         /// <returns>Task&lt;MailerMessage&gt;.</returns>
-        public virtual void CreateMessage(Expression<Func<MessageBuilder, IBuilderStepsCompleted>> messageBuilder)
+        public virtual void CreateMessage(Expression<Func<MessageBuilder.BuildSubjectStep, IBuilderStepsCompleted>> messageBuilder)
         {
-            Deliverables.Add(new DeliveryItem(messageBuilder.Compile().Invoke(new MessageBuilder())));
+            Deliverables.Add(new DeliveryItem(messageBuilder.Compile().Invoke(new MessageBuilder().ForSettings(Settings))));
         }
 
         /// <summary>
@@ -60,9 +63,9 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <param name="messageBuilder">The message builder.</param>
         /// <returns>Task&lt;MailerMessage&gt;.</returns>
-        public virtual void CreateMessage(Expression<Func<MessageBuilder, MailerMessage>> messageBuilder)
+        public virtual void CreateMessage(Expression<Func<MessageBuilder.BuildSubjectStep, MailerMessage>> messageBuilder)
         {
-            Deliverables.Add(new DeliveryItem(messageBuilder.Compile().Invoke(new MessageBuilder())));
+            Deliverables.Add(new DeliveryItem(messageBuilder.Compile().Invoke(new MessageBuilder().ForSettings(Settings))));
         }
 
         /// <summary>
@@ -92,10 +95,10 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;IEnumerable&lt;MessageDeliveryItem&gt;&gt; for each message sent.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        public virtual async Task<IEnumerable<MessageDeliveryItem>> SendAll(
+        public virtual async Task<IEnumerable<DeliveryItem>> SendAll(
             CancellationToken token = new CancellationToken())
         {
-            var sentItems = new List<MessageDeliveryItem>();
+            var sentItems = new List<DeliveryItem>();
             foreach (var message in Deliverables.Where(m => m.IsSuccess && !string.IsNullOrEmpty(m.ExceptionMessage)))
                 sentItems.Add(await Send(message.Id, token));
             return sentItems;
@@ -107,13 +110,13 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="id">The identifier.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;IEnumerable&lt;MessageDeliveryItem&gt;&gt;.</returns>
-        public abstract Task<MessageDeliveryItem> Send(Guid id, CancellationToken token = new CancellationToken());
+        public abstract Task<DeliveryItem> Send(Guid id, CancellationToken token = new CancellationToken());
 
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public abstract void Dispose();
 
-        ICollection<DeliveryItem> IMailer.Deliverables { get; set; }
+        ICollection<DeliveryItem> IMailer.Deliverables { get; set; } = new Collection<DeliveryItem>();
     }
 }

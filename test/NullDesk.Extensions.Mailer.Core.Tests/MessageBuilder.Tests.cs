@@ -4,7 +4,7 @@ using Xunit;
 
 namespace NullDesk.Extensions.Mailer.Core.Tests
 {
-    public class MessageBuidlerTests
+    public class MessageBuilderTests
     {
         [Theory]
         [InlineData("toast@toast.com")]

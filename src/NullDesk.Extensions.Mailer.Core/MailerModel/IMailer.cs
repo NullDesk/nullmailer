@@ -45,14 +45,14 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <param name="messageBuilder">The message builder.</param>
         /// <returns>Task&lt;MailerMessage&gt;.</returns>
-        void CreateMessage(Expression<Func<MessageBuilder, IBuilderStepsCompleted>> messageBuilder);
+        void CreateMessage(Expression<Func<MessageBuilder.BuildSubjectStep, IBuilderStepsCompleted>> messageBuilder);
 
         /// <summary>
         ///     Use the fluent builder API to add a message to the list of pending messages tracked by the mailer.
         /// </summary>
         /// <param name="messageBuilder">The message builder.</param>
         /// <returns>Task&lt;MailerMessage&gt;.</returns>
-        void CreateMessage(Expression<Func<MessageBuilder, MailerMessage>> messageBuilder);
+        void CreateMessage(Expression<Func<MessageBuilder.BuildSubjectStep, MailerMessage>> messageBuilder);
 
         /// <summary>
         ///     Adds a message to the list of pending messages tracked by the mailer.
@@ -71,7 +71,7 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Attempts to send all un-sent messages tracked by the mailer instance.
         /// </summary>
         /// <param name="token">The token.</param>
-        Task<IEnumerable<MessageDeliveryItem>> SendAll(CancellationToken token = default(CancellationToken));
+        Task<IEnumerable<DeliveryItem>> SendAll(CancellationToken token = default(CancellationToken));
 
         /// <summary>
         ///     Sends one pending message with the specified identifier.
@@ -79,6 +79,6 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="id">The identifier.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;IEnumerable&lt;MessageDeliveryItem&gt;&gt;.</returns>
-        Task<MessageDeliveryItem> Send(Guid id, CancellationToken token = default(CancellationToken));
+        Task<DeliveryItem> Send(Guid id, CancellationToken token = default(CancellationToken));
     }
 }
