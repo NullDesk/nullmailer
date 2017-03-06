@@ -8,18 +8,17 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Inf
 {
     public class SqlIntegrationFixture : IDisposable
     {
-        public IServiceProvider ServiceProvider { get; set; }
-
         public SqlIntegrationFixture()
         {
-
             //setup the dependency injection service
             var services = new ServiceCollection();
             services.AddLogging();
             services.AddOptions();
 
-            
-            var builder = new DbContextOptionsBuilder<SqlHistoryContext>().UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=NullDeskMailerHistoryTests;Trusted_Connection=True;");
+
+            var builder =
+                new DbContextOptionsBuilder<SqlHistoryContext>().UseSqlServer(
+                    @"Server=(localdb)\MSSQLLocalDB;Database=NullDeskMailerHistoryTests;Trusted_Connection=True;");
             services.AddSingleton<DbContextOptions>(s => builder.Options);
             services.AddTransient<SqlHistoryContext>();
             services.AddSingleton<IHistoryStore, EntityHistoryStore<SqlHistoryContext>>();
@@ -36,13 +35,12 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Inf
             logging.AddDebug(LogLevel.Debug);
         }
 
+        public IServiceProvider ServiceProvider { get; set; }
 
 
         public void Dispose()
         {
             ServiceProvider.GetService<SqlHistoryContext>().Database.EnsureDeleted();
         }
-
-
     }
 }

@@ -6,7 +6,6 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
 {
     public class BuildWithSubjectStepTests
     {
-
         [Fact]
         public void And()
         {
@@ -16,6 +15,5 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 .Should().NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildRecipientsStep>();
         }
-
     }
 }

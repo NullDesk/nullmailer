@@ -34,6 +34,14 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
             public BuildAttachmentOrSubstitutionStep WithAttachments(IDictionary<string, Stream> attachments)
                 => new BuildAttachmentOrSubstitutionStep(Context.WithAttachments(attachments));
 
+            /// <summary>
+            ///     Adds a collection of attachments to the message.
+            /// </summary>
+            /// <param name="attachments">The attachments.</param>
+            /// <returns>BuildAttachmentOrSubstitutionStep.</returns>
+            public BuildAttachmentOrSubstitutionStep WithAttachments(IEnumerable<string> attachments)
+                => new BuildAttachmentOrSubstitutionStep(Context.WithAttachments(attachments));
+
 
             /// <summary>
             ///     Adds an attachment to the message.

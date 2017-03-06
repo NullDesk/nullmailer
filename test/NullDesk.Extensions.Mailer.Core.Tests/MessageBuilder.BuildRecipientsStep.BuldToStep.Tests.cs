@@ -19,7 +19,6 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             stepBuilder
                 .Should().NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildRecipientsStep.BuildToStep.BuiltToWithDisplayStep>()
-
                 .Which.As<IBuilderContext>().Message.Recipients
                 .Should().NotBeEmpty()
                 .And.AllBeAssignableTo<MessageRecipient>()
@@ -58,7 +57,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [Fact]
         public void And()
         {
-            var stepBuilder = new MessageBuilder.BuildRecipientsStep.BuildToStep(new MailerMessage(),"toast@toast.com");
+            var stepBuilder = new MessageBuilder.BuildRecipientsStep.BuildToStep(new MailerMessage(), "toast@toast.com");
             var subStep = stepBuilder.And;
             subStep
                 .Should().NotBeNull()

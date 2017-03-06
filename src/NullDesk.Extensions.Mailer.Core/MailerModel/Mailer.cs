@@ -10,31 +10,41 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NullDesk.Extensions.Mailer.Core.Fluent;
 
 // ReSharper disable CheckNamespace
-
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
     ///     Base IMailer implementation.
     /// </summary>
     /// <seealso cref="IMailer" />
-    public abstract class Mailer<TSettings> : IMailer<TSettings> where TSettings : class, IMailerSettings
+    public abstract class Mailer<TSettings> : IMailer<TSettings>, IHistoryMailer where TSettings : class, IMailerSettings
     {
+        private readonly AsyncLock _deliverablesLock = new AsyncLock();
+
+
+        /// <summary>
+        ///     Gets the history store.
+        /// </summary>
+        /// <value>The history store.</value>
+        public IHistoryStore HistoryStore { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Mailer" /> class.
         /// </summary>
         /// <param name="settings">The mailer settings.</param>
         /// <param name="logger">The logger.</param>
-        protected Mailer(TSettings settings, ILogger logger = null)
+        /// <param name="historyStore">The history store.</param>
+        protected Mailer(TSettings settings, ILogger logger = null, IHistoryStore historyStore = null)
         {
             Settings = settings;
             Logger = logger ?? NullLogger.Instance;
+            HistoryStore = historyStore ?? NullHistoryStore.Instance;
         }
 
         /// <summary>
         ///     A collection of all messages tracked by this mailer instance.
         /// </summary>
         /// <value>The messages.</value>
-        protected ICollection<DeliveryItem> Deliverables => ((IMailer) this).Deliverables;
+        protected ICollection<DeliveryItem> DeliveryItems => ((IMailer)this).Deliverables;
 
         /// <summary>
         ///     Settings for the mailer service
@@ -52,41 +62,59 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Use the fluent builder API to add a message to the list of pending messages tracked by the mailer.
         /// </summary>
         /// <param name="messageBuilder">The message builder.</param>
-        /// <returns>Task&lt;MailerMessage&gt;.</returns>
-        public virtual void CreateMessage(Expression<Func<MessageBuilder.BuildSubjectStep, IBuilderStepsCompleted>> messageBuilder)
+        /// <returns>A collection of delivery item identifiers.</returns>
+        public virtual IEnumerable<Guid> CreateMessage(
+            Expression<Func<MessageBuilder.BuildSubjectStep, IBuilderStepsCompleted>> messageBuilder)
         {
-            Deliverables.Add(new DeliveryItem(messageBuilder.Compile().Invoke(new MessageBuilder().ForSettings(Settings))));
+            var message = messageBuilder.Compile().Invoke(new MessageBuilder().ForSettings(Settings)).Build();
+            return AddMessage(message);
         }
 
         /// <summary>
         ///     Use the fluent builder API to add a message to the list of pending messages tracked by the mailer.
         /// </summary>
         /// <param name="messageBuilder">The message builder.</param>
-        /// <returns>Task&lt;MailerMessage&gt;.</returns>
-        public virtual void CreateMessage(Expression<Func<MessageBuilder.BuildSubjectStep, MailerMessage>> messageBuilder)
+        /// <returns>A collection of delivery item identifiers.</returns>
+        public virtual IEnumerable<Guid> CreateMessage(
+            Expression<Func<MessageBuilder.BuildSubjectStep, MailerMessage>> messageBuilder)
         {
-            Deliverables.Add(new DeliveryItem(messageBuilder.Compile().Invoke(new MessageBuilder().ForSettings(Settings))));
-        }
-
-        /// <summary>
-        ///     Adds a message to the list of pending messages tracked by the mailer.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        /// <returns>Task&lt;MailerMessage&gt;.</returns>
-        public virtual void AddMessage(MailerMessage message)
-        {
-            Deliverables.Add(new DeliveryItem(message));
+            var message = messageBuilder.Compile().Invoke(new MessageBuilder().ForSettings(Settings));
+            return AddMessage(message);
         }
 
         /// <summary>
         ///     Adds a collection of messages to the list of pending messages tracked by the mailer.
         /// </summary>
         /// <param name="messages">The messages to add.</param>
-        /// <returns>Task&lt;MailerMessage&gt;.</returns>
-        public virtual void AddMessages(IEnumerable<MailerMessage> messages)
+        /// <returns>A collection of delivery item identifiers.</returns>
+        public virtual IEnumerable<Guid> AddMessages(IEnumerable<MailerMessage> messages)
         {
-            foreach (var message in messages)
-                AddMessage(message);
+            var ids = new List<Guid>();
+            foreach (var m in messages)
+            {
+                ids.AddRange(AddMessage(m));
+            }
+            return ids;
+        }
+
+        /// <summary>
+        ///     Adds a message to the list of pending messages tracked by the mailer.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <returns>A collection of delivery item identifiers.</returns>
+        public virtual IEnumerable<Guid> AddMessage(MailerMessage message)
+        {
+            CheckIsDeliverable(message);
+            var items = message.Recipients.Select(recipient => new DeliveryItem(message, recipient)).ToList();
+
+            using (_deliverablesLock.LockAsync().Result)
+            {
+                foreach (var i in items)
+                {
+                    ((IMailer)this).Deliverables.Add(i);
+                }
+            }
+            return items.Select(i => i.Id);
         }
 
         /// <summary>
@@ -95,28 +123,97 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;IEnumerable&lt;MessageDeliveryItem&gt;&gt; for each message sent.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        public virtual async Task<IEnumerable<DeliveryItem>> SendAll(
+        public virtual async Task<IEnumerable<DeliveryItem>> SendAllAsync(
             CancellationToken token = new CancellationToken())
         {
             var sentItems = new List<DeliveryItem>();
-            foreach (var message in Deliverables.Where(m => m.IsSuccess && !string.IsNullOrEmpty(m.ExceptionMessage)))
-                sentItems.Add(await Send(message.Id, token));
+            var sendIds = new List<Guid>();
+            using (await _deliverablesLock.LockAsync())
+            {
+                foreach (var message in
+                    ((IMailer)this).Deliverables.Where(m => !m.IsSuccess && string.IsNullOrEmpty(m.ExceptionMessage)))
+                {
+                    sendIds.Add(message.Id);
+                }
+            }
+            foreach (var id in sendIds)
+            {
+                sentItems.Add(await SendAsync(id, token));
+            }
             return sentItems;
         }
 
         /// <summary>
-        ///     Sends one pending message with the specified identifier.
+        ///     Sends one pending delivery item with the specified identifier.
         /// </summary>
-        /// <param name="id">The identifier.</param>
+        /// <param name="id">The delivery item identifier.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;IEnumerable&lt;MessageDeliveryItem&gt;&gt;.</returns>
-        public abstract Task<DeliveryItem> Send(Guid id, CancellationToken token = new CancellationToken());
+        public virtual async Task<DeliveryItem> SendAsync(Guid id, CancellationToken token = new CancellationToken())
+        {
+            using (await _deliverablesLock.LockAsync())
+            {
+                var deliveryItem = ((IMailer)this).Deliverables.FirstOrDefault(d => d.Id == id);
+                try
+                {
+                    deliveryItem = await DeliverMessageAsync(deliveryItem, token);
+                    deliveryItem.IsSuccess = true;
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(1, ex, ex.Message);
+                    deliveryItem.ExceptionMessage = ex.Message;
+                }
+                finally
+                {
+
+                    await HistoryStore.AddAsync(deliveryItem, token);
+                }
+                return deliveryItem;
+            }
+        }
+
+        /// <summary>
+        /// ReSends the message from history data.
+        /// </summary>
+        /// <param name="id">The delivery item identifier to resend.</param>
+        /// <param name="token">The token.</param>
+        /// <returns>Task&lt;System.Boolean&gt;.</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        public virtual async Task<bool> ReSend(Guid id, CancellationToken token)
+        {
+            await Task.CompletedTask;
+            throw new NotImplementedException();
+        }
+
+        ICollection<DeliveryItem> IMailer.Deliverables { get; set; } = new Collection<DeliveryItem>();
+
 
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public abstract void Dispose();
 
-        ICollection<DeliveryItem> IMailer.Deliverables { get; set; } = new Collection<DeliveryItem>();
+        /// <summary>
+        ///     When overridden in a derived class, uses the mailer's underlying mail delivery service to send the specified
+        ///     message .
+        /// </summary>
+        /// <param name="deliveryItem">The delivery item containing the message you wish to send.</param>
+        /// <param name="token">The token.</param>
+        /// <returns>Task&lt;DeliveryItem&gt;.</returns>
+        protected abstract Task<DeliveryItem> DeliverMessageAsync(DeliveryItem deliveryItem,
+            CancellationToken token = new CancellationToken());
+
+        private void CheckIsDeliverable(MailerMessage message)
+        {
+            if (!message.IsDeliverable)
+            {
+                var ex =
+                    new ArgumentException(
+                        "Unable to add one or more messages to the mailer instance, message is not valid for delivery. Make sure all messages have a sender, body, and at least one recipient specified");
+                Logger.LogError(1, ex, ex.Message);
+                throw ex;
+            }
+        }
     }
 }

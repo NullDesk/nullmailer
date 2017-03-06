@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
 {
@@ -132,7 +133,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
         public static MailerMessage To(this MailerMessage message, IEnumerable<MessageRecipient> recipients)
         {
             foreach (var recipient in recipients)
+            {
                 message.Recipients.Add(recipient);
+            }
             return message;
         }
 
@@ -170,8 +173,13 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
         /// <returns>MailerMessage.</returns>
         public static MailerMessage WithAttachments(this MailerMessage message, IDictionary<string, Stream> attachments)
         {
-            foreach (var attachment in attachments)
-                message.Attachments.Add(attachment);
+            if (attachments != null && attachments.Any())
+            {
+                foreach (var attachment in attachments)
+                {
+                    message.Attachments.Add(attachment);
+                }
+            }
             return message;
         }
 
@@ -183,8 +191,11 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
         /// <returns>MailerMessage.</returns>
         public static MailerMessage WithAttachments(this MailerMessage message, IEnumerable<string> attachments)
         {
-            foreach (var attachment in attachments)
+            foreach (var attachment in attachments ?? new string[0])
+            {
                 message.Attachments.Add(attachment.GetAttachmentStreamForFile());
+            }
+
             return message;
         }
 
@@ -211,7 +222,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
             IDictionary<string, string> substitutions)
         {
             foreach (var substitution in substitutions)
+            {
                 message.Substitutions.Add(substitution);
+            }
             return message;
         }
 

@@ -1,25 +1,69 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.History.EntityFramework.Tests.Infrastructure;
 using NullDesk.Extensions.Mailer.Tests.Common;
 using Xunit;
-// ReSharper disable PossibleMultipleEnumeration
 
+// ReSharper disable PossibleMultipleEnumeration
 namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests
 {
     public class HistoryContextTests : IClassFixture<MemoryEfFixture>
     {
-        private const string Subject = "xunit Test run: no template - history";
-
-        private MemoryEfFixture Fixture { get; }
+        private Dictionary<string, string> ReplacementVars { get; } = new Dictionary<string, string>();
 
         public HistoryContextTests(MemoryEfFixture fixture)
         {
+            ReplacementVars.Add("%name%", "Mr. Toast");
             Fixture = fixture;
+        }
+
+        private const string Subject = "xunit Test run: content body";
+
+        private MemoryEfFixture Fixture { get; }
+
+        [Theory]
+        [Trait("TestType", "Unit")]
+        [ClassData(typeof(StandardMailerTestData))]
+        public async Task SendMailWithHistory(string html, string text, string[] attachments)
+        {
+            attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
+
+            var mailer = Fixture.ServiceProvider.GetService<IMailer>();
+            var deliveryItems =
+                mailer.CreateMessage(b => b
+                    .Subject(Subject)
+                    .And.To("noone@toast.com").WithDisplayName("No One Important")
+                    .And.ForBody().WithHtml(html).AndPlainText(text)
+                    .And.WithSubstitutions(ReplacementVars)
+                    .And.WithAttachments(attachments).Build());
+
+            var result = await mailer.SendAllAsync(CancellationToken.None);
+            result
+                .Should().NotBeNull()
+                .And.AllBeOfType<DeliveryItem>()
+                .And.HaveSameCount(deliveryItems)
+                .And.OnlyContain(i => i.IsSuccess);
+
+            var store = Fixture.ServiceProvider.GetService<IHistoryStore>();
+
+            store.Should().BeOfType<EntityHistoryStore<TestHistoryContext>>();
+
+            var item = await store.GetAsync(result.First().Id, CancellationToken.None);
+
+            var m = item
+                .Should().NotBeNull()
+                .And.BeOfType<DeliveryItem>();
+
+            m.Which.BodyJson.Should().NotBeNullOrEmpty();
+            m.Which.Subject.Should().Be(Subject);
+
         }
 
 
@@ -34,7 +78,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests
 
             for (var x = 0; x < 15; x++)
             {
-                await store.AddAsync(new MessageDeliveryItem
+                await store.AddAsync(new DeliveryItem(MailerMessage.Create(), new MessageRecipient())
                 {
                     CreatedDate = DateTimeOffset.Now,
                     ToDisplayName = x.ToString(),
@@ -43,8 +87,10 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests
                     DeliveryProvider = "xunit",
                     Id = Guid.NewGuid(),
                     IsSuccess = true,
-                    MessageData = x.ToString(),
-                    ExceptionMessage = null
+                    ExceptionMessage = null,
+                    Body = new ContentBody() { PlainTextContent = "content" },
+                    FromDisplayName = "noone",
+                    FromEmailAddress = "noone@nowhere.com"
                 });
             }
 
@@ -55,37 +101,6 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests
             var secondPageitems = await store.GetAsync(10, 5, CancellationToken.None);
 
             secondPageitems.Should().HaveCount(5).And.NotBeSameAs(items);
-
-        }
-
-        [Theory]
-        [Trait("TestType", "Unit")]
-        [ClassData(typeof(StandardMailerTestData))]
-        public async Task SendMailWithHistory(string html, string text, string[] attachments)
-        {
-            var mailer = Fixture.ServiceProvider.GetService<ISimpleMailer>();
-            var result =
-                await
-                    mailer.SendMailAsync(
-                        "noone@toast.com",
-                        "No One Important",
-                        Subject,
-                        html,
-                        text,
-                        attachments,
-                        CancellationToken.None
-                    );
-            result.Should().BeOfType<MessageDeliveryItem>().Which.IsSuccess.Should().BeTrue();
-
-            var store = Fixture.ServiceProvider.GetService<IHistoryStore>();
-
-            store.Should().BeOfType<EntityHistoryStore<TestHistoryContext>>();
-
-            var item = await store.GetAsync(result.Id, CancellationToken.None);
-
-            var m = item.Should().NotBeNull().And.BeOfType<MessageDeliveryItem>().Which;
-            m.Subject.Should().Be(Subject);
-            m.MessageData.Should().NotBeNullOrEmpty();
         }
     }
 }

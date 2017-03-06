@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 
 // ReSharper disable CheckNamespace
-
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
@@ -12,11 +11,6 @@ namespace NullDesk.Extensions.Mailer.Core
     /// </summary>
     public class MailerMessage
     {
-        /// <summary>
-        ///     The unique message identifier
-        /// </summary>
-        public Guid Id { get; set; } = Guid.NewGuid();
-
         /// <summary>
         ///     Gets or sets the message body.
         /// </summary>
@@ -60,6 +54,14 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <value>The attachments.</value>
         public IDictionary<string, Stream> Attachments { get; set; } = new Dictionary<string, Stream>();
+
+        /// <summary>
+        ///     Determines whether this instance is deliverable.
+        /// </summary>
+        /// <returns><c>true</c> if this instance is deliverable; otherwise, <c>false</c>.</returns>
+        public bool IsDeliverable =>
+            Recipients.Any() && From != null && Body != null;
+
 
         /// <summary>
         ///     Creates a mailer message.

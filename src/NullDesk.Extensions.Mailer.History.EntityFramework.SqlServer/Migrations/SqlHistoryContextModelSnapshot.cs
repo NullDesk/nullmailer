@@ -1,4 +1,5 @@
 ﻿// ReSharper disable All
+
 #pragma warning disable 1591
 using System;
 using Microsoft.EntityFrameworkCore;
@@ -17,35 +18,35 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migration
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("NullDesk.Extensions.Mailer.Core.MessageDeliveryItem", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<DateTimeOffset>("CreatedDate");
+                b.Property<DateTimeOffset>("CreatedDate");
 
-                    b.Property<string>("DeliveryProvider")
-                        .HasMaxLength(50);
+                b.Property<string>("DeliveryProvider")
+                    .HasMaxLength(50);
 
-                    b.Property<string>("ExceptionMessage")
-                        .HasMaxLength(500);
+                b.Property<string>("ExceptionMessage")
+                    .HasMaxLength(500);
 
-                    b.Property<bool>("IsSuccess");
+                b.Property<bool>("IsSuccess");
 
-                    b.Property<string>("MessageData");
+                b.Property<string>("MessageData");
 
-                    b.Property<string>("Subject")
-                        .HasMaxLength(250);
+                b.Property<string>("Subject")
+                    .HasMaxLength(250);
 
-                    b.Property<string>("ToDisplayName")
-                        .HasMaxLength(200);
+                b.Property<string>("ToDisplayName")
+                    .HasMaxLength(200);
 
-                    b.Property<string>("ToEmailAddress")
-                        .HasMaxLength(200);
+                b.Property<string>("ToEmailAddress")
+                    .HasMaxLength(200);
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("MessageHistory");
-                });
+                b.ToTable("MessageHistory");
+            });
         }
     }
 }

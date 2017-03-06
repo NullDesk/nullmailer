@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using NullDesk.Extensions.Mailer.Core.Fluent;
 
 // ReSharper disable CheckNamespace
-
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
@@ -44,34 +43,35 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Use the fluent builder API to add a message to the list of pending messages tracked by the mailer.
         /// </summary>
         /// <param name="messageBuilder">The message builder.</param>
-        /// <returns>Task&lt;MailerMessage&gt;.</returns>
-        void CreateMessage(Expression<Func<MessageBuilder.BuildSubjectStep, IBuilderStepsCompleted>> messageBuilder);
+        /// <returns>A collection of delivery item identifiers.</returns>
+        IEnumerable<Guid> CreateMessage(
+            Expression<Func<MessageBuilder.BuildSubjectStep, IBuilderStepsCompleted>> messageBuilder);
 
         /// <summary>
         ///     Use the fluent builder API to add a message to the list of pending messages tracked by the mailer.
         /// </summary>
         /// <param name="messageBuilder">The message builder.</param>
-        /// <returns>Task&lt;MailerMessage&gt;.</returns>
-        void CreateMessage(Expression<Func<MessageBuilder.BuildSubjectStep, MailerMessage>> messageBuilder);
+        /// <returns>A collection of delivery item identifiers.</returns>
+        IEnumerable<Guid> CreateMessage(Expression<Func<MessageBuilder.BuildSubjectStep, MailerMessage>> messageBuilder);
 
         /// <summary>
         ///     Adds a message to the list of pending messages tracked by the mailer.
         /// </summary>
         /// <param name="message">The message.</param>
-        /// <returns>Task&lt;MailerMessage&gt;.</returns>
-        void AddMessage(MailerMessage message);
+        /// <returns>A collection of delivery item identifiers.</returns>
+        IEnumerable<Guid> AddMessage(MailerMessage message);
 
         /// <summary>
         ///     Adds a collection of messages to the list of pending messages tracked by the mailer.
         /// </summary>
-        /// <param name="messages">The messages to add.</param>
-        void AddMessages(IEnumerable<MailerMessage> messages);
+        /// <returns>A collection of delivery item identifiers.</returns>
+        IEnumerable<Guid> AddMessages(IEnumerable<MailerMessage> messages);
 
         /// <summary>
         ///     Attempts to send all un-sent messages tracked by the mailer instance.
         /// </summary>
         /// <param name="token">The token.</param>
-        Task<IEnumerable<DeliveryItem>> SendAll(CancellationToken token = default(CancellationToken));
+        Task<IEnumerable<DeliveryItem>> SendAllAsync(CancellationToken token = default(CancellationToken));
 
         /// <summary>
         ///     Sends one pending message with the specified identifier.
@@ -79,6 +79,6 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="id">The identifier.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;IEnumerable&lt;MessageDeliveryItem&gt;&gt;.</returns>
-        Task<DeliveryItem> Send(Guid id, CancellationToken token = default(CancellationToken));
+        Task<DeliveryItem> SendAsync(Guid id, CancellationToken token = default(CancellationToken));
     }
 }

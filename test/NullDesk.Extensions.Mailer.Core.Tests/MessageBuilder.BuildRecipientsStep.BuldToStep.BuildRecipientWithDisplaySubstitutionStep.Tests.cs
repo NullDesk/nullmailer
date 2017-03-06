@@ -8,7 +8,6 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
 {
     public class BuildRecipientWithDisplaySubstitutionStep
     {
-
         [Theory]
         [InlineData("toast@toast.com", "a", "b")]
         [InlineData("toast@toast.com", "", "d")]
@@ -18,7 +17,9 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         public void WithPersonalizedSubstitution(string address, string token, string value)
         {
             var rec = new MessageRecipient().ToAddress(address);
-            var toStep = new MessageBuilder.BuildRecipientsStep.BuildToStep.BuildRecipientWithDisplaySubstitutionStep(new MailerMessage().To(rec), rec);
+            var toStep =
+                new MessageBuilder.BuildRecipientsStep.BuildToStep.BuildRecipientWithDisplaySubstitutionStep(
+                    new MailerMessage().To(rec), rec);
             if (token == null)
             {
                 toStep.Invoking(c => c.WithPersonalizedSubstitution(null, value)).ShouldThrow<ArgumentNullException>();
@@ -29,7 +30,8 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
 
                 stepBuilder
                     .Should().NotBeNull()
-                    .And.BeOfType<MessageBuilder.BuildRecipientsStep.BuildToStep.BuildRecipientWithDisplaySubstitutionStep>()
+                    .And
+                    .BeOfType<MessageBuilder.BuildRecipientsStep.BuildToStep.BuildRecipientWithDisplaySubstitutionStep>()
                     .Which.As<IBuilderContext>().Message.Recipients
                     .Should().NotBeEmpty()
                     .And.AllBeAssignableTo<MessageRecipient>()
@@ -43,7 +45,9 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         public void And()
         {
             var rec = new MessageRecipient().ToAddress("toast@toast.com");
-            var toStep = new MessageBuilder.BuildRecipientsStep.BuildToStep.BuildRecipientWithDisplaySubstitutionStep(new MailerMessage().To(rec), rec);
+            var toStep =
+                new MessageBuilder.BuildRecipientsStep.BuildToStep.BuildRecipientWithDisplaySubstitutionStep(
+                    new MailerMessage().To(rec), rec);
             toStep.And
                 .Should().NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildContentStep>();

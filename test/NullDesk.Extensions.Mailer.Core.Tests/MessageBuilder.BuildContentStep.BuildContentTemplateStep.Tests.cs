@@ -8,19 +8,11 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
     public class BuildContentTemplateStep
     {
         [Fact]
-        public void ForBody()
-        {
-            var contentStep = new MessageBuilder.BuildContentStep.BuildContentTemplateStep(new MailerMessage().WithBody<TemplateBody>(b => b.TemplateName = "toast"));
-            var stepBuilder = contentStep.And;
-            stepBuilder
-                .Should().NotBeNull()
-                .And.BeOfType<MessageBuilder.BuildPostContentStep>();
-        }
-
-        [Fact]
         public void Build()
         {
-            var contentStep = new MessageBuilder.BuildContentStep.BuildContentTemplateStep(new MailerMessage().WithBody<TemplateBody>(b => b.TemplateName = "toast"));
+            var contentStep =
+                new MessageBuilder.BuildContentStep.BuildContentTemplateStep(
+                    new MailerMessage().WithBody<TemplateBody>(b => b.TemplateName = "toast"));
             var message = contentStep.Build();
             message
                 .Should().NotBeNull()
@@ -28,6 +20,18 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 .Which.Body.As<TemplateBody>().TemplateName
                 .Should().NotBeNullOrEmpty()
                 .And.Be("toast");
+        }
+
+        [Fact]
+        public void ForBody()
+        {
+            var contentStep =
+                new MessageBuilder.BuildContentStep.BuildContentTemplateStep(
+                    new MailerMessage().WithBody<TemplateBody>(b => b.TemplateName = "toast"));
+            var stepBuilder = contentStep.And;
+            stepBuilder
+                .Should().NotBeNull()
+                .And.BeOfType<MessageBuilder.BuildPostContentStep>();
         }
     }
 }

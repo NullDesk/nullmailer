@@ -15,7 +15,6 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData(null)]
         public void WithAttachment(string fileName)
         {
-
             var contentStep = new MessageBuilder.BuildPostContentStep(MailerMessage.Create());
             if (string.IsNullOrEmpty(fileName))
             {
@@ -37,7 +36,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                     .Should().Contain(Path.GetFileName(path));
             }
         }
-        
+
         [Theory]
         [InlineData("a", "b")]
         [InlineData("", "d")]
@@ -75,7 +74,6 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             message
                 .Should().NotBeNull()
                 .And.BeOfType<MailerMessage>();
-
         }
     }
 }

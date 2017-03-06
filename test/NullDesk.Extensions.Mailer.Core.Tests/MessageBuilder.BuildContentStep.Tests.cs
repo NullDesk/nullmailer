@@ -39,8 +39,6 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 .Which.As<IBuilderContext>()
                 .Message.Body.As<TemplateBody>().TemplateName
                 .Should().Be(templateName);
-
-
         }
 
         [Fact]

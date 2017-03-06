@@ -7,8 +7,6 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
 {
     public class BuildTextBodyStep
     {
-
-
         [Theory]
         [InlineData("<tag>content</tag>")]
         [InlineData("")]
@@ -16,8 +14,9 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         public void AndHtml(string html)
         {
             var body = new ContentBody().WithPlainText("some text");
-            var contentStep = new MessageBuilder.BuildContentStep.BuildBodyStep
-                .BuildTextBodyStep(MailerMessage.Create().WithBody(body), body);
+            var contentStep =
+                new MessageBuilder.BuildContentStep.BuildBodyStep.BuildTextBodyStep(
+                    MailerMessage.Create().WithBody(body), body);
             var stepBuilder = contentStep.AndHtml(html);
             stepBuilder
                 .Should().NotBeNull()
@@ -40,10 +39,8 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         public void And()
         {
             var contentStep =
-                new MessageBuilder
-                    .BuildContentStep
-                        .BuildBodyStep
-                            .BuildTextBodyStep(MailerMessage.Create(), ContentBody.Create());
+                new MessageBuilder.BuildContentStep.BuildBodyStep.BuildTextBodyStep(MailerMessage.Create(),
+                    ContentBody.Create());
             contentStep.And
                 .Should().NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildPostContentStep>();
@@ -53,8 +50,9 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         public void Build()
         {
             var body = new ContentBody().WithPlainText("some text");
-            var contentStep = new MessageBuilder.BuildContentStep.BuildBodyStep
-                .BuildTextBodyStep(MailerMessage.Create().WithBody(body), body);
+            var contentStep =
+                new MessageBuilder.BuildContentStep.BuildBodyStep.BuildTextBodyStep(
+                    MailerMessage.Create().WithBody(body), body);
 
             var message = contentStep.Build();
             message

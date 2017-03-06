@@ -5,50 +5,77 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Xunit;
 using Microsoft.Extensions.DependencyInjection;
 using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure;
 using NullDesk.Extensions.Mailer.Tests.Common;
+using Xunit;
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests
 {
     public class MkSmtpMailerTests : IClassFixture<StandardMailFixture>
     {
-
-        private StandardMailFixture Fixture { get; }
-
-        private Dictionary<string, string> ReplacementVars { get; } = new Dictionary<string, string>();
-
         public MkSmtpMailerTests(StandardMailFixture fixture)
         {
             ReplacementVars.Add("%name%", "Mr. Toast");
             Fixture = fixture;
         }
 
+        private StandardMailFixture Fixture { get; }
+
+        private Dictionary<string, string> ReplacementVars { get; } = new Dictionary<string, string>();
+
         [Theory]
         [Trait("TestType", "Unit")]
-        [ClassData(typeof(TemplateMailerTestData))]
-        public async Task SendMailWithTemplate(string template, string[] attachments)
+        [ClassData(typeof(StandardMailerTestData))]
+        public async Task SendAll_WithContentBody(string html, string text, string[] attachments)
         {
             attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
 
-            var mailer = Fixture.ServiceProvider.GetService<IStandardMailer>();
+            var mailer = Fixture.ServiceProvider.GetService<IMailer>();
 
-            var result =
-                await
-                    mailer.SendMailAsync(
-                        template,
-                        "noone@toast.com",
-                        "No One Important",
-                        $"xunit Test run: {template}",
-                        ReplacementVars,
-                        attachments,
-                        CancellationToken.None);
+            var deliveryItems =
+                mailer.CreateMessage(b => b
+                    .Subject($"xunit Test run: content body")
+                    .And.To("noone@toast.com").WithDisplayName("No One Important")
+                    .And.ForBody().WithHtml(html).AndPlainText(text)
+                    .And.WithSubstitutions(ReplacementVars)
+                    .And.WithAttachments(attachments).Build());
 
-            var m = result.Should().NotBeNull().And.BeOfType<MessageDeliveryItem>().Which;
-            m.IsSuccess.Should().BeTrue();
-            m.MessageData.Should().NotBeNullOrEmpty();
+            var result = await mailer.SendAllAsync(CancellationToken.None);
+
+            result
+                .Should().NotBeNull()
+                .And.AllBeOfType<DeliveryItem>()
+                .And.HaveSameCount(deliveryItems)
+                .And.OnlyContain(i => i.IsSuccess);
+        }
+
+        [Theory]
+        [Trait("TestType", "Unit")]
+        [ClassData(typeof(TemplateMailerTestData))]
+        public async Task SendAll_WithTemplate(string template, string[] attachments)
+        {
+            attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
+
+            var mailer = Fixture.ServiceProvider.GetService<IMailer>();
+
+            var deliveryItems =
+                mailer.CreateMessage(b => b
+                    .Subject($"xunit Test run: %template%")
+                    .And.To("noone@toast.com").WithDisplayName("No One Important")
+                    .And.ForTemplate(template)
+                    .And.WithSubstitutions(ReplacementVars)
+                    .And.WithSubstitution("%template%", template)
+                    .And.WithAttachments(attachments).Build());
+
+            var result = await mailer.SendAllAsync(CancellationToken.None);
+
+            result
+                .Should().NotBeNull()
+                .And.AllBeOfType<DeliveryItem>()
+                .And.HaveSameCount(deliveryItems)
+                .And.OnlyContain(i => i.IsSuccess);
         }
     }
 }

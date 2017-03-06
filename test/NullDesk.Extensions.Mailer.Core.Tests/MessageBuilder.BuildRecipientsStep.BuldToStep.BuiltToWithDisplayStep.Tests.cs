@@ -8,7 +8,6 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
 {
     public class BuildRecipientSubstitutionStep
     {
-
         [Theory]
         [InlineData("toast@toast.com", "Mr Toast")]
         [InlineData("toast@toast.com", "")]
@@ -16,13 +15,14 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         public void WithDisplayName(string address, string display)
         {
             var rec = new MessageRecipient().ToAddress(address);
-            var toStep = new MessageBuilder.BuildRecipientsStep.BuildToStep.BuildRecipientSubstitutionStep(new MailerMessage().To(rec), rec);
+            var toStep =
+                new MessageBuilder.BuildRecipientsStep.BuildToStep.BuildRecipientSubstitutionStep(
+                    new MailerMessage().To(rec), rec);
             var stepBuilder = toStep.WithDisplayName(display);
 
             stepBuilder
                 .Should().NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildRecipientsStep.BuildToStep.BuiltToWithDisplayStep>()
-
                 .Which.As<IBuilderContext>().Message.Recipients
                 .Should().NotBeEmpty()
                 .And.AllBeAssignableTo<MessageRecipient>()
@@ -38,7 +38,9 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         public void WithPersonalizedSubstitution(string address, string token, string value)
         {
             var rec = new MessageRecipient().ToAddress(address);
-            var toStep = new MessageBuilder.BuildRecipientsStep.BuildToStep.BuildRecipientSubstitutionStep(new MailerMessage().To(rec), rec);
+            var toStep =
+                new MessageBuilder.BuildRecipientsStep.BuildToStep.BuildRecipientSubstitutionStep(
+                    new MailerMessage().To(rec), rec);
             if (token == null)
             {
                 toStep.Invoking(c => c.WithPersonalizedSubstitution(null, value)).ShouldThrow<ArgumentNullException>();
@@ -63,7 +65,9 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         public void And()
         {
             var rec = new MessageRecipient().ToAddress("toast@toast.com");
-            var toStep = new MessageBuilder.BuildRecipientsStep.BuildToStep.BuildRecipientSubstitutionStep(new MailerMessage().To(rec), rec);
+            var toStep =
+                new MessageBuilder.BuildRecipientsStep.BuildToStep.BuildRecipientSubstitutionStep(
+                    new MailerMessage().To(rec), rec);
             var subStep = toStep.And;
             subStep
                 .Should().NotBeNull()

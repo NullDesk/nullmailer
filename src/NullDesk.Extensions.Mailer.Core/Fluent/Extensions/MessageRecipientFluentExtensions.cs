@@ -42,7 +42,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
             IDictionary<string, string> substitutions)
         {
             foreach (var substitution in substitutions)
+            {
                 recipient.PersonalizedSubstitutions.Add(substitution);
+            }
             return recipient;
         }
 

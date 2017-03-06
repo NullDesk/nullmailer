@@ -7,8 +7,6 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
 {
     public class BuildHtmlBodyStep
     {
-
-
         [Theory]
         [InlineData("text content")]
         [InlineData("")]
@@ -16,8 +14,9 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         public void AndPlainText(string text)
         {
             var body = new ContentBody().WithHtml("<tag>something</tag>");
-            var contentStep = new MessageBuilder.BuildContentStep.BuildBodyStep
-                .BuildHtmlBodyStep(MailerMessage.Create().WithBody(body), body);
+            var contentStep =
+                new MessageBuilder.BuildContentStep.BuildBodyStep.BuildHtmlBodyStep(
+                    MailerMessage.Create().WithBody(body), body);
             var stepBuilder = contentStep.AndPlainText(text);
             stepBuilder
                 .Should().NotBeNull()
@@ -39,11 +38,9 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [Fact]
         public void And()
         {
-            var contentStep = 
-                new MessageBuilder
-                    .BuildContentStep
-                        .BuildBodyStep
-                            .BuildHtmlBodyStep(MailerMessage.Create(), ContentBody.Create());
+            var contentStep =
+                new MessageBuilder.BuildContentStep.BuildBodyStep.BuildHtmlBodyStep(MailerMessage.Create(),
+                    ContentBody.Create());
             contentStep.And
                 .Should().NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildPostContentStep>();
@@ -53,8 +50,9 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         public void Build()
         {
             var body = new ContentBody().WithHtml("<tag>something</tag>");
-            var contentStep = new MessageBuilder.BuildContentStep.BuildBodyStep
-                .BuildHtmlBodyStep(MailerMessage.Create().WithBody(body), body);
+            var contentStep =
+                new MessageBuilder.BuildContentStep.BuildBodyStep.BuildHtmlBodyStep(
+                    MailerMessage.Create().WithBody(body), body);
             var message = contentStep.Build();
             message
                 .Should().NotBeNull()
