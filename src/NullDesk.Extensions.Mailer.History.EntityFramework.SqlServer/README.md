@@ -13,3 +13,7 @@ To manage migrations in the short term, do the following:
 
      PM> Add-Migration -StartupProject test\NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests -Name v3.0.0
 
+- Add the following to the top of each generated file
+
+    // ReSharper disable All
+    #pragma warning disable 1591

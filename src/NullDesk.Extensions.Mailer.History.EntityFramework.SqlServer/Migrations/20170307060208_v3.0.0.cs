@@ -1,4 +1,7 @@
-﻿using System;
+﻿// ReSharper disable All
+
+#pragma warning disable 1591
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 

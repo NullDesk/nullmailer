@@ -1,4 +1,7 @@
-﻿using System;
+﻿// ReSharper disable All
+
+#pragma warning disable 1591
+using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
