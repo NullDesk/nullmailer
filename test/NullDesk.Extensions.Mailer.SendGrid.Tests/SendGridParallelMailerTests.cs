@@ -1,31 +1,33 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
+using System.Linq;
 using System.Threading.Tasks;
-using Xunit;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure;
 using NullDesk.Extensions.Mailer.Tests.Common;
-using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
 namespace NullDesk.Extensions.Mailer.SendGrid.Tests
 {
     public class SendGridParallelMailerTests : IClassFixture<ReusableMailFixture>
     {
-        private ReusableMailFixture Fixture { get; }
-
         public SendGridParallelMailerTests(ReusableMailFixture fixture)
         {
+            ReplacementVars.Add("%name%", "Mr. Toast");
             Fixture = fixture;
         }
 
+        private ReusableMailFixture Fixture { get; }
+
+        private Dictionary<string, string> ReplacementVars { get; } = new Dictionary<string, string>();
 
         [Theory]
         [Trait("TestType", "Integration")]
         [ClassData(typeof(StandardMailerTestData))]
-        public void SendMail(string html, string text, string[] attachments)
+        public void SendParallelMail(string html, string text, string[] attachments)
         {
-            var mailer = Fixture.ServiceProvider.GetService<ISimpleMailer>();
+            var mailer = Fixture.ServiceProvider.GetService<IMailer>();
             var messages = new List<TestParallelMailMessage>();
             for (var i = 0; i < 10; i++)
             {
@@ -38,24 +40,35 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
                     Text = text
                 });
             }
-            Parallel.ForEach(messages, (mes) =>
+            Parallel.ForEach(messages, mes =>
             {
-                var result =
-                   mailer.SendMailAsync(
-                            mes.To,
-                            mes.ToDisplay,
-                            mes.Subject,
-                            mes.Html,
-                            mes.Text,
-                            (IEnumerable<string>)null,
-                            CancellationToken.None
-                        ).Result;
+                var deliveryIds =
+                    mailer.AddMessage(new MailerMessage
+                    {
+                        From = new MessageSender {EmailAddress = mes.From},
+                        Recipients = new List<MessageRecipient>
+                        {
+                            new MessageRecipient
+                            {
+                                EmailAddress = mes.To,
+                                DisplayName = mes.ToDisplay
+                            }
+                        },
+                        Subject = mes.Subject,
+                        Body = new ContentBody
+                        {
+                            HtmlContent = mes.Html,
+                            PlainTextContent = mes.Text
+                        },
+                        Substitutions = ReplacementVars
+                    });
+                var result = mailer.SendAsync(deliveryIds.First()).Result;
 
-                var m = result.Should().NotBeNull().And.BeOfType<MessageDeliveryItem>().Which;
-                m.IsSuccess.Should().BeTrue();
-                m.MessageData.Should().NotBeNullOrEmpty();
+                result
+                    .Should().BeOfType<DeliveryItem>()
+                    .Which.IsSuccess
+                    .Should().BeTrue();
             });
         }
-
     }
 }

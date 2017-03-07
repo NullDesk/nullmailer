@@ -1,4 +1,5 @@
 ﻿// ReSharper disable All
+
 #pragma warning disable 1591
 using System;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -23,10 +24,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migration
                     ToDisplayName = table.Column<string>(maxLength: 200, nullable: true),
                     ToEmailAddress = table.Column<string>(maxLength: 200, nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MessageHistory", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_MessageHistory", x => x.Id); });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

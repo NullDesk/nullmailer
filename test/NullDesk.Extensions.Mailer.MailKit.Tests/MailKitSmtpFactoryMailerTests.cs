@@ -14,99 +14,69 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
 {
     public class MailKitSmtpFactoryMailerTests : IClassFixture<FactoryMailFixture>
     {
-
-        private FactoryMailFixture Fixture { get; }
-
-        private Dictionary<string, string> ReplacementVars { get; } = new Dictionary<string, string>();
-
         public MailKitSmtpFactoryMailerTests(FactoryMailFixture fixture)
         {
             ReplacementVars.Add("%name%", "Mr. Toast");
             Fixture = fixture;
         }
 
+        private FactoryMailFixture Fixture { get; }
+
+        private Dictionary<string, string> ReplacementVars { get; } = new Dictionary<string, string>();
 
 
         [Theory]
         [Trait("TestType", "Unit")]
         [ClassData(typeof(TemplateMailerTestData))]
-        public async Task SendMailWithTemplate(string template, string[] attachments)
+        public async Task SendAll_WithTemplate(string template, string[] attachments)
         {
+            attachments =
+                attachments?.Select(a => Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, a))).ToArray();
 
-
-            attachments = attachments?.Select(a => Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, a))).ToArray();
-
-            var mailer = Fixture.Mail.StandardMailer;
+            var mailer = Fixture.Mail.Mailer;
             mailer.Should().BeOfType<MkSmtpMailer>();
-            var result =
-                await
-                    mailer.SendMailAsync(
-                        template,
-                        "noone@toast.com",
-                        "No One Important",
-                        $"xunit Test run: {template}",
-                        ReplacementVars,
-                        attachments,
-                        CancellationToken.None);
+            var deliveryItems =
+                mailer.CreateMessage(b => b
+                    .Subject($"xunit Test run: %template%")
+                    .And.To("noone@toast.com").WithDisplayName("No One Important")
+                    .And.ForTemplate(template)
+                    .And.WithSubstitutions(ReplacementVars)
+                    .And.WithSubstitution("%template%", template)
+                    .And.WithAttachments(attachments).Build());
 
-            var m = result.Should().NotBeNull().And.BeOfType<MessageDeliveryItem>().Which;
-            m.IsSuccess.Should().BeTrue();
-            m.MessageData.Should().NotBeNullOrEmpty();
+            var result = await mailer.SendAllAsync(CancellationToken.None);
+
+            result
+                .Should().NotBeNull()
+                .And.AllBeOfType<DeliveryItem>()
+                .And.HaveSameCount(deliveryItems)
+                .And.OnlyContain(i => i.IsSuccess);
         }
 
         [Theory]
         [Trait("TestType", "Unit")]
         [ClassData(typeof(StandardMailerTestData))]
-        public async Task SendMail(string html, string text, string[] attachments)
+        public async Task SendAll_WithContentBody(string html, string text, string[] attachments)
         {
             attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
 
-            var mailer = Fixture.Mail.SimpleMailer;
-            mailer.Should().BeOfType<MkSimpleSmtpMailer>();
-            mailer.Should().NotBeOfType<MkSmtpMailer>();
-            var result =
-                await
-                    mailer.SendMailAsync(
-                        "noone@toast.com",
-                        "No One Important",
-                        "xunit Test run: no template",
-                        html,
-                        text,
-                        attachments,
-                        CancellationToken.None
-                    );
-            var m = result.Should().NotBeNull().And.BeOfType<MessageDeliveryItem>().Which;
-            m.IsSuccess.Should().BeTrue();
-            m.MessageData.Should().NotBeNullOrEmpty();
-        }
-
-        [Theory]
-        [Trait("TestType", "Unit")]
-        [ClassData(typeof(StandardMailerTestData))]
-        public async Task SendMailWithSurrogateSimpleMailer(string html, string text, string[] attachments)
-        {
-            attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
-            
-            //this mailer should only have one registered mailer, and it's a template mailer
-            var mailer = Fixture.TemplateMail.SimpleMailer;
-
-            //check that we got the fallback template mailer anyway
+            var mailer = Fixture.Mail.Mailer;
             mailer.Should().BeOfType<MkSmtpMailer>();
-            mailer.Should().NotBeOfType<MkSimpleSmtpMailer>();
-            var result =
-                await
-                    mailer.SendMailAsync(
-                        "noone@toast.com",
-                        "No One Important",
-                        "xunit Test run: no template",
-                        html,
-                        text,
-                        attachments,
-                        CancellationToken.None
-                    );
-            var m = result.Should().NotBeNull().And.BeOfType<MessageDeliveryItem>().Which;
-            m.IsSuccess.Should().BeTrue();
-            m.MessageData.Should().NotBeNullOrEmpty();
+            var deliveryItems =
+                mailer.CreateMessage(b => b
+                    .Subject($"xunit Test run: content body")
+                    .And.To("noone@toast.com").WithDisplayName("No One Important")
+                    .And.ForBody().WithHtml(html).AndPlainText(text)
+                    .And.WithSubstitutions(ReplacementVars)
+                    .And.WithAttachments(attachments).Build());
+
+            var result = await mailer.SendAllAsync(CancellationToken.None);
+
+            result
+                .Should().NotBeNull()
+                .And.AllBeOfType<DeliveryItem>()
+                .And.HaveSameCount(deliveryItems)
+                .And.OnlyContain(i => i.IsSuccess);
         }
     }
 }

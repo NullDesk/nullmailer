@@ -1,6 +1,8 @@
 ﻿
 using System;
 using System.Threading;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.CommandLineUtils;
 using NullDesk.Cli;
 using NullDesk.Extensions.Mailer.Core;
@@ -27,40 +29,27 @@ namespace Sample.Mailer.Cli.Commands
 
                 templateApp.OnExecute(async () =>
                 {
-                    MessageDeliveryItem result = null;
+                    IEnumerable<DeliveryItem> result = null;
                     try
                     {
 
-                        if (addAttachments.HasValue())
-                        {
-                            result = await Mailer
-                                .SendMailAsync(
-                                    Settings.Template,
-                                    Settings.ToAddress,
-                                    Settings.ToDisplayName,
-                                    Settings.Subject,
-                                    Settings.ReplacementVariables,
-                                    Settings.AttachmentFiles,
-                                    CancellationToken.None);
-                        }
-                        else
-                        {
-                            result = await Mailer
-                                .SendMailAsync(
-                                    Settings.Template,
-                                    Settings.ToAddress,
-                                    Settings.ToDisplayName,
-                                    Settings.Subject,
-                                    Settings.ReplacementVariables,
-                                    CancellationToken.None);
-                        }
+                        var dItems = Mailer.CreateMessage(b => b
+                            .Subject(Settings.Subject)
+                            .And.To(Settings.ToAddress).WithDisplayName(Settings.ToDisplayName)
+                            .And.ForTemplate(Settings.Template)
+                            .And.WithSubstitutions(Settings.ReplacementVariables)
+                            .And.WithAttachments(Settings.AttachmentFiles)
+                            .Build()
+                             );
+                        result = await Mailer.SendAllAsync(CancellationToken.None);
+
                     }
                     catch (Exception ex)
                     {
                         Reporter.WriteLine($"[Error] {ex.Message}");
                         Reporter.WriteLine(string.Empty);
                     }
-                    var message = result == null || !result.IsSuccess ? "Failed to send email".Red() : "Email sent".Cyan();
+                    var message = result == null || !result.All(r => r.IsSuccess) ? "Failed to send email".Red() : "Email sent".Cyan();
 
                     Reporter.WriteLine(message);
 
@@ -70,11 +59,11 @@ namespace Sample.Mailer.Cli.Commands
             }, false);
         }
 
-        private IStandardMailer Mailer { get; }
+        private IMailer Mailer { get; }
 
         private TemplateMessageSettings Settings { get; }
 
-        public SendTemplateMessage(AnsiConsole console, IStandardMailer mailer, IOptions<TestMessageSettings> settings) : base(console)
+        public SendTemplateMessage(AnsiConsole console, IMailer mailer, IOptions<TestMessageSettings> settings) : base(console)
         {
             Mailer = mailer;
             if (mailer is SendGridMailer)

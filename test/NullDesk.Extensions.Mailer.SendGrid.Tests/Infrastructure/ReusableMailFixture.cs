@@ -7,22 +7,24 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
 {
     public class ReusableMailFixture : IDisposable
     {
-        public IServiceProvider ServiceProvider { get; set; }
-
         public ReusableMailFixture()
         {
-
             //setup the dependency injection service
             var services = new ServiceCollection();
             services.AddLogging();
             services.AddOptions();
             services.AddSingleton<IHistoryStore, InMemoryHistoryStore>();
 
-            services.Configure<SendGridMailerSettings>(s => s.ApiKey = "abc");
+            services.Configure<SendGridMailerSettings>(s =>
+                {
+                    s.ApiKey = "abc";
+                    s.FromDisplayName = "xunit";
+                    s.FromEmailAddress = "xunit@nowhere.com";
+                }
+            );
+            services.AddSingleton<SendGridMailerFake>();
 
-            services.AddSingleton<SendGridSimpleMailerFake>();
-                
-            services.AddSingleton<ISimpleMailer>(s => s.GetService<SendGridSimpleMailerFake>());
+            services.AddSingleton<IMailer>(s => s.GetService<SendGridMailerFake>());
 
 
             ServiceProvider = services.BuildServiceProvider();
@@ -30,13 +32,11 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
             logging.AddDebug(LogLevel.Debug);
         }
 
+        public IServiceProvider ServiceProvider { get; set; }
 
 
         public void Dispose()
         {
-
         }
-
-
     }
 }

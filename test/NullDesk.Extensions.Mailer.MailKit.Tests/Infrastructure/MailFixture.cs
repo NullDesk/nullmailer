@@ -12,19 +12,20 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
             var mailOptions = new OptionsWrapper<MkSmtpMailerSettings>(
                 new MkSmtpMailerSettings
                 {
-                    FromEmailAddress = "toast@toast.com",
-                    FromDisplayName = "Xunit",
+                    FromDisplayName = "xunit",
+                    FromEmailAddress = "xunit@nowhere.com",
                     SmtpServer = "localhost",
                     SmtpPort = 25,
                     SmtpUseSsl = false,
-                    TemplateSettings = new MkFileTemplateSettings()
+                    TemplateSettings = new MkFileTemplateSettings
                     {
-                        TemplatePath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,@"..\..\..\..\TestData\templates"))
+                        TemplatePath =
+                            Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\TestData\templates"))
                     }
                 });
 
             isMailServerAlive = false;
-            TcpClient tcp = new TcpClient();
+            var tcp = new TcpClient();
             try
             {
                 tcp.ConnectAsync(mailOptions.Value.SmtpServer, mailOptions.Value.SmtpPort).Wait();

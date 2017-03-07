@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 
 namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests.Infrastructure
@@ -7,7 +6,6 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests.Infrastructur
     {
         public TestHistoryContext(DbContextOptions<TestHistoryContext> options) : base(options)
         {
-
         }
     }
 }

@@ -1,6 +1,7 @@
-﻿
-using System;
+﻿using System;
+using System.Linq;
 using System.Threading;
+using System.Collections.Generic;
 using Microsoft.Extensions.CommandLineUtils;
 using NullDesk.Cli;
 using NullDesk.Extensions.Mailer.Core;
@@ -26,39 +27,26 @@ namespace Sample.Mailer.Cli.Commands
 
                 simpleApp.OnExecute(async () =>
                 {
-                    MessageDeliveryItem result = null;
+                    IEnumerable<DeliveryItem> result = null;
                     try
                     {
-                        if (addAttachments.HasValue())
-                        {
-                            result = await Mailer
-                                .SendMailAsync(
-                                    Settings.ToAddress,
-                                    Settings.ToDisplayName,
-                                    Settings.Subject,
-                                    Settings.HtmlBody,
-                                    Settings.TextBody,
-                                    Settings.AttachmentFiles,
-                                    CancellationToken.None);
-                        }
-                        else
-                        {
-                            result = await Mailer
-                                .SendMailAsync(
-                                    Settings.ToAddress,
-                                    Settings.ToDisplayName,
-                                    Settings.Subject,
-                                    Settings.HtmlBody,
-                                    Settings.TextBody,
-                                    CancellationToken.None);
-                        }
+
+                        var dItems = Mailer.CreateMessage(b => b
+                            .Subject(Settings.Subject)
+                            .And.To(Settings.ToAddress).WithDisplayName(Settings.ToDisplayName)
+                            .And.ForBody().WithHtml(Settings.HtmlBody).AndPlainText(Settings.TextBody)
+                            .And.WithAttachments(Settings.AttachmentFiles)
+                            .Build()
+                        );
+                        result = await Mailer.SendAllAsync(CancellationToken.None);
+
                     }
-                    catch(Exception ex)
-                    { 
+                    catch (Exception ex)
+                    {
                         Reporter.WriteLine($"[Error] {ex.Message}");
                         Reporter.WriteLine(string.Empty);
                     }
-                    var message = result == null || !result.IsSuccess  ? "Failed to send email".Red() : "Email sent".Cyan();
+                    var message = result == null || !result.All(r => r.IsSuccess) ? "Failed to send email".Red() : "Email sent".Cyan();
 
                     Reporter.WriteLine(message);
 
@@ -68,11 +56,11 @@ namespace Sample.Mailer.Cli.Commands
             }, false);
         }
 
-        private IStandardMailer Mailer { get; }
+        private IMailer Mailer { get; }
 
-        private SimpleMessageSettings Settings{get;}
+        private SimpleMessageSettings Settings { get; }
 
-        public SendSimpleMessage(AnsiConsole console, IStandardMailer mailer, IOptions<TestMessageSettings> settings) : base(console)
+        public SendSimpleMessage(AnsiConsole console, IMailer mailer, IOptions<TestMessageSettings> settings) : base(console)
         {
             Mailer = mailer;
             Settings = settings.Value.SimpleMessageSettings;

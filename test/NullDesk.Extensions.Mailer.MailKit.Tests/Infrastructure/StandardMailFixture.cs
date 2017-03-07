@@ -13,8 +13,6 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 {
     public class StandardMailFixture : MailFixture, IDisposable
     {
-        public IServiceProvider ServiceProvider { get; set; }
-
         public StandardMailFixture()
         {
             //setup the dependency injection service
@@ -23,21 +21,22 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 
             services.AddOptions();
 
-            services.AddSingleton<IHistoryStore,InMemoryHistoryStore>();
+            services.AddSingleton<IHistoryStore, InMemoryHistoryStore>();
 
             var isMailServerAlive = false;
             var lazy = new Lazy<OptionsWrapper<MkSmtpMailerSettings>>(() => SetupMailerOptions(out isMailServerAlive));
 
-            services.AddTransient<IStandardMailer>(s =>
+            services.AddTransient<IMailer>(s =>
             {
                 var options = lazy.Value;
                 var client = Substitute.For<SmtpClient>();
                 client
                     .SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>())
                     .Returns(Task.CompletedTask);
-                return (isMailServerAlive)
+                return isMailServerAlive
                     ? new MkSmtpMailer(options, s.GetService<ILogger<MkSmtpMailer>>(), s.GetService<IHistoryStore>())
-                    : new MkSmtpMailer(client, options, s.GetService<ILogger<MkSmtpMailer>>(), s.GetService<IHistoryStore>());
+                    : new MkSmtpMailer(client, options, s.GetService<ILogger<MkSmtpMailer>>(),
+                        s.GetService<IHistoryStore>());
             });
 
 
@@ -45,6 +44,11 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
             var logging = ServiceProvider.GetService<ILoggerFactory>();
             logging.AddDebug(LogLevel.Debug);
         }
-        public void Dispose() { }
+
+        public IServiceProvider ServiceProvider { get; set; }
+
+        public void Dispose()
+        {
+        }
     }
 }

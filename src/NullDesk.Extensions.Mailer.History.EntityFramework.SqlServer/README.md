@@ -1,14 +1,19 @@
 ﻿# Using EF
 
 ## Manage Migations
+At the time of this writing (March 2017) VS2017 is in RC, and the EF 1.1 CLI tools (dotnet ef) seem to have difficulty handling migrations for csproj based projects.
 
-To manage migrations, use the EF CLI commands at a command line or powershell prompt. Since EF Core doesn't currently support running from class library projects, you must specify a startup project. It's easiest to use the unit test project.
+To manage migrations in the short term, do the following:
 
-     dotnet ef  --startup-project ..\..\test\NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests migrations add initial
+- Open Package Manager Console in VS 2017
+- Set the default project to src\NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer
+  - The PM> console usually opens to the solution root
+- Use the Add-Migration commend
+  - Specify the startup project and migration name
 
-## Compiler Warnings for XML Comments
+     PM> Add-Migration -StartupProject test\NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests -Name v3.0.0
 
-Add the following two lines to the top of each generated migration, migration.designer, and snapshot file:
+- Add the following to the top of each generated file
 
     // ReSharper disable All
     #pragma warning disable 1591
