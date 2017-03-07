@@ -16,11 +16,10 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests.Infrastructur
             services.AddOptions();
 
             services.Configure<NullMailerSettings>(s =>
-                {
-                    s.FromDisplayName = "xunit";
-                    s.FromEmailAddress = "xunit@nowhere.com";
-                }
-            );
+            {
+                s.FromDisplayName = "xunit";
+                s.FromEmailAddress = "xunit@nowhere.com";
+            });
 
             var builder = new DbContextOptionsBuilder<TestHistoryContext>().UseInMemoryDatabase("TestHistoryDb");
             services.AddSingleton<DbContextOptions>(s => builder.Options);

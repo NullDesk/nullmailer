@@ -24,7 +24,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests
             Fixture = fixture;
         }
 
-        private const string Subject = "xunit Test run: content body";
+        private const string Subject = "xunit Test run: no template - history";
 
         private MemoryEfFixture Fixture { get; }
 

@@ -14,7 +14,11 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Inf
             var services = new ServiceCollection();
             services.AddLogging();
             services.AddOptions();
-
+            services.Configure<NullMailerSettings>(s =>
+            {
+                s.FromDisplayName = "xunit";
+                s.FromEmailAddress = "xunit@nowhere.com";
+            });
 
             var builder =
                 new DbContextOptionsBuilder<SqlHistoryContext>().UseSqlServer(
@@ -22,7 +26,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Inf
             services.AddSingleton<DbContextOptions>(s => builder.Options);
             services.AddTransient<SqlHistoryContext>();
             services.AddSingleton<IHistoryStore, EntityHistoryStore<SqlHistoryContext>>();
-            services.AddTransient<ISimpleMailer, NullSimpleMailer>();
+            services.AddTransient<IMailer, NullMailer>();
 
             ServiceProvider = services.BuildServiceProvider();
 

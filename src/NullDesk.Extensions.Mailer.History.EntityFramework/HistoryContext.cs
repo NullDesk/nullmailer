@@ -24,6 +24,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// <value>The history items.</value>
         public DbSet<DeliveryItem> MessageHistory { get; set; }
 
+       
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 

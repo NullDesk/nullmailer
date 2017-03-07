@@ -158,6 +158,7 @@ namespace NullDesk.Extensions.Mailer.Core
                 {
                     deliveryItem = await DeliverMessageAsync(deliveryItem, token);
                     deliveryItem.IsSuccess = true;
+                    deliveryItem.DeliveryProvider = GetType().Name;
                 }
                 catch (Exception ex)
                 {
