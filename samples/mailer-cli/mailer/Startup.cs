@@ -15,6 +15,7 @@ using Sample.Mailer.Cli.Commands;
 using Sample.Mailer.Cli.Configuration;
 
 
+// ReSharper disable once CheckNamespace
 namespace Sample.Mailer.Cli
 {
     public class Startup

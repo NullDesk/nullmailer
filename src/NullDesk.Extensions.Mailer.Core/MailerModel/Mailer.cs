@@ -167,7 +167,6 @@ namespace NullDesk.Extensions.Mailer.Core
                 }
                 finally
                 {
-
                     await HistoryStore.AddAsync(deliveryItem, token);
                 }
                 return deliveryItem;

@@ -4,7 +4,7 @@
 
 Email extension service packages for quickly integrating common mail scenarios into any .Net Core or .Net project using a variety of message delivery frameworks and cloud service providers.
 
-Easily configure your application for different email services at startup based on environment, deployment configuration, or runtime detection of available mail providers. 
+Easily configure your application for different email services at startup based on environment, deployment configuration, or runtime detection of available mail providers.
 
 ## Status
 
@@ -17,11 +17,11 @@ Easily configure your application for different email services at startup based 
 |NullDesk.Extensions.Mailer.History.EntityFramework                                         |[![MyGet](https://img.shields.io/myget/nulldesk-ci/vpre/NullDesk.Extensions.Mailer.History.EntityFramework.svg)](https://www.myget.org/feed/nulldesk-ci/package/nuget/NullDesk.Extensions.Mailer.History.EntityFramework)|[![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.History.EntityFramework.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.History.EntityFramework/)|
 |NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer                               |[![MyGet](https://img.shields.io/myget/nulldesk-ci/vpre/NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.svg)](https://www.myget.org/feed/nulldesk-ci/package/nuget/NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer)|[![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer/)|
 
-## Contents:
+## Contents
 
-- [Features](#features)  
-- [Package Descriptions](#pacakge-descriptions)  
-- [Basic Usage](#basic-usage)  
+- [Features](#features)
+- [Package Descriptions](#pacakge-descriptions)
+- [Basic Usage](#basic-usage)
   - [Mailer Instantiation](#mailer-instantitaion)
   - [Mailer Factory Usage](#mailer-factory-usage)
   - [Dependency Injection](#dependency-injection)
@@ -37,7 +37,7 @@ Easily configure your application for different email services at startup based 
   - [Attachments](#attachments)
 - [Creating your own Mailer](#custom-mailer)
 
-## <a name="features"></a>Features 
+## <a name="features"></a>Features
 
 - Template support for all mailers
   - local filesystem body templates for mail services without their own
@@ -69,23 +69,23 @@ Easily configure your application for different email services at startup based 
 |_NullDesk.Extensions.Mailer.NetMail_                         |*(coming soon)* SMTP Relay Email service using the cross-platform System.Net.Mail framework from Microsoft.|
 
 
-## <a name="basic-usage"></a>Basic Usage 
+## <a name="basic-usage"></a>Basic Usage
 
 Usage of the mailer extensions generally follows the following steps:
-   
-- Obtain a mailer instance (from DI, the factory, or by instantiating one yourself)   
+
+- Obtain a mailer instance (from DI, the factory, or by instantiating one yourself)
 - Add one or more Messages to the Mailer instance. 
   - You can add as many messages as you want
     - Use the AddMessage method, or call CreateMessage to use the fluent message buidler API.
   - When a message is added to the mailer, it is converted into one or more DeliveryItem instances
     - The mailer instance keeps track of these before and after delivery
     - One DelieryItem instance is create for each message and recipient
-    - If using the history store these will be recorded individually  
+    - If using the history store these will be recorded individually
 - Once you have added all the messages you wish to deliery to the Mailer, simply call the SendAllAsync method. 
 
 > The built-in Mailers are reusable by default, but it is recommended to create a new instance each time instead. Since the mailer will continue to track previously delivered items in memory, disposing of the mailer instance after each message (or batch) is preferrable. 
 
-### <a name="mailer-instantitaion"></a>Mailer Instantiation 
+### <a name="mailer-instantitaion"></a>Mailer Instantiation
 
 The simplest usage is to just instantiate the mailer of your choice, use the fluent message builder API to create a message, then send it:
 
@@ -117,7 +117,7 @@ The simplest usage is to just instantiate the mailer of your choice, use the flu
 
 In the above example, the settings are supplied via the <code>OptionsWrapper&lt;T&gt;</code> class; but if your application is using the Microsoft Options Extensions for configuration, you can use IOptions, IOptionsSnapshot, etc. for more advanced control of runtime settings.
 
-### <a name="mailer-factory-usage"></a>Mailer Factory Usage:
+### <a name="mailer-factory-usage"></a>Mailer Factory Usage
 
 For most real-world scenarios, you would use dependency injection or the provided factory to obtain mailer instanaces, without having to supply all the constructor parameters each time.
 
@@ -133,7 +133,7 @@ Using the mailer factory, you can configure the mailer once in startup:
 
         var factory = new MailerFactory();
         factory.AddSendGridMailer(sendGridSettings); 
-            
+
 Then anytime you need to send mail, just grab a new mailer instance from the factory and go:
 
         using(var mailer = factory.GetMailer())
@@ -148,7 +148,7 @@ Then anytime you need to send mail, just grab a new mailer instance from the fac
                     .WithPersonalizedSubstitution("%name%", "Someone Else")
                 .And.ForTemplate(myTemplateName)
                 .Build());
-            
+
             var deliveryItem = await mailer.SendAllAsync(CancellationToken.None);
             if(deliveryItem.IsSuccess)
             {
@@ -158,28 +158,158 @@ Then anytime you need to send mail, just grab a new mailer instance from the fac
 
 ### <a name="dependency-injection"></a>Dependency Injection
 
-When using dependency injection frameworks, it is best to register the mailers to be transient instances. This example demonstrates this using Microsoft's own dependency injection extensions: 
+When using dependency injection frameworks, it is best to register the mailers to be transient instances. This example demonstrates this using Microsoft's own dependency injection extensions:
 
-    public IServiceProvider ConfigureServices(IServiceCollection services)
-    {
-        services.AddLogging();
-        services.AddOptions();
-        services.Configure<SendGridMailerSettings>(s =>
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-                s.ApiKey = "123";
-                s.FromDisplayName = "Person Name";
-                s.FromEmailAddress = "someone@toast.com";
-                s.IsSandboxMode = false;
-        });
+            services.AddLogging();
+            services.AddOptions();
+            services.Configure<SendGridMailerSettings>(s =>
+            {
+                    s.ApiKey = "123";
+                    s.FromDisplayName = "Person Name";
+                    s.FromEmailAddress = "someone@toast.com";
+                    s.IsSandboxMode = false;
+            });
 
-        services.AddTransient<IMailer, SendGridMailer>();
+            services.AddTransient<IMailer, SendGridMailer>();
 
-        return services.BuildServiceProvider();
-    }
+            return services.BuildServiceProvider();
+        }
 
 ### <a name="ilogger"></a>(optional) Logging with ILogger
 
+The mailer extensions support logging via the ILogger interface from [Microsoft's Logging Extensions](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging). While designed for ASP.NET Core, the logging extensions can be used in any .Net Core project and Full-Framework .Net projects version 4.5 and higher. Additionally, the Logging extensions can be configured to interoperate with almost all popular logging frameworks for .Net --log4net, serilog, etc. 
+
+All classes derived from the <code>Mailer</code> class take an optional <code>ILogger</code> or <code>ILogger&lt;T&gt;</code> constructor parameter, as do the extensions for registering the Mailer with the MailerFactory.
+
+Example using the MailerFactory:
+
+        var loggerFactory = new LoggerFactory();
+        //configure your desired logging providers
+        loggerFactory.AddConsole(consoleLoggerConfig);
+
+        var mailerFactory = new MailerFactory();
+        mailerFactory.AddSendGridMailer(
+            sendGridSettings,
+            loggerFactory.CreateLogger<SendGridMailer>());
+
+Example when using MS DI extensions:
+
+        public IServiceProvider ConfigureServices(IServiceCollection services)
+        {
+            services.AddLogging(); //that's all you need
+
+            services.AddOptions();
+            services.Configure<SendGridMailerSettings>(s =>
+            {
+                    s.ApiKey = "123";
+                    s.FromDisplayName = "Person Name";
+                    s.FromEmailAddress = "someone@toast.com";
+                    s.IsSandboxMode = false;
+            });
+
+            services.AddTransient<IMailer, SendGridMailer>();
+
+            return services.BuildServiceProvider();
+        }
+
+
+Example when instantiating a Mailer directly:
+
+        var loggerFactory = new LoggerFactory();
+
+        //configure your desired logging providers
+        loggerFactory.AddConsole(consoleLoggerConfig);
+
+        using (var mailer = new SendGridMailer(
+            new OptionsWrapper<SendGridMailerSettings>(settings),
+            loggerFactory.CreateLogger<SendGridMailer>()))
+        {
+            //stuff
+        }
+
+If a logger isn't supplied, the framework will automatically use the <code>Microsoft.Extensions.Logging.Abstractions.NullLogger</code> instance.
+
+
 ### <a name="ihistorystore"></a>(optional) Delivery History with IHistoryStore
+
+The mailer extensions also support recording mesages and their delivery details in an optional message history store. 
+
+This works very similar to the logging support.
+
+Example using the MailerFactory:
+
+        var loggerFactory = new LoggerFactory();
+        //configure your desired logging providers
+        loggerFactory.AddConsole(consoleLoggerConfig);
+
+        var builder = new DbContextOptionsBuilder<SqlHistoryContext>()
+                        .UseSqlServer(connectionString);
+
+        var mailerFactory = new MailerFactory();
+        mailerFactory.AddSendGridMailer(
+            sendGridSettings,
+            loggerFactory.CreateLogger<SendGridMailer>(),
+            new EntityHistoryStore<SqlHistoryContext>(builder.Options));
+
+Example when using MS DI extensions:
+
+        public IServiceProvider ConfigureServices(IServiceCollection services)
+        {
+            services.AddLogging();
+
+            services.AddOptions();
+
+            services.AddSingleton<DbContextOptions>(s =>
+            {
+                var builder = new DbContextOptionsBuilder<SqlHistoryContext>()
+                    .UseSqlServer(connectionString);
+                return builder.Options;
+            });
+            services.AddSingleton<IHistoryStore, EntityHistoryStore<SqlHistoryContext>>();
+
+            services.Configure<SendGridMailerSettings>(s =>
+            {
+                    s.ApiKey = "123";
+                    s.FromDisplayName = "Person Name";
+                    s.FromEmailAddress = "someone@toast.com";
+                    s.IsSandboxMode = false;
+            });
+
+            services.AddTransient<IMailer, SendGridMailer>();
+
+            return services.BuildServiceProvider();
+        }
+
+Example when instantiating a Mailer directly:
+
+        var loggerFactory = new LoggerFactory();
+
+        //configure your desired logging providers
+        loggerFactory.AddConsole(consoleLoggerConfig);
+
+        var builder = new DbContextOptionsBuilder<SqlHistoryContext>()
+                        .UseSqlServer(connectionString);
+
+
+        using (var mailer = new SendGridMailer(
+            new OptionsWrapper<SendGridMailerSettings>(settings),
+            loggerFactory.CreateLogger<SendGridMailer>(),
+            new EntityHistoryStore<SqlHistoryContext>(builder.Options)))
+        {
+            //stuff
+        }
+
+When using the provided EF hsitory store, it is up to your if your client application will manage the database by calling EF migrations in code, of if you want to handle running migrations as part of your deployment process. If you want to do this in code, simple run the migration during your application's initilization.
+
+        var builder = new DbContextOptionsBuilder<SqlHistoryContext>()
+                        .UseSqlServer(connectionString);
+
+        using (var ctx = new SqlHistoryContext(builder.options))
+        {
+            ctx.Database.Migrate();
+        }
 
 ## <a name="creating-messages"></a>Creating MailerMessages
 
@@ -195,39 +325,35 @@ When using dependency injection frameworks, it is best to register the mailers t
 
 ### <a name="templates"></a>Templates
 
-### <a name="attachments"></a>Attachments 
+### <a name="attachments"></a>Attachments
 
 ## <a name="custom-mailer"></a>Creating your own mailers
 
-To implement your own full-featured mailer, simply implement a class that implements <code>IStandardMailer&lt;TSettings&gt;</code>. 
+To implement your own mailer, simply implement a class that inherits <code>Mailer&lt;TSettings&gt;</code>.
 
-If you don't care about templates, you can create a simple mailer by just implementing <code>ISimpleMailer&lt;TSettings&gt;</code>.
-
-For the above interfaces, <code>TSettings</code> is a custom DTO class containing any configuration settings your mailer requires.
-
-The NullDesk mailers include both a simple and full-featured mailer; the full-featured mailers inherit from a simple mailer as a base class, then extend it to add additional tempalate features from <code>IStandardMailer&lt;TSettings&gt;</code>. Here is an example of how that looks:
+For the above interfaces, <code>TSettings</code> is a custom class that implements <code>IMailerSettings</code>, then adds any custom configuration properties your mailer or the underlying mail framework needs.
 
         public class MyMailerSettings : IMailerSettings
         {
-            //... implementation here
-        }
-    
-        public class MySimpleMailer : ISimpleMailer<MyMailerSettings>
-        {
-            //... implementation here
-        }
-    
-        public class MyFullMailer : MySimpleMailer, IStandardMailer<MyMailerSettings>
-        {
-            //... implementation here
+            public string FromEmailAddress { get; set; }
+
+            public string FromDisplayName { get; set; }
+
+            //... any other properties your mailer needs
         }
 
-When implementing your own mailers, there is no need to necessarily follow the same pattern. You could just as easily create a single class that handles all mail functions.
+Every effort has been made to keep inheritance of <code>Mailer&lt;TSettings&gt;</code> fairly straight forward.
 
-This example shows a class implementing all mailer functions, as well as the interface for message delivery history
+The primary method you must supply is a method that can deliver a single <code>DeliveryItem</code> using the email service your mailer supports. The method should return the DeliveryItem if it was successfully sent, or throw an exception if something went wrong. The base class will handle logging the exception, updating the DeliveryItem's properties, recording the delivery attempt to the history store, etc. All you have to do is send the email via the mail service, and either throw an exception or return the deliery item if it was sent.
 
-        public class MyAmazingMailer : IStandardMailer<MyAmazingMailerSettings>, IHistoryMailer
+        public class MySimpleMailer : Mailer<MyMailerSettings>
         {
-            //... implementation here
-        } 
+            protected override async Task<DeliveryItem> DeliverMessageAsync(
+                DeliveryItem deliveryItem,
+                CancellationToken token = default(CancellationToken))
+            {
+                //... implementation here
+            }
+        }
+
 

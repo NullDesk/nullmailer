@@ -66,9 +66,8 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="deliveryItem">The delivery item containing the message you wish to send.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;DeliveryItem&gt;.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         protected override async Task<DeliveryItem> DeliverMessageAsync(DeliveryItem deliveryItem,
-            CancellationToken token = new CancellationToken())
+            CancellationToken token = default(CancellationToken))
         {
             var sgFrom = new EmailAddress(deliveryItem.FromEmailAddress, deliveryItem.FromDisplayName);
             var sgTo = new EmailAddress(deliveryItem.ToEmailAddress, deliveryItem.ToDisplayName);

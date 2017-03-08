@@ -66,7 +66,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;DeliveryItem&gt;.</returns>
         protected override async Task<DeliveryItem> DeliverMessageAsync(DeliveryItem deliveryItem,
-            CancellationToken token = new CancellationToken())
+            CancellationToken token = default(CancellationToken))
         {
             var mkMessage = new MimeMessage
             {
