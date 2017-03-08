@@ -10,6 +10,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData("<tag>content</tag>")]
         [InlineData("")]
         [InlineData(null)]
+        [Trait("TestType", "Unit")]
         public void WithHtml(string html)
         {
             var contentStep = new MessageBuilder.BuildContentStep.BuildBodyStep(MailerMessage.Create());
@@ -27,6 +28,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData("text content")]
         [InlineData("")]
         [InlineData(null)]
+        [Trait("TestType", "Unit")]
         public void WithPlainText(string text)
         {
             var contentStep = new MessageBuilder.BuildContentStep.BuildBodyStep(MailerMessage.Create());

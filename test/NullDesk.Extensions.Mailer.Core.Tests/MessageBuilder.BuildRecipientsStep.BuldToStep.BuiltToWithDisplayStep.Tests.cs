@@ -12,6 +12,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData("toast@toast.com", "Mr Toast")]
         [InlineData("toast@toast.com", "")]
         [InlineData("toast@toast.com", null)]
+        [Trait("TestType", "Unit")]
         public void WithDisplayName(string address, string display)
         {
             var rec = new MessageRecipient().ToAddress(address);
@@ -35,6 +36,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData("toast@toast.com", "e", "")]
         [InlineData("toast@toast.com", null, "g")]
         [InlineData("toast@toast.com", "h", null)]
+        [Trait("TestType", "Unit")]
         public void WithPersonalizedSubstitution(string address, string token, string value)
         {
             var rec = new MessageRecipient().ToAddress(address);
@@ -62,6 +64,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         }
 
         [Fact]
+        [Trait("TestType", "Unit")]
         public void And()
         {
             var rec = new MessageRecipient().ToAddress("toast@toast.com");

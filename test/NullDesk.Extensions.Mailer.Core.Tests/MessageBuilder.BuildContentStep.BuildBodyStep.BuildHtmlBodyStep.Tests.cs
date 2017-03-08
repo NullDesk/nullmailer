@@ -11,6 +11,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData("text content")]
         [InlineData("")]
         [InlineData(null)]
+        [Trait("TestType", "Unit")]
         public void AndPlainText(string text)
         {
             var body = new ContentBody().WithHtml("<tag>something</tag>");
@@ -36,6 +37,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         }
 
         [Fact]
+        [Trait("TestType", "Unit")]
         public void And()
         {
             var contentStep =
@@ -47,6 +49,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         }
 
         [Fact]
+        [Trait("TestType", "Unit")]
         public void Build()
         {
             var body = new ContentBody().WithHtml("<tag>something</tag>");

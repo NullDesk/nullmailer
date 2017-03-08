@@ -10,6 +10,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData("Some Subject")]
         [InlineData("")]
         [InlineData(null)]
+        [Trait("TestType", "Unit")]
         public void Subject(string subject)
         {
             var stepBuilder = new MessageBuilder.BuildSubjectStep(new MailerMessage());
@@ -23,6 +24,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         }
 
         [Fact]
+        [Trait("TestType", "Unit")]
         public void WithoutSubject()
         {
             var stepBuilder = new MessageBuilder.BuildSubjectStep(new MailerMessage());

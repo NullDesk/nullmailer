@@ -8,6 +8,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
     public class BuildContentTemplateStep
     {
         [Fact]
+        [Trait("TestType", "Unit")]
         public void Build()
         {
             var contentStep =
@@ -23,6 +24,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         }
 
         [Fact]
+        [Trait("TestType", "Unit")]
         public void ForBody()
         {
             var contentStep =

@@ -10,6 +10,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData("toast@toast.com")]
         [InlineData("")]
         [InlineData(null)]
+        [Trait("TestType", "Unit")]
         public void From(string address)
         {
             var messageBuilder = new MessageBuilder();

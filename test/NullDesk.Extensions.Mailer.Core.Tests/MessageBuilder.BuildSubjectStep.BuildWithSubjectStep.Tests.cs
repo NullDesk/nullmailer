@@ -7,6 +7,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
     public class BuildWithSubjectStepTests
     {
         [Fact]
+        [Trait("TestType", "Unit")]
         public void And()
         {
             var stepBuilder = new MessageBuilder.BuildSubjectStep.BuildWithSubjectStep(new MailerMessage());

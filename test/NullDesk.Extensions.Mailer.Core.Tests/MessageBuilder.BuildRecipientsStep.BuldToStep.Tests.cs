@@ -11,6 +11,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData("toast@toast.com", "Mr Toast")]
         [InlineData("toast@toast.com", "")]
         [InlineData("toast@toast.com", null)]
+        [Trait("TestType", "Unit")]
         public void WithDisplayName(string address, string display)
         {
             var toStep = new MessageBuilder.BuildRecipientsStep.BuildToStep(new MailerMessage(), address);
@@ -31,6 +32,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData("toast@toast.com", "e", "")]
         [InlineData("toast@toast.com", null, "g")]
         [InlineData("toast@toast.com", "h", null)]
+        [Trait("TestType", "Unit")]
         public void WithPersonalizedSubstitution(string address, string token, string value)
         {
             var toStep = new MessageBuilder.BuildRecipientsStep.BuildToStep(new MailerMessage(), address);
@@ -55,6 +57,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         }
 
         [Fact]
+        [Trait("TestType", "Unit")]
         public void And()
         {
             var stepBuilder = new MessageBuilder.BuildRecipientsStep.BuildToStep(new MailerMessage(), "toast@toast.com");

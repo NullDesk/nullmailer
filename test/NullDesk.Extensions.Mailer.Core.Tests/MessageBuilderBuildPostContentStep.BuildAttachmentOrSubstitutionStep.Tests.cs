@@ -7,6 +7,8 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
     public class BuildAttachmentOrSubstitutionStep
     {
         [Fact]
+        [Trait("TestType", "Unit")]
+
         public void And()
         {
             var contentStep =
@@ -17,6 +19,8 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         }
 
         [Fact]
+        [Trait("TestType", "Unit")]
+
         public void Build()
         {
             var contentStep =

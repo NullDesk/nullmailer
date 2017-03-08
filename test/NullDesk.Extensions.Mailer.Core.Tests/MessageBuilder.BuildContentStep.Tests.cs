@@ -10,6 +10,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData("toast@toast.com")]
         [InlineData("")]
         [InlineData(null)]
+        [Trait("TestType", "Unit")]
         public void To(string address)
         {
             var contentStep = new MessageBuilder.BuildContentStep(MailerMessage.Create());
@@ -29,6 +30,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData("toast")]
         [InlineData("")]
         [InlineData(null)]
+        [Trait("TestType", "Unit")]
         public void ForTemplate(string templateName)
         {
             var contentStep = new MessageBuilder.BuildContentStep(MailerMessage.Create());
@@ -42,6 +44,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         }
 
         [Fact]
+        [Trait("TestType", "Unit")]
         public void ForBody()
         {
             var contentStep = new MessageBuilder.BuildContentStep(MailerMessage.Create());

@@ -13,6 +13,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData(@"..\..\..\..\TestData\attachments\testFile.1.txt")]
         [InlineData("")]
         [InlineData(null)]
+        [Trait("TestType", "Unit")]
         public void WithAttachment(string fileName)
         {
             var contentStep = new MessageBuilder.BuildPostContentStep(MailerMessage.Create());
@@ -43,6 +44,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData("e", "")]
         [InlineData(null, "g")]
         [InlineData("h", null)]
+        [Trait("TestType", "Unit")]
         public void WithSubstitution(string token, string value)
         {
             var contentStep = new MessageBuilder.BuildPostContentStep(MailerMessage.Create());
@@ -65,6 +67,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         }
 
         [Fact]
+        [Trait("TestType", "Unit")]
         public void Build()
         {
             var contentStep = new MessageBuilder.BuildPostContentStep(MailerMessage.Create());
