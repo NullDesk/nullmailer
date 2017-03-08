@@ -6,7 +6,7 @@
     <AssemblyName>mailer</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>mailer</PackageId>
-    <RuntimeFrameworkVersion>1.1.0</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>

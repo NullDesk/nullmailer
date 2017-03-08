@@ -57,7 +57,7 @@ Easily configure your application for different email services at startup based 
 - Editor support for Visual Studio Code and Visual Studio 2017
 - Optional message and delivery history store
 
-## <a name="pacakge-descriptions"></a>Package Descriptions (#pacakge-descriptions)
+## <a name="pacakge-descriptions"></a>Package Descriptions
 
 |                                                                                  |           |
 |----------------------------------------------------------------------------------|-----------|
@@ -115,7 +115,7 @@ The simplest usage is to just instantiate the mailer of your choice, use the flu
              }
          }
 
-In the above example, the settings are supplied via the <code>OptionsWrapper&gt;T&lt;></code> class; but if your application is using the Microsoft Options Extensions for configuration, you can use IOptions, IOptionsSnapshot, etc. for more advanced control of runtime settings.
+In the above example, the settings are supplied via the <code>OptionsWrapper&lt;T&gt;</code> class; but if your application is using the Microsoft Options Extensions for configuration, you can use IOptions, IOptionsSnapshot, etc. for more advanced control of runtime settings.
 
 ### <a name="mailer-factory-usage"></a>Mailer Factory Usage:
 
