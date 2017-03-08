@@ -32,7 +32,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
             attachments =
                 attachments?.Select(a => Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, a))).ToArray();
 
-            var mailer = Fixture.Mail.Mailer;
+            var mailer = Fixture.Mail.GetMailer();
             mailer.Should().BeAssignableTo<SendGridMailer>();
             var deliveryItems =
                 mailer.CreateMessage(b => b
@@ -60,7 +60,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
             attachments =
                 attachments?.Select(a => Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, a))).ToArray();
 
-            var mailer = Fixture.Mail.Mailer;
+            var mailer = Fixture.Mail.GetMailer();
             mailer.Should().BeAssignableTo<SendGridMailer>();
 
             var deliveryItems =

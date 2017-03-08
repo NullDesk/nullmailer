@@ -3,7 +3,7 @@ install:
   - ps: '& .\prebuild.ps1'
   # Download install script to install .NET cli in .dotnet dir
   - ps: mkdir -Force ".\scripts\obtain\" | Out-Null
-  - ps: Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/cli/v1.0.0-rc4-004771/scripts/obtain/dotnet-install.ps1" -OutFile ".\scripts\obtain\install.ps1"
+  - ps: Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/cli/v1.0.0/scripts/obtain/dotnet-install.ps1" -OutFile ".\scripts\obtain\install.ps1"
   - ps: $env:DOTNET_INSTALL_DIR = "$pwd\.dotnetcli"
   - ps: '& .\scripts\obtain\install.ps1'
   # add dotnet to PATH

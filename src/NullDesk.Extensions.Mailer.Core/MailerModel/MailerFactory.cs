@@ -21,20 +21,18 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Gets an instance of the first registered standard mailer.
         /// </summary>
         /// <value>The mailer.</value>
-        public virtual IMailer Mailer
+        public virtual IMailer GetMailer()
         {
-            get
-            {
-                var func = MailerRegistrations.FirstOrDefault(m => m
-                                                                       .GetType().GetTypeInfo()
-                                                                       .GenericTypeArguments
-                                                                       .FirstOrDefault()?
-                                                                       .GetTypeInfo()
-                                                                       .ImplementedInterfaces.Any(
-                                                                           i => i == typeof(IMailer)) ?? false);
-                return func?.Invoke();
-            }
+            var func = MailerRegistrations.FirstOrDefault(m => m
+                                                                   .GetType().GetTypeInfo()
+                                                                   .GenericTypeArguments
+                                                                   .FirstOrDefault()?
+                                                                   .GetTypeInfo()
+                                                                   .ImplementedInterfaces.Any(
+                                                                       i => i == typeof(IMailer)) ?? false);
+            return func?.Invoke();
         }
+
 
 
         /// <summary>

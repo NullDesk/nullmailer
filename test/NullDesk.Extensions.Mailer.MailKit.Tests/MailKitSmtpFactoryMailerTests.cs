@@ -33,7 +33,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
             attachments =
                 attachments?.Select(a => Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, a))).ToArray();
 
-            var mailer = Fixture.Mail.Mailer;
+            var mailer = Fixture.Mail.GetMailer();
             mailer.Should().BeOfType<MkSmtpMailer>();
             var deliveryItems =
                 mailer.CreateMessage(b => b
@@ -60,7 +60,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
         {
             attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
 
-            var mailer = Fixture.Mail.Mailer;
+            var mailer = Fixture.Mail.GetMailer();
             mailer.Should().BeOfType<MkSmtpMailer>();
             var deliveryItems =
                 mailer.CreateMessage(b => b

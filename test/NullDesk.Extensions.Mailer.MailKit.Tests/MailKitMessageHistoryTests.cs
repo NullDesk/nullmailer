@@ -33,7 +33,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
         {
             attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
 
-            var mailer = Fixture.Mail.Mailer;
+            var mailer = Fixture.Mail.GetMailer();
 
 
             mailer.CreateMessage(b => b
