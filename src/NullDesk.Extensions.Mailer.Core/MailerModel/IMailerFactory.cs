@@ -20,7 +20,7 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Gets an instance of the first registered standard mailer.
         /// </summary>
         /// <value>The mailer.</value>
-        IMailer Mailer { get; }
+        IMailer GetMailer();
 
 
         /// <summary>

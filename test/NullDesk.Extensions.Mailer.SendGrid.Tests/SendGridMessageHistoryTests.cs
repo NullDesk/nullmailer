@@ -31,7 +31,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
         {
             attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
 
-            var mailer = Fixture.Mail.Mailer;
+            var mailer = Fixture.Mail.GetMailer();
           
             mailer.CreateMessage(b => b
                 .Subject($"xunit Test run: content body")
