@@ -156,7 +156,7 @@ namespace NullDesk.Extensions.Mailer.Core
                 var deliveryItem = ((IMailer)this).Deliverables.FirstOrDefault(d => d.Id == id);
                 try
                 {
-                    deliveryItem = await DeliverMessageAsync(deliveryItem, token);
+                    deliveryItem.ProviderMessageId = await DeliverMessageAsync(deliveryItem, token);
                     deliveryItem.IsSuccess = true;
                     deliveryItem.DeliveryProvider = GetType().Name;
                 }
@@ -195,13 +195,14 @@ namespace NullDesk.Extensions.Mailer.Core
         public abstract void Dispose();
 
         /// <summary>
-        ///     When overridden in a derived class, uses the mailer's underlying mail delivery service to send the specified
-        ///     message .
+        /// When overridden in a derived class, uses the mailer's underlying mail delivery service to send the specified
+        /// message and return the service's native message identifier (or null if not applicable).
         /// </summary>
         /// <param name="deliveryItem">The delivery item containing the message you wish to send.</param>
         /// <param name="token">The token.</param>
-        /// <returns>Task&lt;DeliveryItem&gt;.</returns>
-        protected abstract Task<DeliveryItem> DeliverMessageAsync(DeliveryItem deliveryItem,
+        /// <returns>Task&lt;String&gt; a service provider specific message ID.</returns>
+        /// <remarks>The implementor should return a provider specific ID value.</remarks>
+        protected abstract Task<string> DeliverMessageAsync(DeliveryItem deliveryItem,
             CancellationToken token = new CancellationToken());
 
         private void CheckIsDeliverable(MailerMessage message)

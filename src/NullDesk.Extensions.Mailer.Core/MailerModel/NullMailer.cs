@@ -38,11 +38,11 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="deliveryItem">The delivery item containing the message you wish to send.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;DeliveryItem&gt;.</returns>
-        protected override Task<DeliveryItem> DeliverMessageAsync(DeliveryItem deliveryItem,
+        protected override Task<string> DeliverMessageAsync(DeliveryItem deliveryItem,
             CancellationToken token = new CancellationToken())
         {
             deliveryItem.IsSuccess = true;
-            return Task.FromResult(deliveryItem);
+            return Task.FromResult(Guid.NewGuid().ToString());
         }
     }
 }

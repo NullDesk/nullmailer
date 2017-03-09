@@ -59,13 +59,15 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <value>The mail client.</value>
         public SmtpClient MailClient { get; }
 
+
         /// <summary>
-        ///     Delivers a single message using the mailkit framework.
+        /// Deliver message as an asynchronous operation.
         /// </summary>
         /// <param name="deliveryItem">The delivery item containing the message you wish to send.</param>
         /// <param name="token">The token.</param>
-        /// <returns>Task&lt;DeliveryItem&gt;.</returns>
-        protected override async Task<DeliveryItem> DeliverMessageAsync(DeliveryItem deliveryItem,
+        /// <returns>Task&lt;String&gt; a service provider specific message ID.</returns>
+        /// <remarks>The implementor should return a provider specific ID value.</remarks>
+        protected override async Task<string> DeliverMessageAsync(DeliveryItem deliveryItem,
             CancellationToken token = default(CancellationToken))
         {
             var mkMessage = new MimeMessage
@@ -95,9 +97,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
                 .AddMkAttachmentStreams(deliveryItem.Attachments)
                 .ToMessageBody();
 
-            await SendSmtpMessageAsync(mkMessage, token);
-
-            return deliveryItem;
+            return  await SendSmtpMessageAsync(mkMessage, token);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="message">The message.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task.</returns>
-        protected async Task SendSmtpMessageAsync(MimeMessage message,
+        protected async Task<string> SendSmtpMessageAsync(MimeMessage message,
             CancellationToken token = default(CancellationToken))
         {
             using (await _mLock.LockAsync())
@@ -125,8 +125,10 @@ namespace NullDesk.Extensions.Mailer.MailKit
                             Settings.AuthenticationSettings.Password, token);
                     }
                 }
+                
                 await MailClient.SendAsync(message, token);
                 await MailClient.DisconnectAsync(false, token);
+                return message.MessageId;
             }
         }
 
