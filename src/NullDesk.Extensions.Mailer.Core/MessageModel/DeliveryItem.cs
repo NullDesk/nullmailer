@@ -55,6 +55,16 @@ namespace NullDesk.Extensions.Mailer.Core
         public string DeliveryProvider { get; set; }
 
         /// <summary>
+        /// Gets or sets the provider's identifier for the message.
+        /// </summary>
+        /// <remarks>
+        /// Used to reference the message in the underlying mail system after delivery has been attempted.
+        /// </remarks>
+        /// <value>The provider message identifier.</value>
+        [StringLength(100)]
+        public string ProviderMessageId { get; set; }
+
+        /// <summary>
         ///     Gets or sets the message created date.
         /// </summary>
         /// <value>The message date.</value>

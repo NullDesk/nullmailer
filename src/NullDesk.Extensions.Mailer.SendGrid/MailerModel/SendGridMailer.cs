@@ -36,7 +36,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             : base(settings.Value, logger, historyStore)
         {
             MailClient = client;
-           
+
         }
 
         /// <summary>
@@ -58,16 +58,14 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// </summary>
         /// <value>The mail client.</value>
         public SendGridClient MailClient { get; set; }
-       
 
         /// <summary>
-        ///     deliver a message as an asynchronous operation.
+        /// Delivers the message asynchronous.
         /// </summary>
-        /// <param name="deliveryItem">The delivery item containing the message you wish to send.</param>
+        /// <param name="deliveryItem">The delivery item.</param>
         /// <param name="token">The token.</param>
-        /// <returns>Task&lt;DeliveryItem&gt;.</returns>
-        protected override async Task<DeliveryItem> DeliverMessageAsync(DeliveryItem deliveryItem,
-            CancellationToken token = default(CancellationToken))
+        /// <returns>System.Threading.Tasks.Task&lt;System.String&gt;.</returns>
+        protected override async Task<string> DeliverMessageAsync(DeliveryItem deliveryItem, CancellationToken token = default(CancellationToken))
         {
             var sgFrom = new EmailAddress(deliveryItem.FromEmailAddress, deliveryItem.FromDisplayName);
             var sgTo = new EmailAddress(deliveryItem.ToEmailAddress, deliveryItem.ToDisplayName);
@@ -92,7 +90,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             }
             else
             {
-                sgMessage.SetTemplateId(((TemplateBody) deliveryItem.Body).TemplateName);
+                sgMessage.SetTemplateId(((TemplateBody)deliveryItem.Body).TemplateName);
             }
 
             await AddAttachmentStreamsAsync(sgMessage, deliveryItem.Attachments, token);
@@ -100,17 +98,17 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             var sgResponse = await SendToApiAsync(sgMessage, token);
 
 
-            var isSuccess = sgResponse.StatusCode == HttpStatusCode.Accepted ||
-                            Settings.IsSandboxMode && sgResponse.StatusCode == HttpStatusCode.OK;
+
+            var isSuccess = sgResponse?.StatusCode == HttpStatusCode.Accepted ||
+                            Settings.IsSandboxMode && sgResponse?.StatusCode == HttpStatusCode.OK;
 
             if (isSuccess)
             {
-                //TODO: Enhance delivery item to store arbitrary data from mail service provider
-                return deliveryItem;
+                return sgResponse?.Headers?.GetValues("X-Message-Id").FirstOrDefault(); ;
             }
 
             throw new Exception(
-                $"Unable to delivery message; SendGrid response HTTP StatusCode is: {sgResponse.StatusCode}");
+                $"Unable to delivery message; SendGrid response HTTP StatusCode is: {sgResponse?.StatusCode}");
         }
 
         /// <summary>
