@@ -105,7 +105,8 @@ namespace NullDesk.Extensions.Mailer.Core
         public virtual IEnumerable<Guid> AddMessage(MailerMessage message)
         {
             CheckIsDeliverable(message);
-            var items = message.Recipients.Select(recipient => new DeliveryItem(message, recipient)).ToList();
+            var items = message.Recipients.Select(recipient => 
+                new DeliveryItem(message, recipient)).ToList();
 
             using (_deliverablesLock.LockAsync().Result)
             {
@@ -122,7 +123,6 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;IEnumerable&lt;MessageDeliveryItem&gt;&gt; for each message sent.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         public virtual async Task<IEnumerable<DeliveryItem>> SendAllAsync(
             CancellationToken token = new CancellationToken())
         {
@@ -179,11 +179,26 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="id">The delivery item identifier to resend.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public virtual async Task<bool> ReSend(Guid id, CancellationToken token)
+        /// <exception cref="System.InvalidOperationException">DeliveryItem is not re-sendable. The message may have originally been delivered with attachments, but attachment serialization may have been disabled for the history store</exception>
+        public virtual async Task<DeliveryItem> ReSend(Guid id, CancellationToken token)
         {
-            await Task.CompletedTask;
-            throw new NotImplementedException();
+            var di = await HistoryStore.GetAsync(id, token);
+
+            if (!di.IsResendable)
+            {
+                throw new InvalidOperationException(
+                    "DeliveryItem is not re-sendable. The message may have originally been delivered with attachments, but attachment serialization may have been disabled for the history store");
+            }
+
+            di.Id = new Guid();
+            di.ProviderMessageId = null;
+            di.IsSuccess = false;
+            di.CreatedDate = DateTimeOffset.Now;
+            di.ExceptionMessage = null;
+            
+
+            ((IMailer)this).Deliverables.Add(di);
+            return (await SendAsync(di.Id, token));
         }
 
         ICollection<DeliveryItem> IMailer.Deliverables { get; set; } = new Collection<DeliveryItem>();

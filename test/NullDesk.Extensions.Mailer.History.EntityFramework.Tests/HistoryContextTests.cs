@@ -61,7 +61,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests
                 .Should().NotBeNull()
                 .And.BeOfType<DeliveryItem>();
 
-            m.Which.BodyJson.Should().NotBeNullOrEmpty();
+            m.Which.Body.Should().NotBeNull();
             m.Which.Subject.Should().Be(Subject);
 
         }

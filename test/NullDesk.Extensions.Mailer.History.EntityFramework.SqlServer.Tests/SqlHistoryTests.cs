@@ -33,11 +33,12 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
         [Theory]
         [Trait("TestType", "Integration")]
         [ClassData(typeof(StandardMailerTestData))]
-        public async Task SendMailWithHistory(string html, string text, string[] attachments)
+        public async Task SendMailWithHistory_SerializeAttachments(string html, string text, string[] attachments)
         {
             attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
 
             var mailer = Fixture.ServiceProvider.GetService<IMailer>();
+            ((Mailer<NullMailerSettings>) mailer).HistoryStore.SerializeAttachments = true;
             var deliveryItems =
                 mailer.CreateMessage(b => b
                     .Subject(Subject)
@@ -63,8 +64,49 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
                 .Should().NotBeNull()
                 .And.BeOfType<DeliveryItem>();
 
-            m.Which.BodyJson.Should().NotBeNullOrEmpty();
+            m.Which.Body.Should().NotBeNull();
             m.Which.Subject.Should().Be(Subject);
+            m.Which.Attachments.Any(a => a.Value.Length == 0).Should().BeFalse();
+
+        }
+
+        [Theory]
+        [Trait("TestType", "Integration")]
+        [ClassData(typeof(StandardMailerTestData))]
+        public async Task SendMailWithHistory_NoSerializeAttachments(string html, string text, string[] attachments)
+        {
+            attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
+
+            var mailer = Fixture.ServiceProvider.GetService<IMailer>();
+            ((Mailer<NullMailerSettings>) mailer).HistoryStore.SerializeAttachments = false;
+            var deliveryItems =
+                mailer.CreateMessage(b => b
+                    .Subject(Subject)
+                    .And.To("noone@toast.com").WithDisplayName("No One Important")
+                    .And.ForBody().WithHtml(html).AndPlainText(text)
+                    .And.WithSubstitutions(ReplacementVars)
+                    .And.WithAttachments(attachments).Build());
+
+            var result = await mailer.SendAllAsync(CancellationToken.None);
+            result
+                .Should().NotBeNull()
+                .And.AllBeOfType<DeliveryItem>()
+                .And.HaveSameCount(deliveryItems)
+                .And.OnlyContain(i => i.IsSuccess);
+
+            var store = Fixture.ServiceProvider.GetService<IHistoryStore>();
+
+            store.Should().BeOfType<EntityHistoryStore<SqlHistoryContext>>();
+
+            var item = await store.GetAsync(result.First().Id, CancellationToken.None);
+
+            var m = item
+                .Should().NotBeNull()
+                .And.BeOfType<DeliveryItem>();
+
+            m.Which.Body.Should().NotBeNull();
+            m.Which.Subject.Should().Be(Subject);
+            m.Which.Attachments.All(a => a.Value.Length == 0).Should().BeTrue();
         }
 
         [Fact]
