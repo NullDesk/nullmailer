@@ -33,7 +33,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
         [Theory]
         [Trait("TestType", "Integration")]
         [ClassData(typeof(StandardMailerTestData))]
-        public async Task SendMailWithHistory_SerializeAttachments(string html, string text, string[] attachments)
+        public async Task Ef_Sql_History__SerializeAttachments_SendMail(string html, string text, string[] attachments)
         {
             attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
 
@@ -73,7 +73,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
         [Theory]
         [Trait("TestType", "Integration")]
         [ClassData(typeof(StandardMailerTestData))]
-        public async Task SendMailWithHistory_NoSerializeAttachments(string html, string text, string[] attachments)
+        public async Task Ef_Sql_History_NoSerializeAttachments_SendMail(string html, string text, string[] attachments)
         {
             attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
 
@@ -111,7 +111,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
 
         [Fact]
         [Trait("TestType", "Integration")]
-        public async Task HistoryListTest()
+        public async Task Ef_Sql_History_List()
         {
             var store = Fixture.ServiceProvider.GetService<IHistoryStore>();
 

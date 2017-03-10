@@ -29,7 +29,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
         [Theory]
         [Trait("TestType", "Unit")]
         [ClassData(typeof(StandardMailerTestData))]
-        public async Task ReSendMail(string html, string text, string[] attachments)
+        public async Task MailKit_ReSendMail(string html, string text, string[] attachments)
         {
             attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray() ?? new string[0];
 
@@ -75,14 +75,6 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
             {
                 asyncFunction.ShouldNotThrow<InvalidOperationException>();
             }
-
-
-
-
-
-
-
-
         }
     }
 }

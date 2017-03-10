@@ -7,14 +7,14 @@ using Xunit;
 
 namespace NullDesk.Extensions.Mailer.Core.Tests
 {
-    public class BuildPostContentStep
+    public class BuildPostContentStepTests
     {
         [Theory]
         [InlineData(@"..\..\..\..\TestData\attachments\testFile.1.txt")]
         [InlineData("")]
         [InlineData(null)]
         [Trait("TestType", "Unit")]
-        public void WithAttachment(string fileName)
+        public void BuildPostContentStep_WithAttachment(string fileName)
         {
             var contentStep = new MessageBuilder.BuildPostContentStep(MailerMessage.Create());
             if (string.IsNullOrEmpty(fileName))
@@ -45,7 +45,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData(null, "g")]
         [InlineData("h", null)]
         [Trait("TestType", "Unit")]
-        public void WithSubstitution(string token, string value)
+        public void BuildPostContentStep_WithSubstitution(string token, string value)
         {
             var contentStep = new MessageBuilder.BuildPostContentStep(MailerMessage.Create());
             if (token == null)
@@ -68,7 +68,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
 
         [Fact]
         [Trait("TestType", "Unit")]
-        public void Build()
+        public void BuildPostContentStep_Build()
         {
             var contentStep = new MessageBuilder.BuildPostContentStep(MailerMessage.Create());
 

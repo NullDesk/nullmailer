@@ -25,7 +25,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
         [Theory]
         [Trait("TestType", "Integration")]
         [ClassData(typeof(StandardMailerTestData))]
-        public void SendParallelMail(string html, string text, string[] attachments)
+        public void SendGrid_Parallel_SendMail(string html, string text, string[] attachments)
         {
             var mailer = Fixture.ServiceProvider.GetService<IMailer>();
             var messages = new List<TestParallelMailMessage>();

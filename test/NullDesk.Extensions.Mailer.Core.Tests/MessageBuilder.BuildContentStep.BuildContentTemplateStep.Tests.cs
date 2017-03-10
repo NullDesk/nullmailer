@@ -5,11 +5,11 @@ using Xunit;
 
 namespace NullDesk.Extensions.Mailer.Core.Tests
 {
-    public class BuildContentTemplateStep
+    public class BuildContentTemplateStepTests
     {
         [Fact]
         [Trait("TestType", "Unit")]
-        public void Build()
+        public void BuildContentTemplate_Build()
         {
             var contentStep =
                 new MessageBuilder.BuildContentStep.BuildContentTemplateStep(
@@ -25,7 +25,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
 
         [Fact]
         [Trait("TestType", "Unit")]
-        public void ForBody()
+        public void BuildContentTemplate_ForBody()
         {
             var contentStep =
                 new MessageBuilder.BuildContentStep.BuildContentTemplateStep(

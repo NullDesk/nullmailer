@@ -27,7 +27,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
         [Theory]
         [Trait("TestType", "Unit")]
         [ClassData(typeof(StandardMailerTestData))]
-        public async Task ReSendMail(string html, string text, string[] attachments)
+        public async Task SendGrid_History_ReSendMail(string html, string text, string[] attachments)
         {
             attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray() ?? new string[0];
 
