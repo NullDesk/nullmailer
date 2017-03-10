@@ -63,10 +63,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
             ((Mailer<MkSmtpMailerSettings>)secondResendMailer).HistoryStore.SerializeAttachments = false;
 
 
-            Func<Task> asyncFunction = async () =>
-            {
-                await secondResendMailer.ReSend(di.Id, CancellationToken.None);
-            };
+            Func<Task> asyncFunction = () => secondResendMailer.ReSend(di.Id, CancellationToken.None);
             if (attachments.Any())
             {
                 asyncFunction.ShouldThrow<InvalidOperationException>();

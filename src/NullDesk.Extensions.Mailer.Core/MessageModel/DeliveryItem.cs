@@ -141,7 +141,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// Gets a value indicating whether this instance is resendable.
         /// </summary>
         /// <value><c>true</c> if this instance is resendable; otherwise, <c>false</c>.</value>
-        public bool IsResendable => Attachments.All(a => a.Value?.Length > 0);
+        public bool IsResendable => !Attachments.Any() || Attachments.All(a => (a.Value?.Length ?? 0) > 0);
 
 
 
@@ -156,4 +156,5 @@ namespace NullDesk.Extensions.Mailer.Core
             return content.PerformContentSubstitution(Substitutions);
         }
     }
+   
 }

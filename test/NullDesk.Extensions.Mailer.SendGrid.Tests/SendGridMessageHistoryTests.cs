@@ -62,13 +62,11 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
             var secondResendMailer = (IHistoryMailer)Fixture.Mail.GetMailer();
             ((Mailer<SendGridMailerSettings>)secondResendMailer).HistoryStore.SerializeAttachments = false;
 
-            Func<Task> asyncFunction = async () =>
-            {
-                await secondResendMailer.ReSend(di.Id, CancellationToken.None);
-            };
+
+            Func<Task> asyncFunction = () => secondResendMailer.ReSend(di.Id, CancellationToken.None);
             if (attachments.Any())
             {
-                asyncFunction.ShouldThrow<InvalidOperationException>();
+               asyncFunction.ShouldThrow<InvalidOperationException>();
             }
             else
             {
