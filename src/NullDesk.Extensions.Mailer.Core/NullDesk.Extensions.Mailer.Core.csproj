@@ -18,6 +18,7 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Copyright>Stephen M. Redd 2017</Copyright>
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <Version>3.0.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <None Include="MessageModel\ContentBody.cs" />
