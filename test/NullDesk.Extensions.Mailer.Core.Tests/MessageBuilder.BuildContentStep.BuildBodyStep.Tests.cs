@@ -4,14 +4,14 @@ using Xunit;
 
 namespace NullDesk.Extensions.Mailer.Core.Tests
 {
-    public class BuildBodyStep
+    public class BuildBodyStepTests
     {
         [Theory]
         [InlineData("<tag>content</tag>")]
         [InlineData("")]
         [InlineData(null)]
         [Trait("TestType", "Unit")]
-        public void WithHtml(string html)
+        public void BuildBodyStep_WithHtml(string html)
         {
             var contentStep = new MessageBuilder.BuildContentStep.BuildBodyStep(MailerMessage.Create());
             var stepBuilder = contentStep.WithHtml(html);
@@ -29,7 +29,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData("")]
         [InlineData(null)]
         [Trait("TestType", "Unit")]
-        public void WithPlainText(string text)
+        public void BuildBodyStep_WithPlainText(string text)
         {
             var contentStep = new MessageBuilder.BuildContentStep.BuildBodyStep(MailerMessage.Create());
             var stepBuilder = contentStep.WithPlainText(text);

@@ -22,6 +22,6 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="id">The delivery item identifier to resend.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        Task<bool> ReSend(Guid id, CancellationToken token);
+        Task<DeliveryItem> ReSend(Guid id, CancellationToken token);
     }
 }

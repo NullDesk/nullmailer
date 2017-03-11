@@ -31,7 +31,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests
         [Theory]
         [Trait("TestType", "Unit")]
         [ClassData(typeof(StandardMailerTestData))]
-        public async Task SendMailWithHistory(string html, string text, string[] attachments)
+        public async Task Ef_History_SendMail(string html, string text, string[] attachments)
         {
             attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
 
@@ -61,7 +61,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests
                 .Should().NotBeNull()
                 .And.BeOfType<DeliveryItem>();
 
-            m.Which.BodyJson.Should().NotBeNullOrEmpty();
+            m.Which.Body.Should().NotBeNull();
             m.Which.Subject.Should().Be(Subject);
 
         }
@@ -69,7 +69,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests
 
         [Fact]
         [Trait("TestType", "Unit")]
-        public async Task HistoryListTest()
+        public async Task Ef_History_List()
         {
             var store = Fixture.ServiceProvider.GetService<IHistoryStore>();
 

@@ -11,7 +11,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData("")]
         [InlineData(null)]
         [Trait("TestType", "Unit")]
-        public void From(string address)
+        public void MessageBuilder_From(string address)
         {
             var messageBuilder = new MessageBuilder();
             var stepBuilder = messageBuilder.From(address);

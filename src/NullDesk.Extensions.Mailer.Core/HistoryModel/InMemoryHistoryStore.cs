@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,6 +31,10 @@ namespace NullDesk.Extensions.Mailer.Core
             if (item.Id == default(Guid))
             {
                 item.Id = new Guid();
+            }
+            if (!SerializeAttachments)
+            {
+                item.Attachments = item.Attachments.Select(i => new KeyValuePair<string, Stream>(i.Key, null)).ToDictionary(k=> k.Key, k => k.Value);
             }
             Items.Add(item);
             return Task.FromResult(item.Id);
@@ -82,5 +87,11 @@ namespace NullDesk.Extensions.Mailer.Core
                 .OrderByDescending(i => i.CreatedDate)
                 .Take(limit));
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to serialize attachments for use in the history store. If not enabled, messages with attachments cannot be resent from history.
+        /// </summary>
+        /// <value><c>true</c> if attachments should be serialized; otherwise, <c>false</c>.</value>
+        public bool SerializeAttachments { get; set; }
     }
 }

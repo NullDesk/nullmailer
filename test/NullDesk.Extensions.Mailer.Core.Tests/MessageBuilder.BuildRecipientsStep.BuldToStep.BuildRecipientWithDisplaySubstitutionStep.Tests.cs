@@ -6,7 +6,7 @@ using Xunit;
 
 namespace NullDesk.Extensions.Mailer.Core.Tests
 {
-    public class BuildRecipientWithDisplaySubstitutionStep
+    public class BuildRecipientWithDisplaySubstitutionStepTests
     {
         [Theory]
         [InlineData("toast@toast.com", "a", "b")]
@@ -15,7 +15,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData("toast@toast.com", null, "g")]
         [InlineData("toast@toast.com", "h", null)]
         [Trait("TestType", "Unit")]
-        public void WithPersonalizedSubstitution(string address, string token, string value)
+        public void BuildRecipientWithDisplaySubstitutionStep_WithPersonalizedSubstitution(string address, string token, string value)
         {
             var rec = new MessageRecipient().ToAddress(address);
             var toStep =
@@ -44,7 +44,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
 
         [Fact]
         [Trait("TestType", "Unit")]
-        public void And()
+        public void BuildRecipientWithDisplaySubstitutionStep_And()
         {
             var rec = new MessageRecipient().ToAddress("toast@toast.com");
             var toStep =

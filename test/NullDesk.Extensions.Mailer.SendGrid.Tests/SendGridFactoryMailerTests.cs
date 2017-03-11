@@ -27,7 +27,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
         [Theory]
         [Trait("TestType", "Unit")]
         [ClassData(typeof(TemplateMailerTestData))]
-        public async Task SendAll_WithTemplate(string template, string[] attachments)
+        public async Task SendGrid_Factory_SendAll_WithTemplate(string template, string[] attachments)
         {
             attachments =
                 attachments?.Select(a => Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, a))).ToArray();
@@ -55,7 +55,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
         [Theory]
         [Trait("TestType", "Unit")]
         [ClassData(typeof(StandardMailerTestData))]
-        public async Task SendAll_WithContentBody(string html, string text, string[] attachments)
+        public async Task SendGrid_Factory_SendAll_WithContentBody(string html, string text, string[] attachments)
         {
             attachments =
                 attachments?.Select(a => Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, a))).ToArray();

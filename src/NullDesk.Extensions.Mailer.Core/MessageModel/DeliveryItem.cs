@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
 
 // ReSharper disable CheckNamespace
 namespace NullDesk.Extensions.Mailer.Core
@@ -14,13 +12,13 @@ namespace NullDesk.Extensions.Mailer.Core
     /// </summary>
     public class DeliveryItem
     {
-        /// <summary>
+         /// <summary>
         /// Initializes a new instance of the <see cref="DeliveryItem"/> class.
         /// </summary>
         public DeliveryItem() { }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="DeliveryItem" /> class.
+        /// Initializes a new instance of the <see cref="DeliveryItem" /> class.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="recipient">The recipient.</param>
@@ -51,7 +49,6 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Gets or sets the delivery provider.
         /// </summary>
         /// <value>The delivery provider.</value>
-        [StringLength(50)]
         public string DeliveryProvider { get; set; }
 
         /// <summary>
@@ -91,14 +88,12 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Gets or sets the sent to email.
         /// </summary>
         /// <value>The sent to email.</value>
-        [StringLength(200)]
         public string ToEmailAddress { get; set; }
 
         /// <summary>
         ///     Gets or sets to display name.
         /// </summary>
         /// <value>To display name.</value>
-        [StringLength(200)]
         public string ToDisplayName { get; set; }
 
         /// <summary>
@@ -115,17 +110,13 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Gets or sets the message body.
         /// </summary>
         /// <value>The body.</value>
-        [NotMapped]
         public IMessageBody Body { get; set; }
-
-
 
 
         /// <summary>
         ///     A collection of attachments to include with the message.
         /// </summary>
         /// <value>The attachments.</value>
-        [NotMapped]
         public IDictionary<string, Stream> Attachments { get; set; }
 
 
@@ -136,86 +127,24 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     This collection contains the merged dictionary of personalized substitutions and general message substitutions.
         /// </remarks>
         /// <value>The substitutions.</value>
-        [NotMapped]
         public IDictionary<string, string> Substitutions { get; set; }
 
-
+        
 
         /// <summary>
         ///     Gets or sets the exception message if an exception occurred.
         /// </summary>
         /// <value>The exception message.</value>
-        [StringLength(500)]
         public string ExceptionMessage { get; set; }
 
-        #region history storage fields
-
-        private JsonSerializerSettings jsonSettings = new JsonSerializerSettings()
-        {
-            TypeNameHandling = TypeNameHandling.All
-        };
-
         /// <summary>
-        /// Gets the body as json .
+        /// Gets a value indicating whether this instance is resendable.
         /// </summary>
-        /// <value>The content.</value>
-        public string BodyJson
-        {
-            get
-            {
-                return JsonConvert.SerializeObject(Body, Formatting.Indented, jsonSettings);
-            }
-            set
-            {
-                var b = JsonConvert.DeserializeObject(value, jsonSettings);
-                Body = (IMessageBody)b;
-            }
-        }
-        /// <summary>
-        /// Gets or sets the substitutions json.
-        /// </summary>
-        /// <value>The substitutions json.</value>
-        public string SubstitutionsJson
-        {
-            get { return JsonConvert.SerializeObject(Substitutions, Formatting.Indented); }
-            set { Substitutions = JsonConvert.DeserializeObject<IDictionary<string, string>>(value); }
-        }
-
-        /// <summary>
-        /// Gets or sets the attachments json.
-        /// </summary>
-        /// <value>The attachments json.</value>
-        public string AttachmentsJson
-        {
-            get
-            {
-                var att = new Dictionary<string, string>(Attachments.Select(a =>
-                 {
-                     var ms = new MemoryStream();
-                     a.Value.CopyTo(ms);
-                     return new KeyValuePair<string, string>(a.Key, ms.ToString());
-                 }).ToDictionary(k => k.Key, k => k.Value));
+        /// <value><c>true</c> if this instance is resendable; otherwise, <c>false</c>.</value>
+        public bool IsResendable => !Attachments.Any() || Attachments.All(a => (a.Value?.Length ?? 0) > 0);
 
 
-                return JsonConvert.SerializeObject(att, Formatting.Indented);
-            }
-            set
-            {
 
-                var att = JsonConvert.DeserializeObject<IDictionary<string, string>>(value);
-                Attachments = att.Select(a =>
-                {
-                    var ms = new MemoryStream();
-                    StreamWriter writer = new StreamWriter(ms);
-                    writer.Write(a.Value);
-                    writer.Flush();
-                    ms.Position = 0;
-                    return new KeyValuePair<string, Stream>(a.Key, ms);
-                }).ToDictionary(k => k.Key, k => k.Value);
-            }
-        }
-
-        #endregion
 
         /// <summary>
         ///     Get the specified content after processing this instance's substitutions.
@@ -227,4 +156,5 @@ namespace NullDesk.Extensions.Mailer.Core
             return content.PerformContentSubstitution(Substitutions);
         }
     }
+   
 }

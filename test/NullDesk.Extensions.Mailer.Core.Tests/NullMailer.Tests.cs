@@ -26,7 +26,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData("toast@toast.com", null, "something")]
         [InlineData("toast@toast.com", "toast@toast.com", null)]
         [Trait("TestType", "Unit")]
-        public void AddMessage_FailsWhenNotDeliverable(string from, string to, string textBody)
+        public void NullMailer_AddMessage_FailsWhenNotDeliverable(string from, string to, string textBody)
         {
             var mailer = GetMailer();
             mailer.Invoking(m => m.AddMessage(
@@ -48,7 +48,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
 
         [Fact]
         [Trait("TestType", "Unit")]
-        public void AddMessage()
+        public void NullMailer_AddMessage()
         {
             var mailer = GetMailer();
             mailer.AddMessage(new MailerMessage()
@@ -64,7 +64,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
 
         [Fact]
         [Trait("TestType", "Unit")]
-        public void AddMessages()
+        public void NullMailer_AddMessages()
         {
             var mailer = GetMailer();
             var ids = mailer.AddMessages(new List<MailerMessage>
@@ -90,7 +90,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
 
         [Fact]
         [Trait("TestType", "Unit")]
-        public void Create_FromIBuilderStepsCompleted()
+        public void NullMailer_Create_FromIBuilderStepsCompleted()
         {
             var mailer = GetMailer();
             mailer.CreateMessage(b => b
@@ -104,7 +104,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
 
         [Fact]
         [Trait("TestType", "Unit")]
-        public void Create_MailerMessage()
+        public void NullMailer_Create_MailerMessage()
         {
             var mailer = GetMailer();
             mailer.CreateMessage(b => b

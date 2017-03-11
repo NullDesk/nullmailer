@@ -8,7 +8,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
     {
         [Fact]
         [Trait("TestType", "Unit")]
-        public void And()
+        public void BuildBodyComplete_And()
         {
             var contentStep =
                 new MessageBuilder.BuildContentStep.BuildBodyStep.BuildBodyCompleteStep(MailerMessage.Create());
@@ -19,7 +19,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
 
         [Fact]
         [Trait("TestType", "Unit")]
-        public void Build()
+        public void BuildBodyComplete_Build()
         {
             var contentStep =
                 new MessageBuilder.BuildContentStep.BuildBodyStep.BuildBodyCompleteStep(MailerMessage.Create());

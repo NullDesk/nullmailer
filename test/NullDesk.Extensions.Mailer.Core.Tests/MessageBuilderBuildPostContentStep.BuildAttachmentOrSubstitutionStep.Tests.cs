@@ -4,12 +4,12 @@ using Xunit;
 
 namespace NullDesk.Extensions.Mailer.Core.Tests
 {
-    public class BuildAttachmentOrSubstitutionStep
+    public class BuildAttachmentOrSubstitutionStepTests
     {
         [Fact]
         [Trait("TestType", "Unit")]
 
-        public void And()
+        public void BuildAttachmentOrSubstitutionStep_And()
         {
             var contentStep =
                 new MessageBuilder.BuildPostContentStep.BuildAttachmentOrSubstitutionStep(MailerMessage.Create());
@@ -21,7 +21,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [Fact]
         [Trait("TestType", "Unit")]
 
-        public void Build()
+        public void BuildAttachmentOrSubstitutionStep_Build()
         {
             var contentStep =
                 new MessageBuilder.BuildPostContentStep.BuildAttachmentOrSubstitutionStep(MailerMessage.Create());
