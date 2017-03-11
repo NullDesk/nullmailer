@@ -313,11 +313,135 @@ When using the provided EF hsitory store, it is up to your if your client applic
 
 ## <a name="creating-messages"></a>Creating MailerMessages
 
+Emails are represented by a class called <code>MailerMessage</code>.
+
+While you have a lot of flexibility in how messages are constructed, there are some requirments a message must meet before it can be successfully delivered. It must have a from address, at least one recipient, and specify either body content or a template.
+
+Before attempting to send a message, you can check the <code>IsDeliverable</code> property to make sure.
+
 ### <a name="message-builder"></a>Fluent Message Builder
+
+The mailer extensions include a fluent message builder API that provides a guided experience for creating complete and deliverable messages.
+
+The main steps in the message builder are:
+
+1. Sender
+1. Subject
+1. Recipient(s)
+1. Body
+1. Substitution(s) (optional)
+1. Attachment(s) (optional)
+
+Once you reach the body step of the builder, you can call the <code>Build()</code> method to create your message and and the builder method chain.
+
+There are two primary ways to use the message builder. Either instantiate it yourself, or use the <code>CreateMessage()</code> method of your Mailer instance.
+
+Minimal Example using <code>MessageBuilder</code> directly:
+
+        var message = new MessageBuilder()
+            .From("toast@toast.com")
+            .And.Subject("Subject")
+            .And.To("someone@somewhere.com")
+            .And.ForTemplate("MyTemplate")
+            .Build()
+
+If using <code>CreateMessage()</code>, the sender details will be provided by your mailer's and the bulder will begin with the recipient step.
+
+Minimal Example using <code>CreateMessage()</code>
+
+        mailer.CreateMessage(b => b
+            .Subject("Subject")
+            .And.To("someone@somewhere.com")
+            .And.ForTemplate("MyTemplate")
+            .Build()
+
+A Complete Example:
+
+        var message = new MessageBuilder()
+            .From("toast@toast.com").WithDisplayName("Toast Man")
+            .And.Subject("Subject")
+            .And.To("someone@somewhere.com")
+                .WithDisplayName("Someone Nice")
+                .WithPersonalizedSubstitution("%name%", "Mr. Nice")
+            .And.To("otherguy@somewhere.com")
+                .WithDisplayName("Other Guy")
+                .WithPersonalizedSubstitution("%name%", "Mr. Guy")
+                .WithPersonalizedSubstitution("%title%", "President")
+            .And.ForBody()
+                .WithHtml(html)
+                .AndPlainText(text)
+            .And.WithAttachment("someFile.zip")
+            .And.WithAttachments(new List<string> { "secondFile.zip", "thirdFile.zup" })
+            .And.WithSubstitution("%advertisemtn%", adText)
+            .And.WithSubstitutions(new Dictionary<string, string>
+                {
+                    {"%company%", "Place Name"},
+                    { "%phone%","1-800-123-1234" }
+                })
+            .Build();
+
 
 ### <a name="fluent-extensions"></a>Fluent Extensions
 
+The Mailer Extensions also includes a more traitional set of fluent extension methods that can sometimes be useful in creating messages.
+
+While these are mostly intended for internal use in the fluent message builder, they are available for your convienience if you choose to use them. They are often handy for modifying a message.
+
+With these extensions, the order in which you chain the methods is largely irrelevant.
+
+Here is a basic example:
+
+        var message = MailerMessage.Create()
+            .From(sender =>
+            {
+                sender.EmailAddress = "toast@toast.com";
+                sender.DisplayName = "Toast Man";
+            })
+            .To(recipient =>
+            {
+                recipient.EmailAddress = "someone@somewhere.com";
+                recipient.DisplayName = "Someone Nice";
+            })
+            .WithSubject("Subject")
+            .WithBody<TemplateBody>(body => body.TemplateName = "MyTemplate");
+
+
 ### <a name="class-instantiation"></a>Class Instantiation
+
+While the message builder fluent API is probably the best way to create a new message, direct instantation is also straight-forward:
+
+        var message = new MailerMessage
+        {
+            From = new MessageSender()
+            {
+                EmailAddress = "toast@toast.com",
+                DisplayName = "Toast Man"
+            },
+            Recipients = new List<MessageRecipient>
+            {
+                new MessageRecipient
+                {
+                    EmailAddress = "someone@somewhere.com",
+                    DisplayName = "Nice Guy"
+                }
+            },
+            Subject = "Subject",
+            Body = new ContentBody
+            {
+                HtmlContent = html,
+                PlainTextContent = text
+            },
+            Attachments = new List<string>
+            {
+                "file1.zip",
+                "file2.zip"
+            }.GetAttachmentStreamsForFiles(),
+            Substitutions = new Dictionary<string, string>
+            {
+                {"%name%", "Nice Guy"},
+                {"%title%", "President"}
+            }
+        };
 
 ### <a name="subs"></a>Substitutions and PersonalizedSubstitutions
 
@@ -348,11 +472,12 @@ The primary method you must supply is a method that can deliver a single <code>D
 
         public class MySimpleMailer : Mailer<MyMailerSettings>
         {
-            protected override async Task<DeliveryItem> DeliverMessageAsync(
+            protected override async Task<string> DeliverMessageAsync(
                 DeliveryItem deliveryItem,
                 CancellationToken token = default(CancellationToken))
             {
                 //... implementation here
+                // return provider supplied message ID, or null if not applicable
             }
         }
 

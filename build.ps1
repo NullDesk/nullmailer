@@ -107,7 +107,7 @@ foreach($testFolder in $testFolders){
     Write-Output "testing : $testFolder"
     Write-Output "--------"
     Set-Location $testFolder
-    exec { & dotnet test --configuration $config -- -trait "TestType=Unit" }
+    exec { & dotnet test --configuration $config --filter "TestType=Unit" }
     Set-Location $rootDir
 }
 

@@ -15,7 +15,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <param name="files">A list of paths for the files you wish to retrieve</param>
         /// <returns>A dictionary of file names and streams for each requested file path</returns>
-        public static IDictionary<string, Stream> GetAttachmentStreamsForFile(this IEnumerable<string> files)
+        public static IDictionary<string, Stream> GetAttachmentStreamsForFiles(this IEnumerable<string> files)
         {
             IDictionary<string, Stream> attachments = null;
             if (files != null)
@@ -34,7 +34,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <param name="attachmentFiles">A collection of files.</param>
         /// <returns>IDictionary&lt;System.String, Stream&gt;.</returns>
-        public static IDictionary<string, Stream> GetAttachmentStreamsForFile(this IEnumerable<FileInfo> attachmentFiles)
+        public static IDictionary<string, Stream> GetAttachmentStreamsForFiles(this IEnumerable<FileInfo> attachmentFiles)
         {
             IDictionary<string, Stream> attachments = null;
             if (attachmentFiles != null)
