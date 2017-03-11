@@ -27,7 +27,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
 
 
         [Theory]
-        [Trait("TestType", "Unit")]
+        [Trait("TestType", "LocalOnly")]
         [ClassData(typeof(StandardMailerTestData))]
         public async Task MailKit_ReSendMail(string html, string text, string[] attachments)
         {
