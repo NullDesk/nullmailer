@@ -12,13 +12,13 @@ using NullDesk.Extensions.Mailer.Core;
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests
 {
-    public class MailKitMessageHistoryTests : IClassFixture<FactoryMailFixture>
+    public class MailKitMessageHistoryTests : IClassFixture<HistoryMailFixture>
     {
 
 
-        private FactoryMailFixture Fixture { get; }
+        private HistoryMailFixture Fixture { get; }
 
-        public MailKitMessageHistoryTests(FactoryMailFixture fixture)
+        public MailKitMessageHistoryTests(HistoryMailFixture fixture)
         {
             ReplacementVars.Add("%name%", "Mr. Toast");
             Fixture = fixture;
@@ -29,12 +29,11 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
         [Theory]
         [Trait("TestType", "LocalOnly")]
         [ClassData(typeof(StandardMailerTestData))]
-        public async Task MailKit_ReSendMail(string html, string text, string[] attachments)
+        public async Task MailKit__History_SerializedAttachments_ReSendMail(string html, string text, string[] attachments)
         {
             attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray() ?? new string[0];
 
-            var mailer = Fixture.Mail.GetMailer();
-            ((Mailer<MkSmtpMailerSettings>)mailer).HistoryStore.SerializeAttachments = true;
+            var mailer = Fixture.MailerFactoryForHistoryWithSerializableAttachments.GetMailer();
 
             mailer.CreateMessage(b => b
                 .Subject($"xunit Test run: content body")
@@ -48,30 +47,58 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
             items
                 .Should().HaveCount(1)
                 .And.AllBeOfType<DeliveryItem>();
-            var history = await Fixture.Store.GetAsync(items.First().Id, CancellationToken.None);
+
+
+            var history = await Fixture.StoreWithSerializableAttachments.GetAsync(items.First().Id, CancellationToken.None);
             var m = history.Should().NotBeNull().And.BeOfType<DeliveryItem>().Which;
             m.IsSuccess.Should().BeTrue();
             m.DeliveryProvider.Should().NotBeNullOrEmpty();
 
-            var resendMailer = (IHistoryMailer)Fixture.Mail.GetMailer();
-            //setting this will not effect if the message can be resent, but will effect if the resend itself can be resent
-            ((Mailer<MkSmtpMailerSettings>)resendMailer).HistoryStore.SerializeAttachments = false;
-            var di = await resendMailer.ReSend(m.Id, CancellationToken.None);
+            var di = await mailer.ReSendAsync(m.Id, CancellationToken.None);
             di.IsSuccess.Should().BeTrue();
+        }
 
-            var secondResendMailer = (IHistoryMailer)Fixture.Mail.GetMailer();
-            ((Mailer<MkSmtpMailerSettings>)secondResendMailer).HistoryStore.SerializeAttachments = false;
+        [Theory]
+        [Trait("TestType", "LocalOnly")]
+        [ClassData(typeof(StandardMailerTestData))]
+        public async Task MailKit_History_NoSerializedAttachments_ReSendMail(string html, string text, string[] attachments)
+        {
+            attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray() ?? new string[0];
+
+            var mailer = Fixture.MailerFactoryForHistoryWithoutSerializableAttachments.GetMailer();
+
+            mailer.CreateMessage(b => b
+                .Subject($"xunit Test run: content body")
+                .And.To("noone@toast.com").WithDisplayName("No One Important")
+                .And.ForBody().WithHtml(html).AndPlainText(text)
+                .And.WithSubstitutions(ReplacementVars)
+                .And.WithAttachments(attachments).Build());
+
+            var result = await mailer.SendAllAsync(CancellationToken.None);
+            var items = result as DeliveryItem[] ?? result.ToArray();
+            items
+                .Should().HaveCount(1)
+                .And.AllBeOfType<DeliveryItem>();
 
 
-            Func<Task> asyncFunction = () => secondResendMailer.ReSend(di.Id, CancellationToken.None);
+            var history = await Fixture.StoreWithoutSerializableAttachments.GetAsync(items.First().Id, CancellationToken.None);
+            var m = history.Should().NotBeNull().And.BeOfType<DeliveryItem>().Which;
+            m.IsSuccess.Should().BeTrue();
+            m.DeliveryProvider.Should().NotBeNullOrEmpty();
+
             if (attachments.Any())
             {
-                asyncFunction.ShouldThrow<InvalidOperationException>();
+                Func<Task> asyncFunction = () => mailer.ReSendAsync(m.Id, CancellationToken.None);
+
+                asyncFunction
+                    .ShouldThrow<InvalidOperationException>();
             }
             else
             {
-                asyncFunction.ShouldNotThrow<InvalidOperationException>();
+                var di = await mailer.ReSendAsync(m.Id, CancellationToken.None);
+                di.Should().BeOfType<DeliveryItem>().Which.IsSuccess.Should().BeTrue();
             }
+
         }
     }
 }

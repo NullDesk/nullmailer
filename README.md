@@ -27,6 +27,7 @@ Easily configure your application for different email services at startup based 
   - [Dependency Injection](#dependency-injection)
   - [Logging with ILogger](#ilogger)
   - [Delivery History with IHistoryStore](#ihistorystore)
+    - [Re-Sending from IHistoryStore](#resend)
 - [Creating MailerMessages](#creating-messages)
   - [Fluent Message Builder](#message-builder)
   - [Fluent Extensions](#fluent-extensions)
@@ -310,6 +311,24 @@ When using the provided EF hsitory store, it is up to your if your client applic
         {
             ctx.Database.Migrate();
         }
+##<a name="resend"></a> Re-Sending from the IHistoryStore
+
+The history store also enables re-send capabilities within the mailers.
+
+If a history store is configured, use the history store to get the ID of the message you want to re-send. Then call the mailer's <code>ReSendAsync</code> method, passing in the the message Id you wish to resend.
+
+The re-send will **immediately attempt** to re-deliver the message, but will not deliver any other messages being tracked by the mailer.
+
+**Limitations**
+
+- By default, messages with attachments cannot be resent.
+
+Since the default setting for for most implementations of <code>IHistoryStore</code> is to ignore the attachment file contents, the complete message is not available for re-delivery.
+
+You can enable attachment serialization for the history store by explicitly changing this setting in code.
+
+     myHistoryStore.SerializeAttachments = true;
+
 
 ## <a name="creating-messages"></a>Creating MailerMessages
 
@@ -332,7 +351,7 @@ The main steps in the message builder are:
 1. Substitution(s) (optional)
 1. Attachment(s) (optional)
 
-Once you reach the body step of the builder, you can call the <code>Build()</code> method to create your message and and the builder method chain.
+Once you reach the body step of the builder, you can call the <code>Build()</code> method to create your message and end the builder method chain.
 
 There are two primary ways to use the message builder. Either instantiate it yourself, or use the <code>CreateMessage()</code> method of your Mailer instance.
 
@@ -345,7 +364,7 @@ Minimal Example using <code>MessageBuilder</code> directly:
             .And.ForTemplate("MyTemplate")
             .Build()
 
-If using <code>CreateMessage()</code>, the sender details will be provided by your mailer's and the bulder will begin with the recipient step.
+If using <code>CreateMessage()</code>, the sender details will be provided by your mailer's settings, and the bulder will begin with the subject step.
 
 Minimal Example using <code>CreateMessage()</code>
 
@@ -385,7 +404,7 @@ A Complete Example:
 
 The Mailer Extensions also includes a more traitional set of fluent extension methods that can sometimes be useful in creating messages.
 
-While these are mostly intended for internal use in the fluent message builder, they are available for your convienience if you choose to use them. They are often handy for modifying a message.
+While these are mostly intended for internal use in the fluent message builder, they are available for your convienience if you choose to use them. They are often handy for modifying a message after it has been created by another mechanism.
 
 With these extensions, the order in which you chain the methods is largely irrelevant.
 
@@ -445,11 +464,31 @@ While the message builder fluent API is probably the best way to create a new me
 
 ### <a name="subs"></a>Substitutions and PersonalizedSubstitutions
 
+The mailer extensions support content substitutions for the body content, subject, and with templates. If your mail service supports server-side templates, these substitions will be passed to the server for processing against the template. When providing your own message body in code, the substitutions will be made locally when the message is delivered.
+
+The <code>MailMessage</code> has a top-level property for supplying the collection of replacement tokens and values as a dictionary. Additionally, each recipient can also specify a collection of substitions to further personalize the content on a per-recipient basis. When the message is delivered, these collections are merged. If the same token exists in both collections, the recipient's personalized version will be used.
+
+Several of the above examples for creating messages demonstrate using substitions.
+
+**Be sure your dictionary's key, the replacement token, includes the delimeters your content or template uses.**
+
 ### <a name="bodycontent"></a>Body Content
+
+The <code>MailerMessage.Body</code> can be any type that implements <code>IMessageBody</code>. 
+
+The framework includes a <code>ContentBody</code> class for cases where you wish to supply HTML and/or Plain text content directly. The <code>TemplateBody</code> class allows you to supply a template name instead. 
 
 ### <a name="templates"></a>Templates
 
+Differnt implementations of <code>IMailer</code> support templates in slightly different ways.
+
+The <code>MkSmtpMailer</code> uses MailKit to deliver email using traditional SMTP services. To support templates, this mailer can use templates stored on the local file-system. Templates can be supplied for both HTML and Plain text content. Just before the message is delivered, the templates will be loaded, and the substitions will be performed. The body's TempalteName should be set to the filename of the template(s) you wish to use, minus the file extension. The folder path and file extensions used to locate the template files on the file system are supplied by the mailer's settings.
+
+The <code>SendGridMailer</code> uses SendGrid's server-side transactional templates. Here the template name should be the ID of the transactional template you wish to use. The mailer will simply pass the template name and substitutions collections to the server, which will then create the message and deliver it.
+
 ### <a name="attachments"></a>Attachments
+
+Attachments can added to a <code>MailMessage</code> as either a collection of file names, or using Dictionery of file names and Streams. When using file names, please use the full file path of the attachment.
 
 ## <a name="custom-mailer"></a>Creating your own mailers
 

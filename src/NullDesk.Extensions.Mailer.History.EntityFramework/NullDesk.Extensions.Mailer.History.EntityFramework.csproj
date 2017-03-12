@@ -1,31 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <Description>NullDesk Mailer Extensions base implementation of messsage and delivery history storage with EntityFramework Core.</Description>
-        <VersionPrefix>3.0.0</VersionPrefix>
-        <Authors>Stephen M. Redd</Authors>
-        <TargetFramework>netstandard1.3</TargetFramework>
-        <DebugType>portable</DebugType>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <AssemblyName>NullDesk.Extensions.Mailer.History.EntityFramework</AssemblyName>
-        <PackageId>NullDesk.Extensions.Mailer.History.EntityFramework</PackageId>
-        <PackageTags>email;nulldesk;entityframework</PackageTags>
-        <PackageProjectUrl>https://github.com/NullDesk/NullMailer</PackageProjectUrl>
-        <PackageLicenseUrl>https://raw.githubusercontent.com/NullDesk/NullMailer/master/LICENSE</PackageLicenseUrl>
-        <RepositoryType>git</RepositoryType>
-        <RepositoryUrl>https://github.com/NullDesk/NullMailer</RepositoryUrl>
-        <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-        <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-        <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-        <Copyright>Stephen M. Redd 2017</Copyright>
-        <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
-    </PropertyGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\NullDesk.Extensions.Mailer.Core\NullDesk.Extensions.Mailer.Core.csproj" />
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.1" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.1" />
-        <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.1" />
-        <PackageReference Include="System.Reflection.Extensions" Version="4.3.0" />
-    </ItemGroup>
+  <PropertyGroup>
+    <Description>NullDesk Mailer Extensions base implementation of messsage and delivery history storage with EntityFramework Core.</Description>
+    <VersionPrefix>3.1.0</VersionPrefix>
+    <Authors>Stephen M. Redd</Authors>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <DebugType>portable</DebugType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>NullDesk.Extensions.Mailer.History.EntityFramework</AssemblyName>
+    <PackageId>NullDesk.Extensions.Mailer.History.EntityFramework</PackageId>
+    <PackageTags>email;nulldesk;entityframework</PackageTags>
+    <PackageProjectUrl>https://github.com/NullDesk/NullMailer</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/NullDesk/NullMailer/master/LICENSE</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/NullDesk/NullMailer</RepositoryUrl>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <Copyright>Stephen M. Redd 2017</Copyright>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NullDesk.Extensions.Mailer.Core\NullDesk.Extensions.Mailer.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.1" />
+    <PackageReference Include="System.Reflection.Extensions" Version="4.3.0" />
+  </ItemGroup>
 </Project>

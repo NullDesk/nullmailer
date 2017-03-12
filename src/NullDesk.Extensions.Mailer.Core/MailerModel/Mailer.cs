@@ -16,7 +16,7 @@ namespace NullDesk.Extensions.Mailer.Core
     ///     Base IMailer implementation.
     /// </summary>
     /// <seealso cref="IMailer" />
-    public abstract class Mailer<TSettings> : IMailer<TSettings>, IHistoryMailer where TSettings : class, IMailerSettings
+    public abstract class Mailer<TSettings> : IMailer<TSettings> where TSettings : class, IMailerSettings
     {
         private readonly AsyncLock _deliverablesLock = new AsyncLock();
 
@@ -105,7 +105,7 @@ namespace NullDesk.Extensions.Mailer.Core
         public virtual IEnumerable<Guid> AddMessage(MailerMessage message)
         {
             CheckIsDeliverable(message);
-            var items = message.Recipients.Select(recipient => 
+            var items = message.Recipients.Select(recipient =>
                 new DeliveryItem(message, recipient)).ToList();
 
             using (_deliverablesLock.LockAsync().Result)
@@ -179,11 +179,19 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="id">The delivery item identifier to resend.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        /// <exception cref="System.InvalidOperationException">DeliveryItem is not re-sendable. The message may have originally been delivered with attachments, but attachment serialization may have been disabled for the history store</exception>
-        public virtual async Task<DeliveryItem> ReSend(Guid id, CancellationToken token)
+        /// <exception cref="System.ArgumentException">
+        /// Message with the specified id not found in the history store, unable to resend message.
+        /// </exception>
+        /// <exception cref="System.InvalidOperationException">
+        /// DeliveryItem is not re-sendable. The message may have originally been delivered with attachments, but attachment serialization may have been disabled for the history store
+        /// </exception>
+        public virtual async Task<DeliveryItem> ReSendAsync(Guid id, CancellationToken token)
         {
             var di = await HistoryStore.GetAsync(id, token);
-
+            if (di == null)
+            {
+                throw new ArgumentException("Message with the specified id not found in the history store, unable to resend message");
+            }
             if (!di.IsResendable)
             {
                 throw new InvalidOperationException(
@@ -195,7 +203,7 @@ namespace NullDesk.Extensions.Mailer.Core
             di.IsSuccess = false;
             di.CreatedDate = DateTimeOffset.Now;
             di.ExceptionMessage = null;
-            
+
 
             ((IMailer)this).Deliverables.Add(di);
             return (await SendAsync(di.Id, token));

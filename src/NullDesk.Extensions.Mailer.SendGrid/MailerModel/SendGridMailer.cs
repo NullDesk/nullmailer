@@ -18,7 +18,6 @@ namespace NullDesk.Extensions.Mailer.SendGrid
     ///     Mail service for delivering messages via the SendGrid API
     /// </summary>
     /// <seealso cref="SendGridMailerSettings" />
-    /// <seealso cref="IHistoryMailer" />
     public class SendGridMailer : Mailer<SendGridMailerSettings>
     {
         /// <summary>
@@ -104,7 +103,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
 
             if (isSuccess)
             {
-                return sgResponse?.Headers?.GetValues("X-Message-Id").FirstOrDefault(); ;
+                return sgResponse.Headers?.GetValues("X-Message-Id").FirstOrDefault();
             }
 
             throw new Exception(
