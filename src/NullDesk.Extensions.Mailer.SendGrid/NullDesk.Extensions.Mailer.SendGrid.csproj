@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>NullDesk Mailer Extensions for Email messaging using SendGrid API services</Description>
-    <VersionPrefix>3.1.0</VersionPrefix>
+    <VersionPrefix>3.2.0</VersionPrefix>
     <Authors>Stephen M. Redd</Authors>
     <TargetFramework>netstandard1.3</TargetFramework>
     <DebugType>portable</DebugType>
