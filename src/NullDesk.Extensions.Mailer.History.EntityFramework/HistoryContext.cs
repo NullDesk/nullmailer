@@ -9,6 +9,12 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
     public abstract class HistoryContext : DbContext
     {
         /// <summary>
+        ///     Initializes a new instance of the <see cref="HistoryContext"/> class.
+        /// </summary>
+        protected HistoryContext()
+        { }
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="HistoryContext" /> class.
         /// </summary>
         /// <param name="options">The options.</param>

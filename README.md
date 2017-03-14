@@ -26,7 +26,9 @@ Easily configure your application for different email services at startup based 
   - [Mailer Factory Usage](#mailer-factory-usage)
   - [Dependency Injection](#dependency-injection)
   - [Logging with ILogger](#ilogger)
-  - [Delivery History with IHistoryStore](#ihistorystore)
+  - [Storing Message History](#history)
+    - [Setup History with EntityFramework and SQL Server](#sqlhistory)
+    - [Delivery History with IHistoryStore](#ihistorystore)
     - [Re-Sending from IHistoryStore](#resend)
 - [Creating MailerMessages](#creating-messages)
   - [Fluent Message Builder](#message-builder)
@@ -232,12 +234,34 @@ Example when instantiating a Mailer directly:
 
 If a logger isn't supplied, the framework will automatically use the <code>Microsoft.Extensions.Logging.Abstractions.NullLogger</code> instance.
 
+### <a name="history"></a>(optional) Message History Store
 
-### <a name="ihistorystore"></a>(optional) Delivery History with IHistoryStore
+The mailer extensions also support recording mesages and their delivery details in an optional message history store. Depending on which history package you select, configuration may be diffrent. 
 
-The mailer extensions also support recording mesages and their delivery details in an optional message history store. 
 
-This works very similar to the logging support.
+#### <a name="sqlhistory"></a>Setup History using EntityFramework and SQL Server
+
+To store history in SQL server using Entity Framework 7, add the <code>NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer</code> NuGet package.
+
+You will then need to create a DbContext inheriting from <code>SqlHistoryContext</code>.
+
+       public class MySqlHistoryContext: SqlHistoryContext
+        {
+            public MySqlHistoryContext(DbContextOptions options) : base(options)
+            {
+            }
+        }
+
+You can override any members or provide alternate constructors if you desire. Also, you can treat this as any EF DbContext and generate migrations, customize the persistance model using the module builder, etc. 
+
+Once you have your DbContext, you can then create a  <code>EntityHistoryStore&lt;TContext&gt;</code> and pass it to your <code>IMailer</code>. The Mailer will take care of recording message delivery history automatically. The examples in the next section demonstrate usage.
+
+
+#### <a name="ihistorystore"></a>Delivery History with IHistoryStore
+
+Creating and using the History store features is similar to using the logging support described above. You just need to pass in an <code>IHistoryStore</code>.
+
+The below examples demonstrate usage with the EntityFramework SQL Server History Store pacakge, but usage will be similar for any IHistoryStore implementation.
 
 Example using the MailerFactory:
 
@@ -245,14 +269,14 @@ Example using the MailerFactory:
         //configure your desired logging providers
         loggerFactory.AddConsole(consoleLoggerConfig);
 
-        var builder = new DbContextOptionsBuilder<SqlHistoryContext>()
+        var builder = new DbContextOptionsBuilder<MySqlHistoryContext>()
                         .UseSqlServer(connectionString);
 
         var mailerFactory = new MailerFactory();
         mailerFactory.AddSendGridMailer(
             sendGridSettings,
             loggerFactory.CreateLogger<SendGridMailer>(),
-            new EntityHistoryStore<SqlHistoryContext>(builder.Options));
+            new EntityHistoryStore<MySqlHistoryContext>(builder.Options));
 
 Example when using MS DI extensions:
 
@@ -264,11 +288,11 @@ Example when using MS DI extensions:
 
             services.AddSingleton<DbContextOptions>(s =>
             {
-                var builder = new DbContextOptionsBuilder<SqlHistoryContext>()
+                var builder = new DbContextOptionsBuilder<MySqlHistoryContext>()
                     .UseSqlServer(connectionString);
                 return builder.Options;
             });
-            services.AddSingleton<IHistoryStore, EntityHistoryStore<SqlHistoryContext>>();
+            services.AddSingleton<IHistoryStore, EntityHistoryStore<MySqlHistoryContext>>();
 
             services.Configure<SendGridMailerSettings>(s =>
             {
@@ -290,28 +314,28 @@ Example when instantiating a Mailer directly:
         //configure your desired logging providers
         loggerFactory.AddConsole(consoleLoggerConfig);
 
-        var builder = new DbContextOptionsBuilder<SqlHistoryContext>()
+        var builder = new DbContextOptionsBuilder<MySqlHistoryContext>()
                         .UseSqlServer(connectionString);
 
 
         using (var mailer = new SendGridMailer(
             new OptionsWrapper<SendGridMailerSettings>(settings),
             loggerFactory.CreateLogger<SendGridMailer>(),
-            new EntityHistoryStore<SqlHistoryContext>(builder.Options)))
+            new EntityHistoryStore<MySqlHistoryContext>(builder.Options)))
         {
             //stuff
         }
 
 When using the provided EF hsitory store, it is up to your if your client application will manage the database by calling EF migrations in code, of if you want to handle running migrations as part of your deployment process. If you want to do this in code, simple run the migration during your application's initilization.
 
-        var builder = new DbContextOptionsBuilder<SqlHistoryContext>()
+        var builder = new DbContextOptionsBuilder<MySqlHistoryContext>()
                         .UseSqlServer(connectionString);
 
-        using (var ctx = new SqlHistoryContext(builder.options))
+        using (var ctx = new MySqlHistoryContext(builder.options))
         {
             ctx.Database.Migrate();
         }
-##<a name="resend"></a> Re-Sending from the IHistoryStore
+####<a name="resend"></a> Re-Sending from the IHistoryStore
 
 The history store also enables re-send capabilities within the mailers.
 

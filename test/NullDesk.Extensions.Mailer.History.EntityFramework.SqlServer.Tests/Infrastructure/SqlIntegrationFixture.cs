@@ -21,16 +21,16 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Inf
             });
 
             var builder =
-                new DbContextOptionsBuilder<SqlHistoryContext>().UseSqlServer(
+                new DbContextOptionsBuilder<TestSqlHistoryContext>().UseSqlServer(
                     @"Server=(localdb)\MSSQLLocalDB;Database=NullDeskMailerHistoryTests;Trusted_Connection=True;");
             services.AddSingleton<DbContextOptions>(s => builder.Options);
-            services.AddTransient<SqlHistoryContext>();
-            services.AddSingleton<IHistoryStore, EntityHistoryStore<SqlHistoryContext>>();
+            services.AddTransient<TestSqlHistoryContext>();
+            services.AddSingleton<IHistoryStore, EntityHistoryStore<TestSqlHistoryContext>>();
             services.AddTransient<IMailer, NullMailer>();
 
             ServiceProvider = services.BuildServiceProvider();
 
-            using (var context = ServiceProvider.GetService<SqlHistoryContext>())
+            using (var context = ServiceProvider.GetService<TestSqlHistoryContext>())
             {
                 context.Database.Migrate();
             }
@@ -44,7 +44,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Inf
 
         public void Dispose()
         {
-            ServiceProvider.GetService<SqlHistoryContext>().Database.EnsureDeleted();
+            ServiceProvider.GetService<TestSqlHistoryContext>().Database.EnsureDeleted();
         }
     }
 }

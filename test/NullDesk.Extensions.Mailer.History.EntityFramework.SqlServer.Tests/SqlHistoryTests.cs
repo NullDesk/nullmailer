@@ -56,7 +56,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
 
             var store = Fixture.ServiceProvider.GetService<IHistoryStore>();
 
-            store.Should().BeOfType<EntityHistoryStore<SqlHistoryContext>>();
+            store.Should().BeOfType<EntityHistoryStore<TestSqlHistoryContext>>();
 
             var item = await store.GetAsync(result.First().Id, CancellationToken.None);
 
@@ -96,7 +96,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
 
             var store = Fixture.ServiceProvider.GetService<IHistoryStore>();
 
-            store.Should().BeOfType<EntityHistoryStore<SqlHistoryContext>>();
+            store.Should().BeOfType<EntityHistoryStore<TestSqlHistoryContext>>();
 
             var item = await store.GetAsync(result.First().Id, CancellationToken.None);
 
@@ -115,7 +115,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
         {
             var store = Fixture.ServiceProvider.GetService<IHistoryStore>();
 
-            store.Should().BeOfType<EntityHistoryStore<SqlHistoryContext>>();
+            store.Should().BeOfType<EntityHistoryStore<TestSqlHistoryContext>>();
 
             for (var x = 0; x < 15; x++)
             {

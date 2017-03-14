@@ -1,9 +1,8 @@
-﻿// ReSharper disable All
-#pragma warning disable 1591
-using System;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migrations
+namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Migrations
 {
     public partial class Initial : Migration
     {

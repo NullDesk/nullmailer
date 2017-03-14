@@ -8,11 +8,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.History.EntityFramework;
-using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer;
 using NullDesk.Extensions.Mailer.MailKit;
 using NullDesk.Extensions.Mailer.SendGrid;
 using Sample.Mailer.Cli.Commands;
 using Sample.Mailer.Cli.Configuration;
+using Sample.Mailer.Cli.History;
 
 
 // ReSharper disable once CheckNamespace
@@ -86,14 +86,14 @@ namespace Sample.Mailer.Cli
                 services.AddSingleton<DbContextOptions>(s =>
                 {
                     var options = s.GetService<IOptions<MailHistoryDbSettings>>();
-                    var builder = new DbContextOptionsBuilder<SqlHistoryContext>()
+                    var builder = new DbContextOptionsBuilder<MailerCliHistoryContext>()
                         .UseSqlServer(options.Value.ConnectionString);
                     return builder.Options;
                 });
-                services.AddSingleton<IHistoryStore, EntityHistoryStore<SqlHistoryContext>>();
+                services.AddSingleton<IHistoryStore, EntityHistoryStore<MailerCliHistoryContext>>();
 
                 //mail history doesn't need this, but our DB cleanup commands do
-                services.AddTransient<HistoryContext, SqlHistoryContext>();
+                services.AddTransient<HistoryContext, MailerCliHistoryContext>();
             }
 
 

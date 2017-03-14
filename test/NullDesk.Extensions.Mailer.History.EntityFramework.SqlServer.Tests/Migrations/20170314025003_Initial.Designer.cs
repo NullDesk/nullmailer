@@ -1,18 +1,17 @@
-﻿// ReSharper disable All
-#pragma warning disable 1591
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer;
+using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Infrastructure;
 
-namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migrations
+namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Migrations
 {
-    [DbContext(typeof(SqlHistoryContext))]
-    partial class SqlHistoryContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(TestSqlHistoryContext))]
+    [Migration("20170314025003_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
