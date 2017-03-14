@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using NullDesk.Extensions.Mailer.Core.Fluent;
+using NullDesk.Extensions.Mailer.Core.Fluent.Extensions;
 
 // ReSharper disable CheckNamespace
 namespace NullDesk.Extensions.Mailer.Core
@@ -57,6 +58,21 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <value>The logger.</value>
         public ILogger Logger { get; }
+
+        /// <summary>
+        /// Gets the default message sender, usually specified by settings during mailer constructions.
+        /// </summary>
+        /// <value>The default sender.</value>
+        public MessageSender DefaultSender => new MessageSender().FromAddress(Settings.FromEmailAddress).WithDisplayName(Settings.FromDisplayName);
+
+        /// <summary>
+        /// Gets a message builder for the mailer's default sender.
+        /// </summary>
+        /// <returns>MessageBuilder.</returns>
+        public MessageBuilder.BuildSubjectStep GetMessageBuilder()
+        {
+            return new MessageBuilder().ForSettings(Settings);
+        }
 
         /// <summary>
         ///     Use the fluent builder API to add a message to the list of pending messages tracked by the mailer.
@@ -239,5 +255,7 @@ namespace NullDesk.Extensions.Mailer.Core
                 throw ex;
             }
         }
+
+        
     }
 }

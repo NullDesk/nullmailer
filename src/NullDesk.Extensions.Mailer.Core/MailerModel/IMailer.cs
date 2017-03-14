@@ -54,6 +54,18 @@ namespace NullDesk.Extensions.Mailer.Core
         ILogger Logger { get; }
 
         /// <summary>
+        ///     Gets the default message sender, usually specified by settings during mailer constructions.
+        /// </summary>
+        /// <value>The default sender.</value>
+        MessageSender DefaultSender { get; }
+
+        /// <summary>
+        ///     Gets a message builder for the mailer's default sender.
+        /// </summary>
+        /// <returns>MessageBuilder.</returns>
+        MessageBuilder.BuildSubjectStep GetMessageBuilder();
+
+        /// <summary>
         ///     Use the fluent builder API to add a message to the list of pending messages tracked by the mailer.
         /// </summary>
         /// <param name="messageBuilder">The message builder.</param>
