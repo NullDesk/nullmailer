@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -128,9 +129,15 @@ namespace NullDesk.Extensions.Mailer.Core
             {
                 foreach (var i in items)
                 {
+                    Logger.LogDebug(
+                        "Mailer added new delivery item ID '{deliveryItemId}' to '{to}' with subject '{subject}'",
+                        i.Id,
+                        i.ToEmailAddress,
+                        i.Subject);
                     ((IMailer)this).Deliverables.Add(i);
                 }
             }
+
             return items.Select(i => i.Id);
         }
 
@@ -175,11 +182,18 @@ namespace NullDesk.Extensions.Mailer.Core
                     deliveryItem.ProviderMessageId = await DeliverMessageAsync(deliveryItem, token);
                     deliveryItem.IsSuccess = true;
                     deliveryItem.DeliveryProvider = GetType().Name;
+                    Logger.LogInformation(
+                        "Mailer delivery {result} for delivery item '{deliveryItemId}' sent to '{to}' with subject '{subject}'",
+                        deliveryItem.IsSuccess ? "success" : "failure",
+                        deliveryItem.Id,
+                        deliveryItem.ToEmailAddress,
+                        deliveryItem.Subject
+                        );
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(1, ex, ex.Message);
-                    deliveryItem.ExceptionMessage = ex.Message;
+                    Logger.LogError(1, ex, "Mailer delivery {result} for delivery item '{deliveryItemId}' with exception {exceptionMessage}", "error", id, ex.Message);
+                    deliveryItem.ExceptionMessage = $"{ex.Message}\n\n{ex.StackTrace}";
                 }
                 finally
                 {
@@ -206,12 +220,12 @@ namespace NullDesk.Extensions.Mailer.Core
             var di = await HistoryStore.GetAsync(id, token);
             if (di == null)
             {
-                throw new ArgumentException("Message with the specified id not found in the history store, unable to resend message");
+                throw new ArgumentException($"Mailer re-send error for delivery item ID '{id}'. Delivery item not found in the history store, unable to resend message");
             }
             if (!di.IsResendable)
             {
                 throw new InvalidOperationException(
-                    "DeliveryItem is not re-sendable. The message may have originally been delivered with attachments, but attachment serialization may have been disabled for the history store");
+                    $"Mailer re-send error for delivery item ID '{id}'. Delivery item is not re-sendable. The message may have originally been delivered with attachments, but attachment serialization may have been disabled for the history store");
             }
 
             di.Id = new Guid();
@@ -221,6 +235,13 @@ namespace NullDesk.Extensions.Mailer.Core
             di.ExceptionMessage = null;
 
 
+            
+
+            Logger.LogInformation(
+                "Mailer preparing to re-send delivery item ID '{deliveryItemId}' to '{to}' with subject '{subject}'",
+                di.Id,
+                di.ToEmailAddress,
+                di.Subject);
             ((IMailer)this).Deliverables.Add(di);
             return (await SendAsync(di.Id, token));
         }
@@ -231,7 +252,23 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public abstract void Dispose();
+        public virtual void Dispose()
+        {
+            var unsent = DeliveryItems.Where(m => !m.IsSuccess && string.IsNullOrEmpty(m.ExceptionMessage));
+            if (unsent.Any())
+            {
+                var b = new StringBuilder();
+                b.AppendLine("Mailer instance disposed with {numMessages} undelivered messages");
+                b.AppendLine("Instance type '{mailerType}'");
+                b.AppendLine("Undelivered Messages:");
+                foreach (var u in unsent)
+                {
+                    b.AppendLine($"    Delivery item ID '{u.Id}' to '{u.ToEmailAddress}' with subject '{u.Subject}'");
+                }
+                Logger.LogWarning(b.ToString(), unsent.Count(), this.GetType().Name);
+            }
+            ((IMailer)this).Deliverables = null;
+        }
 
         /// <summary>
         /// When overridden in a derived class, uses the mailer's underlying mail delivery service to send the specified
@@ -250,12 +287,12 @@ namespace NullDesk.Extensions.Mailer.Core
             {
                 var ex =
                     new ArgumentException(
-                        "Unable to add one or more messages to the mailer instance, message is not valid for delivery. Make sure all messages have a sender, body, and at least one recipient specified");
+                        $"MailerMessage with subject '{message.Subject}' is not valid for conversion into a DeliveryItem. Make sure all messages have a sender, body, and at least one recipient specified");
                 Logger.LogError(1, ex, ex.Message);
                 throw ex;
             }
         }
 
-        
+
     }
 }

@@ -64,7 +64,7 @@ Easily configure your application for different email services at startup based 
 
 |                                                                                  |           |
 |----------------------------------------------------------------------------------|-----------|
-|NullDesk.Extensions.Mailer                                  |Base classes and interfaces for the mailer extensions, and settings.|
+|NullDesk.Extensions.Mailer.Core                             |Base classes and interfaces for the mailer extensions, and settings.|
 |NullDesk.Extensions.Mailer.MailKit                          |SMTP Relay Email service using the popular cross platform [MailKit library](https://github.com/jstedfast/MailKit). Includes support for basic Email Template files.|
 |NullDesk.Extensions.Mailer.SendGrid                         |SendGrid email service using SendGrid APIs. Supports basic usage of SendGrid templates; can be inherited for more advanced SendGrid functionality.|
 |NullDesk.Extensions.Mailer.History.EntityFramework          |Base classes for message and delivery history using entity framework |
@@ -74,16 +74,16 @@ Easily configure your application for different email services at startup based 
 
 ## <a name="basic-usage"></a>Basic Usage
 
-Usage of the mailer extensions generally follows the following steps:
+The first step is to reference the pacakge or pacakges that your application needs:
+
+For SMTP Email Reference <code>NullDesk.Extensions.Mailer.MailKit</code>.
+For SendGrid Reference <code>NullDesk.Extensions.Mailer.MailKit</code>.
+And if you want History, reference <code>NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer</code>.
+
+Once you have the packages, usage follows these steps:
 
 - Obtain a mailer instance (from DI, the factory, or by instantiating one yourself)
-- Add one or more Messages to the Mailer instance. 
-  - You can add as many messages as you want
-    - Use the AddMessage method, or call CreateMessage to use the fluent message buidler API.
-  - When a message is added to the mailer, it is converted into one or more DeliveryItem instances
-    - The mailer instance keeps track of these before and after delivery
-    - One DelieryItem instance is create for each message and recipient
-    - If using the history store these will be recorded individually
+- Add one or more Messages to the Mailer instance.
 - Once you have added all the messages you wish to deliery to the Mailer, simply call the SendAllAsync method. 
 
 > The built-in Mailers are reusable by default, but it is recommended to create a new instance each time instead. Since the mailer will continue to track previously delivered items in memory, disposing of the mailer instance after each message (or batch) is preferrable. 

@@ -14,9 +14,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
     ///     Mail service for sending messages via SMTP using MailKit.
     /// </summary>
     /// <seealso cref="Mailer{TSettings}" />
-    /// <seealso cref="IHistoryMailer" />
     /// <seealso cref="Mailer{MkSmtpMailerSettings}" />
-    /// <seealso cref="IHistoryMailer" />
     public class MkSmtpMailer : Mailer<MkSmtpMailerSettings>
     {
         private readonly AsyncLock _mLock = new AsyncLock();
@@ -138,6 +136,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         public override void Dispose()
         {
             MailClient.Dispose();
+            base.Dispose();
         }
     }
 }

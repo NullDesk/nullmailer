@@ -25,7 +25,8 @@ namespace Sample.Mailer.Cli
 
         public void Run(string[] args)
         {
-            Config = AcquireConfiguration();
+
+           Config = AcquireConfiguration();
 
             var services = ConfigureConsoleServices(new ServiceCollection());
             Program.ServiceProvider = services; 

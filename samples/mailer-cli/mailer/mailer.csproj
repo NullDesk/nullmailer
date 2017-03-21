@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <DebugType>portable</DebugType>
@@ -12,19 +11,26 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <RootNamespace>Sample.Mailer.Cli</RootNamespace>
   </PropertyGroup>
-
   <ItemGroup>
     <Content Include=".\App_Data\Attachments\test.txt;.\appsettings*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
+  <ItemGroup>
+    <Compile Remove="Migrations\**" />
+    <EmbeddedResource Remove="Migrations\**" />
+    <None Remove="Migrations\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Migrations\20170315051343_Initial.cs" />
+    <Compile Include="Migrations\20170315051343_Initial.Designer.cs" />
+    <Compile Include="Migrations\MailerCliHistoryContextModelSnapshot.cs" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\NullDesk.Extensions.Mailer.MailKit\NullDesk.Extensions.Mailer.MailKit.csproj" />
     <ProjectReference Include="..\..\..\src\NullDesk.Extensions.Mailer.SendGrid\NullDesk.Extensions.Mailer.SendGrid.csproj" />
     <ProjectReference Include="..\..\..\src\NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer\NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
@@ -37,9 +43,4 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
 </Project>

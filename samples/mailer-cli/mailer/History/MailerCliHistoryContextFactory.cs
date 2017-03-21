@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
-using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer;
+
 
 namespace Sample.Mailer.Cli.History
 {

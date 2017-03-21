@@ -9,5 +9,12 @@ namespace Sample.Mailer.Cli.History
         public MailerCliHistoryContext(DbContextOptions options) : base(options)
         {
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            //use alternate schema name
+            modelBuilder.HasDefaultSchema("mailerCli");
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

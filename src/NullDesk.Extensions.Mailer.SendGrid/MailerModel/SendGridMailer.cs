@@ -181,6 +181,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         public override void Dispose()
         {
             MailClient = null;
+            base.Dispose();
         }
     }
 }
