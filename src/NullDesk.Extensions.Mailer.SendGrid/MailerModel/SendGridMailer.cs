@@ -107,7 +107,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             }
 
             throw new Exception(
-                $"Unable to delivery message; SendGrid response HTTP StatusCode is: {sgResponse?.StatusCode}");
+                $"Unable to deliver message; SendGrid response HTTP StatusCode is: {sgResponse?.StatusCode}");
         }
 
         /// <summary>

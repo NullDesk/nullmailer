@@ -153,7 +153,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <returns>System.String.</returns>
         public string ProcessSubstitutions(string content)
         {
-            return content.PerformContentSubstitution(Substitutions);
+            return content?.PerformContentSubstitution(Substitutions);
         }
     }
    
