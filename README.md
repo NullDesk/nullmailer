@@ -76,15 +76,15 @@ Easily configure your application for different email services at startup based 
 
 The first step is to reference the pacakge or pacakges that your application needs:
 
-For SMTP Email Reference <code>NullDesk.Extensions.Mailer.MailKit</code>.
-For SendGrid Reference <code>NullDesk.Extensions.Mailer.MailKit</code>.
-And if you want History, reference <code>NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer</code>.
+- For SMTP email install package <code>NullDesk.Extensions.Mailer.MailKit</code>.
+- For SendGrid email install package <code>NullDesk.Extensions.Mailer.MailKit</code>.
+- And if you want SQL delivery history, install package <code>NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer</code>.
 
-Once you have the packages, usage follows these steps:
+Once you have the packages, usage follows these main steps:
 
 - Obtain a mailer instance (from DI, the factory, or by instantiating one yourself)
-- Add one or more Messages to the Mailer instance.
-- Once you have added all the messages you wish to deliery to the Mailer, simply call the SendAllAsync method. 
+- Add one or more Messages to the Mailer instance (<code>AddMessage</code> or <code>CreateMessage</code> methods).
+- Once you have added the messages you wish to delier, simply call the <code>SendAllAsync</code> method.
 
 > The built-in Mailers are reusable by default, but it is recommended to create a new instance each time instead. Since the mailer will continue to track previously delivered items in memory, disposing of the mailer instance after each message (or batch) is preferrable. 
 
@@ -335,7 +335,7 @@ When using the provided EF hsitory store, it is up to your if your client applic
         {
             ctx.Database.Migrate();
         }
-####<a name="resend"></a> Re-Sending from the IHistoryStore
+#### <a name="resend"></a> Re-Sending from the IHistoryStore
 
 The history store also enables re-send capabilities within the mailers.
 
