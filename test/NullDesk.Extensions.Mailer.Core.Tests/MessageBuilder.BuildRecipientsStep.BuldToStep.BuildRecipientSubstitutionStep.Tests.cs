@@ -30,15 +30,21 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 var stepBuilder = toStep.WithPersonalizedSubstitution(token, value);
 
                 stepBuilder
-                    .Should().NotBeNull()
+                    .Should()
+                    .NotBeNull()
                     .And
-                    .BeOfType<MessageBuilder.BuildRecipientsStep.BuildToStep.BuildRecipientWithDisplaySubstitutionStep>()
-                    .Which.As<IBuilderContext>().Message.Recipients
-                    .Should().NotBeEmpty()
+                    .BeOfType<MessageBuilder.BuildRecipientsStep.BuildToStep.BuildRecipientWithDisplaySubstitutionStep
+                    >()
+                    .Which.As<IBuilderContext>()
+                    .Message.Recipients
+                    .Should()
+                    .NotBeEmpty()
                     .And.AllBeAssignableTo<MessageRecipient>()
                     .And.ContainSingle(r => r.EmailAddress == address)
-                    .Which.PersonalizedSubstitutions.Should().ContainKey(token)
-                    .WhichValue.Should().Be(value);
+                    .Which.PersonalizedSubstitutions.Should()
+                    .ContainKey(token)
+                    .WhichValue.Should()
+                    .Be(value);
             }
         }
 
@@ -51,7 +57,8 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 new MessageBuilder.BuildRecipientsStep.BuildToStep.BuiltToWithDisplayStep(new MailerMessage().To(rec),
                     rec);
             toStep.And
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildContentStep>();
         }
     }

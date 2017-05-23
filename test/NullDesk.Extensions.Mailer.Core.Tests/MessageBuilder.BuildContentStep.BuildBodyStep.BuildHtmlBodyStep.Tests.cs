@@ -20,11 +20,13 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                     MailerMessage.Create().WithBody(body), body);
             var stepBuilder = contentStep.AndPlainText(text);
             stepBuilder
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildContentStep.BuildBodyStep.BuildBodyCompleteStep>()
                 .Which.As<IBuilderContext>()
                 .Message.Body
-                .As<ContentBody>().ShouldBeEquivalentTo
+                .As<ContentBody>()
+                .ShouldBeEquivalentTo
                 (
                     new ContentBody
                     {
@@ -44,7 +46,8 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 new MessageBuilder.BuildContentStep.BuildBodyStep.BuildHtmlBodyStep(MailerMessage.Create(),
                     ContentBody.Create());
             contentStep.And
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildPostContentStep>();
         }
 
@@ -58,10 +61,13 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                     MailerMessage.Create().WithBody(body), body);
             var message = contentStep.Build();
             message
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MailerMessage>()
-                .Which.Body.As<ContentBody>().HtmlContent
-                .Should().NotBeNullOrEmpty()
+                .Which.Body.As<ContentBody>()
+                .HtmlContent
+                .Should()
+                .NotBeNullOrEmpty()
                 .And.Be("<tag>something</tag>");
         }
     }

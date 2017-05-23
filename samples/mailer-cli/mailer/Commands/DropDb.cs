@@ -6,6 +6,13 @@ namespace Sample.Mailer.Cli.Commands
 {
     public class DropDb : CliCommand
     {
+        public DropDb(AnsiConsole console, HistoryContext context) : base(console)
+        {
+            Context = context;
+        }
+
+        private HistoryContext Context { get; }
+
         public override void Configure(CommandLineApplication app)
         {
             app.Command("drop-db", sendApp =>
@@ -19,19 +26,11 @@ namespace Sample.Mailer.Cli.Commands
                 {
                     var result = Context.Database.EnsureDeleted();
                     var message = result ? "Database removed".Cyan() : "Failed to remove database".Red();
-                    
+
                     Reporter.WriteLine(message);
                     return result ? 0 : 1;
                 });
-
             }, false);
-        }
-
-        private HistoryContext Context { get; }
-
-        public DropDb(AnsiConsole console, HistoryContext context) : base(console)
-        {
-            Context = context;
         }
     }
 }

@@ -19,7 +19,6 @@ namespace Sample.Mailer.Cli.Configuration
 
     public class TemplateMessageSettings
     {
-
         public string Template { get; set; }
 
         public string ToAddress { get; set; }

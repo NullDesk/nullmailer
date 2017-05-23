@@ -1,4 +1,5 @@
 ﻿// ReSharper disable once CheckNamespace
+
 namespace NullDesk.Cli
 {
     public static class AnsiColorExtensions
@@ -12,6 +13,7 @@ namespace NullDesk.Cli
         {
             return "\x1B[31m" + text + "\x1B[39m";
         }
+
         public static string Green(this string text)
         {
             return "\x1B[32m" + text + "\x1B[39m";

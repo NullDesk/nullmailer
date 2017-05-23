@@ -13,7 +13,8 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var stepBuilder = new MessageBuilder.BuildFromStep.BuildFromWithDisplayStep(new MailerMessage());
             var subStep = stepBuilder.And;
             subStep
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildSubjectStep>();
         }
     }

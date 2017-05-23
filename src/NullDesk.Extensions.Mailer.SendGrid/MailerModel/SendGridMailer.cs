@@ -36,7 +36,6 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             : base(settings.Value, logger, historyStore)
         {
             MailClient = client;
-
         }
 
         /// <summary>
@@ -60,12 +59,13 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         public SendGridClient MailClient { get; set; }
 
         /// <summary>
-        /// Delivers the message asynchronous.
+        ///     Delivers the message asynchronous.
         /// </summary>
         /// <param name="deliveryItem">The delivery item.</param>
         /// <param name="token">The token.</param>
         /// <returns>System.Threading.Tasks.Task&lt;System.String&gt;.</returns>
-        protected override async Task<string> DeliverMessageAsync(DeliveryItem deliveryItem, CancellationToken token = default(CancellationToken))
+        protected override async Task<string> DeliverMessageAsync(DeliveryItem deliveryItem,
+            CancellationToken token = default(CancellationToken))
         {
             var sgFrom = new EmailAddress(deliveryItem.FromEmailAddress, deliveryItem.FromDisplayName);
             var sgTo = new EmailAddress(deliveryItem.ToEmailAddress, deliveryItem.ToDisplayName);
@@ -90,13 +90,12 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             }
             else
             {
-                sgMessage.SetTemplateId(((TemplateBody)deliveryItem.Body).TemplateName);
+                sgMessage.SetTemplateId(((TemplateBody) deliveryItem.Body).TemplateName);
             }
 
             await AddAttachmentStreamsAsync(sgMessage, deliveryItem.Attachments, token);
 
             var sgResponse = await SendToApiAsync(sgMessage, token);
-
 
 
             var isSuccess = sgResponse?.StatusCode == HttpStatusCode.Accepted ||
@@ -150,7 +149,6 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             }
         }
 
-        
 
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

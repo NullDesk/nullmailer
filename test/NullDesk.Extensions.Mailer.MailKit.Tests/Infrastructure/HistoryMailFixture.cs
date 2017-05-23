@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using MimeKit;
 using NSubstitute;
 using NullDesk.Extensions.Mailer.Core;
@@ -31,11 +30,11 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
             var logger = loggerFactory.CreateLogger<MkSmtpMailer>();
 
 
-            MailerFactoryForHistoryWithSerializableAttachments.AddMkSmtpMailer(getClientFunc, mkSettings, logger, StoreWithSerializableAttachments);
+            MailerFactoryForHistoryWithSerializableAttachments.AddMkSmtpMailer(getClientFunc, mkSettings, logger,
+                StoreWithSerializableAttachments);
 
-            MailerFactoryForHistoryWithoutSerializableAttachments.AddMkSmtpMailer(getClientFunc, mkSettings, logger, StoreWithoutSerializableAttachments);
-
-
+            MailerFactoryForHistoryWithoutSerializableAttachments.AddMkSmtpMailer(getClientFunc, mkSettings, logger,
+                StoreWithoutSerializableAttachments);
         }
 
         public MailerFactory MailerFactoryForHistoryWithSerializableAttachments { get; } = new MailerFactory();
@@ -43,9 +42,11 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
         public MailerFactory MailerFactoryForHistoryWithoutSerializableAttachments { get; } = new MailerFactory();
 
 
-        public IHistoryStore StoreWithSerializableAttachments { get; set; } = new InMemoryHistoryStore { SerializeAttachments = true };
+        public IHistoryStore StoreWithSerializableAttachments { get; set; } =
+            new InMemoryHistoryStore {SerializeAttachments = true};
 
-        public IHistoryStore StoreWithoutSerializableAttachments { get; set; } = new InMemoryHistoryStore { SerializeAttachments = false };
+        public IHistoryStore StoreWithoutSerializableAttachments { get; set; } =
+            new InMemoryHistoryStore {SerializeAttachments = false};
 
 
         public void Dispose()

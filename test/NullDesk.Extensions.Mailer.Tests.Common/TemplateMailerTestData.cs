@@ -7,7 +7,7 @@ namespace NullDesk.Extensions.Mailer.Tests.Common
     {
         private readonly List<object[]> _data = new List<object[]>
         {
-            new object[] {"template1", new string[] {}},
+            new object[] {"template1", new string[] { }},
             new object[] {"template1", new[] {@"..\..\..\..\TestData\attachments\testFile.1.txt"}},
             new object[]
             {

@@ -25,7 +25,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
             /// <param name="emailAddress">The email address.</param>
             /// <returns>BuildToStep.</returns>
             public BuildToStep To(string emailAddress)
-                => new BuildToStep(Context, emailAddress);
+            {
+                return new BuildToStep(Context, emailAddress);
+            }
 
             /// <summary>
             ///     Fluent message builder step for defining one or more message recipients.
@@ -67,7 +69,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
                 /// <param name="displayName">The display name.</param>
                 /// <returns>BuiltToWithDisplayStep.</returns>
                 public BuiltToWithDisplayStep WithDisplayName(string displayName)
-                    => new BuiltToWithDisplayStep(Context, Recipient.WithDisplayName(displayName));
+                {
+                    return new BuiltToWithDisplayStep(Context, Recipient.WithDisplayName(displayName));
+                }
 
 
                 /// <summary>
@@ -82,9 +86,10 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
                 /// <returns>BuildRecipientSubstitutionStep.</returns>
                 public BuildRecipientSubstitutionStep WithPersonalizedSubstitution(string replacementToken,
                     string replacementValue)
-                    =>
-                        new BuildRecipientSubstitutionStep(Context,
-                            Recipient.WithSubstitution(replacementToken, replacementValue));
+                {
+                    return new BuildRecipientSubstitutionStep(Context,
+                        Recipient.WithSubstitution(replacementToken, replacementValue));
+                }
 
                 /// <summary>
                 ///     Fluent message builder step for defining one or more message recipients.
@@ -121,9 +126,10 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
                     /// <returns>BuildRecipientWithDisplaySubstitutionStep.</returns>
                     public BuildRecipientWithDisplaySubstitutionStep WithPersonalizedSubstitution(
                         string replacementToken, string replacementValue)
-                        =>
-                            new BuildRecipientWithDisplaySubstitutionStep(Context,
-                                Recipient.WithSubstitution(replacementToken, replacementValue));
+                    {
+                        return new BuildRecipientWithDisplaySubstitutionStep(Context,
+                            Recipient.WithSubstitution(replacementToken, replacementValue));
+                    }
                 }
 
                 /// <summary>
@@ -155,7 +161,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
                     /// <param name="displayName">The display name.</param>
                     /// <returns>BuiltToWithDisplayStep.</returns>
                     public BuiltToWithDisplayStep WithDisplayName(string displayName)
-                        => new BuiltToWithDisplayStep(Context, Recipient.WithDisplayName(displayName));
+                    {
+                        return new BuiltToWithDisplayStep(Context, Recipient.WithDisplayName(displayName));
+                    }
 
 
                     /// <summary>
@@ -170,9 +178,10 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
                     /// <returns>BuildRecipientWithDisplaySubstitutionStep.</returns>
                     public BuildRecipientSubstitutionStep WithPersonalizedSubstitution(string replacementToken,
                         string replacementValue)
-                        =>
-                            new BuildRecipientSubstitutionStep(Context,
-                                Recipient.WithSubstitution(replacementToken, replacementValue));
+                    {
+                        return new BuildRecipientSubstitutionStep(Context,
+                            Recipient.WithSubstitution(replacementToken, replacementValue));
+                    }
                 }
 
                 /// <summary>
@@ -211,9 +220,10 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
                     /// <returns>BuildRecipientWithDisplaySubstitutionStep.</returns>
                     public BuildRecipientWithDisplaySubstitutionStep WithPersonalizedSubstitution(
                         string replacementToken, string replacementValue)
-                        =>
-                            new BuildRecipientWithDisplaySubstitutionStep(Context,
-                                Recipient.WithSubstitution(replacementToken, replacementValue));
+                    {
+                        return new BuildRecipientWithDisplaySubstitutionStep(Context,
+                            Recipient.WithSubstitution(replacementToken, replacementValue));
+                    }
                 }
             }
         }

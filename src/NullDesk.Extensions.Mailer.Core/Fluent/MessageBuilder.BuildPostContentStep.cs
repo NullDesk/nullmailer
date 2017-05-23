@@ -24,7 +24,10 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
             ///     Completes the fluent builder and returns the mailer message instance.
             /// </summary>
             /// <returns>MailerMessage.</returns>
-            public MailerMessage Build() => Context;
+            public MailerMessage Build()
+            {
+                return Context;
+            }
 
             /// <summary>
             ///     Adds a collection of attachments to the message.
@@ -32,7 +35,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
             /// <param name="attachments">The attachments.</param>
             /// <returns>BuildAttachmentOrSubstitutionStep.</returns>
             public BuildAttachmentOrSubstitutionStep WithAttachments(IDictionary<string, Stream> attachments)
-                => new BuildAttachmentOrSubstitutionStep(Context.WithAttachments(attachments));
+            {
+                return new BuildAttachmentOrSubstitutionStep(Context.WithAttachments(attachments));
+            }
 
             /// <summary>
             ///     Adds a collection of attachments to the message.
@@ -40,7 +45,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
             /// <param name="attachments">The attachments.</param>
             /// <returns>BuildAttachmentOrSubstitutionStep.</returns>
             public BuildAttachmentOrSubstitutionStep WithAttachments(IEnumerable<string> attachments)
-                => new BuildAttachmentOrSubstitutionStep(Context.WithAttachments(attachments));
+            {
+                return new BuildAttachmentOrSubstitutionStep(Context.WithAttachments(attachments));
+            }
 
 
             /// <summary>
@@ -50,7 +57,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
             /// <param name="stream">The stream.</param>
             /// <returns>BuildAttachmentOrSubstitutionStep.</returns>
             public BuildAttachmentOrSubstitutionStep WithAttachment(string fileName, Stream stream)
-                => new BuildAttachmentOrSubstitutionStep(Context.WithAttachment(fileName, stream));
+            {
+                return new BuildAttachmentOrSubstitutionStep(Context.WithAttachment(fileName, stream));
+            }
 
 
             /// <summary>
@@ -59,7 +68,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
             /// <param name="fileName">Name of the file.</param>
             /// <returns>BuildAttachmentOrSubstitutionStep.</returns>
             public BuildAttachmentOrSubstitutionStep WithAttachment(string fileName)
-                => new BuildAttachmentOrSubstitutionStep(Context.WithAttachment(fileName));
+            {
+                return new BuildAttachmentOrSubstitutionStep(Context.WithAttachment(fileName));
+            }
 
             /// <summary>
             ///     Adds a collection of replacement tokens and values to the collection of substutions.
@@ -67,7 +78,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
             /// <param name="substitutions">The substitutions.</param>
             /// <returns>BuildAttachmentOrSubstitutionStep.</returns>
             public BuildAttachmentOrSubstitutionStep WithSubstitutions(IDictionary<string, string> substitutions)
-                => new BuildAttachmentOrSubstitutionStep(Context.WithSubstitutions(substitutions));
+            {
+                return new BuildAttachmentOrSubstitutionStep(Context.WithSubstitutions(substitutions));
+            }
 
 
             /// <summary>
@@ -77,7 +90,10 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
             /// <param name="replacementValue">The replacement value.</param>
             /// <returns>BuildAttachmentOrSubstitutionStep.</returns>
             public BuildAttachmentOrSubstitutionStep WithSubstitution(string replacementToken, string replacementValue)
-                => new BuildAttachmentOrSubstitutionStep(Context.WithSubstitution(replacementToken, replacementValue));
+            {
+                return new BuildAttachmentOrSubstitutionStep(
+                    Context.WithSubstitution(replacementToken, replacementValue));
+            }
 
 
             /// <summary>
@@ -106,7 +122,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
                 /// </summary>
                 /// <returns>MailerMessage.</returns>
                 public MailerMessage Build()
-                    => Context;
+                {
+                    return Context;
+                }
             }
         }
     }

@@ -1,27 +1,27 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
+using NullDesk.Extensions.Mailer.Core.Extensions;
+using NullDesk.Extensions.Mailer.Core.Fluent;
 using NullDesk.Extensions.Mailer.Core.Tests.Infrastructure;
 using NullDesk.Extensions.Mailer.Tests.Common;
-using Microsoft.Extensions.DependencyInjection;
-using NullDesk.Extensions.Mailer.Core.Fluent;
 using Xunit;
-using System.Linq;
-using FluentAssertions;
-using NullDesk.Extensions.Mailer.Core.Extensions;
 
 namespace NullDesk.Extensions.Mailer.Core.Tests
 {
     public class HistorySerializationTests : IClassFixture<HistorySerializationFixture>
     {
-        private HistorySerializationFixture Fixture { get; }
-
-        private Dictionary<string, string> ReplacementVars { get; } = new Dictionary<string, string>();
-
         public HistorySerializationTests(HistorySerializationFixture fixture)
         {
             ReplacementVars.Add("%name%", "Mr. Toast");
             Fixture = fixture;
         }
+
+        private HistorySerializationFixture Fixture { get; }
+
+        private Dictionary<string, string> ReplacementVars { get; } = new Dictionary<string, string>();
 
         [Theory]
         [Trait("TestType", "Unit")]
@@ -65,7 +65,6 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                         .Should()
                         .Be(postAttach.Value);
                 }
-               
             }
         }
 

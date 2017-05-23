@@ -22,10 +22,13 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var stepBuilder = toStep.WithDisplayName(display);
 
             stepBuilder
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildRecipientsStep.BuildToStep.BuiltToWithDisplayStep>()
-                .Which.As<IBuilderContext>().Message.Recipients
-                .Should().NotBeEmpty()
+                .Which.As<IBuilderContext>()
+                .Message.Recipients
+                .Should()
+                .NotBeEmpty()
                 .And.AllBeAssignableTo<MessageRecipient>()
                 .And.Contain(r => r.DisplayName == display);
         }
@@ -37,7 +40,8 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [InlineData("toast@toast.com", null, "g")]
         [InlineData("toast@toast.com", "h", null)]
         [Trait("TestType", "Unit")]
-        public void BuildRecipientSubstitutionStep_WithPersonalizedSubstitution(string address, string token, string value)
+        public void BuildRecipientSubstitutionStep_WithPersonalizedSubstitution(string address, string token,
+            string value)
         {
             var rec = new MessageRecipient().ToAddress(address);
             var toStep =
@@ -52,14 +56,19 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 var stepBuilder = toStep.WithPersonalizedSubstitution(token, value);
 
                 stepBuilder
-                    .Should().NotBeNull()
+                    .Should()
+                    .NotBeNull()
                     .And.BeOfType<MessageBuilder.BuildRecipientsStep.BuildToStep.BuildRecipientSubstitutionStep>()
-                    .Which.As<IBuilderContext>().Message.Recipients
-                    .Should().NotBeEmpty()
+                    .Which.As<IBuilderContext>()
+                    .Message.Recipients
+                    .Should()
+                    .NotBeEmpty()
                     .And.AllBeAssignableTo<MessageRecipient>()
                     .And.ContainSingle(r => r.EmailAddress == address)
-                    .Which.PersonalizedSubstitutions.Should().ContainKey(token)
-                    .WhichValue.Should().Be(value);
+                    .Which.PersonalizedSubstitutions.Should()
+                    .ContainKey(token)
+                    .WhichValue.Should()
+                    .Be(value);
             }
         }
 
@@ -73,7 +82,8 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                     new MailerMessage().To(rec), rec);
             var subStep = toStep.And;
             subStep
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildContentStep>();
         }
     }

@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 namespace NullDesk.Extensions.Mailer.Core.Extensions
 {
     /// <summary>
-    /// Class StreamExtensions.
+    ///     Class StreamExtensions.
     /// </summary>
     public static class StreamExtensions
     {
         /// <summary>
-        /// Gets a base64 encoded string from the stream.
+        ///     Gets a base64 encoded string from the stream.
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns>Task&lt;System.String&gt;.</returns>
@@ -26,7 +26,6 @@ namespace NullDesk.Extensions.Mailer.Core.Extensions
                 await input.CopyToAsync(ms);
                 return Convert.ToBase64String(ms.ToArray());
             }
-
         }
     }
 }

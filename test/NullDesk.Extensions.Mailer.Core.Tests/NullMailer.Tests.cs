@@ -30,20 +30,21 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         {
             var mailer = GetMailer();
             mailer.Invoking(m => m.AddMessage(
-                new MailerMessage
-                {
-                    From = string.IsNullOrEmpty(from) ? null : new MessageSender { EmailAddress = from },
-                    Recipients = string.IsNullOrEmpty(to)
-                        ? new List<MessageRecipient>()
-                        : new List<MessageRecipient>
-                        {
-                            new MessageRecipient
+                    new MailerMessage
+                    {
+                        From = string.IsNullOrEmpty(from) ? null : new MessageSender {EmailAddress = from},
+                        Recipients = string.IsNullOrEmpty(to)
+                            ? new List<MessageRecipient>()
+                            : new List<MessageRecipient>
                             {
-                                EmailAddress = to
-                            }
-                        },
-                    Body = string.IsNullOrEmpty(textBody) ? null : new ContentBody().WithPlainText(textBody)
-                })).ShouldThrow<ArgumentException>();
+                                new MessageRecipient
+                                {
+                                    EmailAddress = to
+                                }
+                            },
+                        Body = string.IsNullOrEmpty(textBody) ? null : new ContentBody().WithPlainText(textBody)
+                    }))
+                .ShouldThrow<ArgumentException>();
         }
 
         [Fact]
@@ -57,8 +58,9 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 .WithSubject("Some Topic")
                 .WithBody<ContentBody>(b => b.PlainTextContent = "something"));
 
-            ((IMailer)mailer).Deliverables
-                .Should().NotBeEmpty()
+            ((IMailer) mailer).Deliverables
+                .Should()
+                .NotBeEmpty()
                 .And.Contain(m => m.Subject == "Some Topic");
         }
 
@@ -81,8 +83,9 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                     .WithBody<ContentBody>(b => b.PlainTextContent = "something")
             });
 
-            ((IMailer)mailer).Deliverables
-                .Should().HaveCount(2)
+            ((IMailer) mailer).Deliverables
+                .Should()
+                .HaveCount(2)
                 .And.Contain(m => m.Subject == "Some Topic")
                 .And.Contain(m => m.Subject == "Some Other Topic");
         }
@@ -99,7 +102,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 .And.ForBody()
                 .WithPlainText("body text"));
 
-            ((IMailer)mailer).Deliverables.Should().Contain(m => m.Subject == "Some Topic");
+            ((IMailer) mailer).Deliverables.Should().Contain(m => m.Subject == "Some Topic");
         }
 
         [Fact]
@@ -114,8 +117,9 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 .WithPlainText("body text")
                 .Build());
 
-            ((IMailer)mailer).Deliverables
-                .Should().NotBeEmpty()
+            ((IMailer) mailer).Deliverables
+                .Should()
+                .NotBeEmpty()
                 .And.Contain(m => m.Subject == "Some Topic");
         }
     }

@@ -17,10 +17,13 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var stepBuilder = recipientStep.To(address);
 
             stepBuilder
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildRecipientsStep.BuildToStep>()
-                .Which.As<IBuilderContext>().Message.Recipients
-                .Should().NotBeNull()
+                .Which.As<IBuilderContext>()
+                .Message.Recipients
+                .Should()
+                .NotBeNull()
                 .And.NotBeEmpty()
                 .And.AllBeAssignableTo<MessageRecipient>()
                 .And.Contain(r => r.EmailAddress == address);

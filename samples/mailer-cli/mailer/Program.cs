@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.CommandLineUtils;
+﻿using System;
+using Microsoft.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using Microsoft.Extensions.Options;
 using Sample.Mailer.Cli.Commands;
 using Sample.Mailer.Cli.Configuration;
@@ -15,7 +15,7 @@ namespace Sample.Mailer.Cli
         {
             if (args == null || args.Length < 1)
             {
-                args = new[] { "--help" };
+                args = new[] {"--help"};
             }
             new Startup().Run(args);
 
@@ -53,8 +53,6 @@ namespace Sample.Mailer.Cli
             {
                 Console.Write(ex.ToString());
             }
-
         }
-
     }
 }

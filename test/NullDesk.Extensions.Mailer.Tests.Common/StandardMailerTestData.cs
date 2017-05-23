@@ -6,14 +6,15 @@ namespace NullDesk.Extensions.Mailer.Tests.Common
     public class StandardMailerTestData : IEnumerable<object[]>
     {
         private const string HtmlBody =
-            "<!doctypehtml><htmllang=\"en\"><head><metacharset=\"utf-8\"><title>TestMessage</title></head><body><p>Hello %name%,</p><p>This is a test html message from xUnit.</p><p>Thanks,</p><p>Bot</p></body></html>";
+                "<!doctypehtml><htmllang=\"en\"><head><metacharset=\"utf-8\"><title>TestMessage</title></head><body><p>Hello %name%,</p><p>This is a test html message from xUnit.</p><p>Thanks,</p><p>Bot</p></body></html>"
+            ;
 
         private const string TextBody =
             "Hello %name%,\n\nThis is a test plain text message from xUnit.\n\nThanks,\n\nBot\n\n";
 
         private readonly List<object[]> _data = new List<object[]>
         {
-            new object[] {HtmlBody, TextBody, new string[] {}},
+            new object[] {HtmlBody, TextBody, new string[] { }},
             new object[] {HtmlBody, TextBody, new[] {@"..\..\..\..\TestData\attachments\testFile.1.txt"}},
             new object[]
             {
