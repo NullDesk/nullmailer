@@ -17,15 +17,22 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var stepBuilder = new MessageBuilder.BuildFromStep(new MailerMessage().From("toast@toast.com"));
             var subStep = stepBuilder.WithDisplayName(name);
             subStep
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildFromStep.BuildFromWithDisplayStep>()
-                .Which.As<IBuilderContext>().Message.From
-                .Should().NotBeNull()
-                .And.BeOfType<MessageSender>().Which
+                .Which.As<IBuilderContext>()
+                .Message.From
+                .Should()
+                .NotBeNull()
+                .And.BeOfType<MessageSender>()
+                .Which
                 .DisplayName
-                .Should().Be(name).And
+                .Should()
+                .Be(name)
+                .And
                 .BeEquivalentTo(
-                    stepBuilder.As<IBuilderContext>()?
+                    stepBuilder.As<IBuilderContext>()
+                        ?
                         .Message?
                         .From?
                         .DisplayName);
@@ -38,7 +45,8 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var stepBuilder = new MessageBuilder.BuildFromStep(new MailerMessage().From("toast@toast.com"));
             var subStep = stepBuilder.And;
             subStep
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildSubjectStep>();
         }
     }

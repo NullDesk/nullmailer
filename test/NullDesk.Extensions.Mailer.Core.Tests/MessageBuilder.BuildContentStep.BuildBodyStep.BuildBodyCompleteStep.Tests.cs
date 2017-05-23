@@ -13,7 +13,8 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var contentStep =
                 new MessageBuilder.BuildContentStep.BuildBodyStep.BuildBodyCompleteStep(MailerMessage.Create());
             contentStep.And
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildPostContentStep>();
         }
 
@@ -25,7 +26,8 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 new MessageBuilder.BuildContentStep.BuildBodyStep.BuildBodyCompleteStep(MailerMessage.Create());
             var message = contentStep.Build();
             message
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MailerMessage>();
         }
     }

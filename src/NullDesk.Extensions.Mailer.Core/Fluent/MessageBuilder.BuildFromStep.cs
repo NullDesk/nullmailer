@@ -33,7 +33,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
             /// <param name="displayName">The display name.</param>
             /// <returns>BuildFromWithDisplayStep.</returns>
             public BuildFromWithDisplayStep WithDisplayName(string displayName)
-                => new BuildFromWithDisplayStep(Context.From(Context.From.WithDisplayName(displayName)));
+            {
+                return new BuildFromWithDisplayStep(Context.From(Context.From.WithDisplayName(displayName)));
+            }
 
             /// <summary>
             ///     Fluent message builder step for defining the message's sender.

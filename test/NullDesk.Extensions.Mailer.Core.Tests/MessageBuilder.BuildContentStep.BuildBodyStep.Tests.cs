@@ -16,12 +16,15 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var contentStep = new MessageBuilder.BuildContentStep.BuildBodyStep(MailerMessage.Create());
             var stepBuilder = contentStep.WithHtml(html);
             stepBuilder
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildContentStep.BuildBodyStep.BuildHtmlBodyStep>()
                 .Which.As<IBuilderContext>()
                 .Message.Body
-                .As<ContentBody>().HtmlContent
-                .Should().Be(html);
+                .As<ContentBody>()
+                .HtmlContent
+                .Should()
+                .Be(html);
         }
 
         [Theory]
@@ -34,12 +37,15 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var contentStep = new MessageBuilder.BuildContentStep.BuildBodyStep(MailerMessage.Create());
             var stepBuilder = contentStep.WithPlainText(text);
             stepBuilder
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildContentStep.BuildBodyStep.BuildTextBodyStep>()
                 .Which.As<IBuilderContext>()
                 .Message.Body
-                .As<ContentBody>().PlainTextContent
-                .Should().Be(text);
+                .As<ContentBody>()
+                .PlainTextContent
+                .Should()
+                .Be(text);
         }
     }
 }

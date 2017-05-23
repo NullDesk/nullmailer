@@ -4,6 +4,10 @@ namespace Sample.Mailer.Cli.Commands
 {
     public class SendMail : CliCommand
     {
+        public SendMail(AnsiConsole console) : base(console)
+        {
+        }
+
         public override void Configure(CommandLineApplication app)
         {
             app.Command("send", sendApp =>
@@ -13,7 +17,6 @@ namespace Sample.Mailer.Cli.Commands
                 sendApp.Description = "Sends Email";
                 sendApp.AllowArgumentSeparator = true;
 
-                
 
                 sendApp.ConfigureCliCommand<SendSimpleMessage>();
                 sendApp.ConfigureCliCommand<SendTemplateMessage>();
@@ -23,10 +26,7 @@ namespace Sample.Mailer.Cli.Commands
                     sendApp.ShowHelp();
                     return 0;
                 });
-
             }, false);
         }
-
-        public SendMail(AnsiConsole console) : base(console) { }
     }
 }

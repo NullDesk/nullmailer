@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Newtonsoft.Json;
 using NullDesk.Extensions.Mailer.Core;
 
 namespace NullDesk.Extensions.Mailer.History.EntityFramework
 {
     /// <summary>
-    /// Class HistoryDeliveryItem.
+    ///     Class HistoryDeliveryItem.
     /// </summary>
     public class EntityHistoryDeliveryItem
     {
@@ -27,10 +26,10 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         public string DeliveryProvider { get; set; }
 
         /// <summary>
-        /// Gets or sets the provider's identifier for the message.
+        ///     Gets or sets the provider's identifier for the message.
         /// </summary>
         /// <remarks>
-        /// Used to reference the message in the underlying mail system after delivery has been attempted.
+        ///     Used to reference the message in the underlying mail system after delivery has been attempted.
         /// </remarks>
         /// <value>The provider message identifier.</value>
         [StringLength(200)]
@@ -87,19 +86,19 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         public string Subject { get; set; }
 
         /// <summary>
-        /// Gets or sets the html body.
+        ///     Gets or sets the html body.
         /// </summary>
         /// <value>The body.</value>
         public string HtmlContent { get; set; }
 
         /// <summary>
-        /// Gets or sets the text body.
+        ///     Gets or sets the text body.
         /// </summary>
         /// <value>The text body.</value>
         public string TextContent { get; set; }
 
         /// <summary>
-        /// Gets or sets the template name.
+        ///     Gets or sets the template name.
         /// </summary>
         /// <value>The template body.</value>
         [StringLength(255)]
@@ -114,7 +113,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
 
 
         /// <summary>
-        /// Gets or sets the substitutions json.
+        ///     Gets or sets the substitutions json.
         /// </summary>
         /// <value>The substitutions json.</value>
         public string SubstitutionsJson { get; set; }
@@ -125,9 +124,6 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// <value>The exception message.</value>
         [StringLength(500)]
         public string ExceptionMessage { get; set; }
-
-
-
     }
 
     internal static class DeliveryItemsExtensions
@@ -136,18 +132,17 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         {
             return new DeliveryItem
             {
-                Body = 
+                Body =
                     string.IsNullOrEmpty(item.TemplateName)
-                    ? (IMessageBody)new TemplateBody
-                    {
-                        TemplateName = item.TemplateName
-
-                    }
-                    : new ContentBody
-                    {
-                        HtmlContent = item.HtmlContent,
-                        PlainTextContent = item.TextContent
-                    },
+                        ? (IMessageBody) new TemplateBody
+                        {
+                            TemplateName = item.TemplateName
+                        }
+                        : new ContentBody
+                        {
+                            HtmlContent = item.HtmlContent,
+                            PlainTextContent = item.TextContent
+                        },
                 Substitutions = JsonConvert.DeserializeObject<IDictionary<string, string>>(item.SubstitutionsJson),
                 CreatedDate = item.CreatedDate,
                 DeliveryProvider = item.DeliveryProvider,
@@ -168,14 +163,15 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         {
             var att = JsonConvert.DeserializeObject<IDictionary<string, string>>(itemAttachmentsJson);
             return att.Select(a =>
-            {
-                var ms = new MemoryStream();
-                var writer = new StreamWriter(ms);
-                writer.Write(a.Value);
-                writer.Flush();
-                ms.Position = 0;
-                return new KeyValuePair<string, Stream>(a.Key, ms);
-            }).ToDictionary(k => k.Key, k => k.Value);
+                {
+                    var ms = new MemoryStream();
+                    var writer = new StreamWriter(ms);
+                    writer.Write(a.Value);
+                    writer.Flush();
+                    ms.Position = 0;
+                    return new KeyValuePair<string, Stream>(a.Key, ms);
+                })
+                .ToDictionary(k => k.Key, k => k.Value);
         }
     }
 
@@ -204,7 +200,8 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
             };
         }
 
-        private static string GetHistoryAttachments(IDictionary<string, Stream> itemAttachments, bool serializeAttachments)
+        private static string GetHistoryAttachments(IDictionary<string, Stream> itemAttachments,
+            bool serializeAttachments)
         {
             var att = new Dictionary<string, string>(itemAttachments.Select(a =>
                 {
@@ -213,7 +210,8 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
                     {
                         var ms = new MemoryStream();
                         a.Value.CopyTo(ms);
-                        var content = Encoding.Unicode.GetString(ms.ToArray());
+                        a.Value.Position = 0; //put stream back
+                        var content = Convert.ToBase64String(ms.ToArray());
 
                         kvp = new KeyValuePair<string, string>(a.Key, content);
                     }
@@ -222,7 +220,8 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
                         kvp = new KeyValuePair<string, string>(a.Key, null);
                     }
                     return kvp;
-                }).ToDictionary(k => k.Key, k => k.Value));
+                })
+                .ToDictionary(k => k.Key, k => k.Value));
 
 
             return JsonConvert.SerializeObject(att, Formatting.Indented);

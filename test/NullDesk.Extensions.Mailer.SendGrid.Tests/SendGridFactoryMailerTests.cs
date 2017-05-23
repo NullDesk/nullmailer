@@ -37,16 +37,19 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
             var deliveryItems =
                 mailer.CreateMessage(b => b
                     .Subject($"xunit Test run: %template%")
-                    .And.To("noone@toast.com").WithDisplayName("No One Important")
+                    .And.To("noone@toast.com")
+                    .WithDisplayName("No One Important")
                     .And.ForTemplate(template)
                     .And.WithSubstitutions(ReplacementVars)
                     .And.WithSubstitution("%template%", template)
-                    .And.WithAttachments(attachments).Build());
+                    .And.WithAttachments(attachments)
+                    .Build());
 
             var result = await mailer.SendAllAsync(CancellationToken.None);
 
             result
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.AllBeOfType<DeliveryItem>()
                 .And.HaveSameCount(deliveryItems)
                 .And.OnlyContain(i => i.IsSuccess);
@@ -66,15 +69,20 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
             var deliveryItems =
                 mailer.CreateMessage(b => b
                     .Subject($"xunit Test run: content body")
-                    .And.To("noone@toast.com").WithDisplayName("No One Important")
-                    .And.ForBody().WithHtml(html).AndPlainText(text)
+                    .And.To("noone@toast.com")
+                    .WithDisplayName("No One Important")
+                    .And.ForBody()
+                    .WithHtml(html)
+                    .AndPlainText(text)
                     .And.WithSubstitutions(ReplacementVars)
-                    .And.WithAttachments(attachments).Build());
+                    .And.WithAttachments(attachments)
+                    .Build());
 
             var result = await mailer.SendAllAsync(CancellationToken.None);
 
             result
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.AllBeOfType<DeliveryItem>()
                 .And.HaveSameCount(deliveryItems)
                 .And.OnlyContain(i => i.IsSuccess);

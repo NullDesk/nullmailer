@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Sample.Mailer.Cli.Migrations
@@ -9,10 +8,10 @@ namespace Sample.Mailer.Cli.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "mailerCli");
+                "mailerCli");
 
             migrationBuilder.CreateTable(
-                name: "MessageHistory",
+                "MessageHistory",
                 schema: "mailerCli",
                 columns: table => new
                 {
@@ -33,17 +32,14 @@ namespace Sample.Mailer.Cli.Migrations
                     ToDisplayName = table.Column<string>(maxLength: 200, nullable: true),
                     ToEmailAddress = table.Column<string>(maxLength: 200, nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MessageHistory", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_MessageHistory", x => x.Id); });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "MessageHistory",
-                schema: "mailerCli");
+                "MessageHistory",
+                "mailerCli");
         }
     }
 }

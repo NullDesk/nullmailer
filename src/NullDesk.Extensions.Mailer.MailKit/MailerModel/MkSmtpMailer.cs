@@ -59,7 +59,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
 
 
         /// <summary>
-        /// Deliver message as an asynchronous operation.
+        ///     Deliver message as an asynchronous operation.
         /// </summary>
         /// <param name="deliveryItem">The delivery item containing the message you wish to send.</param>
         /// <param name="token">The token.</param>
@@ -95,7 +95,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
                 .AddMkAttachmentStreams(deliveryItem.Attachments)
                 .ToMessageBody();
 
-            return  await SendSmtpMessageAsync(mkMessage, token);
+            return await SendSmtpMessageAsync(mkMessage, token);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
                             Settings.AuthenticationSettings.Password, token);
                     }
                 }
-                
+
                 await MailClient.SendAsync(message, token);
                 await MailClient.DisconnectAsync(false, token);
                 return message.MessageId;

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,14 +42,19 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
             var deliveryItems =
                 mailer.CreateMessage(b => b
                     .Subject(Subject)
-                    .And.To("noone@toast.com").WithDisplayName("No One Important")
-                    .And.ForBody().WithHtml(html).AndPlainText(text)
+                    .And.To("noone@toast.com")
+                    .WithDisplayName("No One Important")
+                    .And.ForBody()
+                    .WithHtml(html)
+                    .AndPlainText(text)
                     .And.WithSubstitutions(ReplacementVars)
-                    .And.WithAttachments(attachments).Build());
+                    .And.WithAttachments(attachments)
+                    .Build());
 
             var result = await mailer.SendAllAsync(CancellationToken.None);
             result
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.AllBeOfType<DeliveryItem>()
                 .And.HaveSameCount(deliveryItems)
                 .And.OnlyContain(i => i.IsSuccess);
@@ -61,13 +66,13 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
             var item = await store.GetAsync(result.First().Id, CancellationToken.None);
 
             var m = item
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<DeliveryItem>();
 
             m.Which.Body.Should().NotBeNull();
             m.Which.Subject.Should().Be(Subject);
             m.Which.Attachments.Any(a => a.Value.Length == 0).Should().BeFalse();
-
         }
 
         [Theory]
@@ -82,14 +87,19 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
             var deliveryItems =
                 mailer.CreateMessage(b => b
                     .Subject(Subject)
-                    .And.To("noone@toast.com").WithDisplayName("No One Important")
-                    .And.ForBody().WithHtml(html).AndPlainText(text)
+                    .And.To("noone@toast.com")
+                    .WithDisplayName("No One Important")
+                    .And.ForBody()
+                    .WithHtml(html)
+                    .AndPlainText(text)
                     .And.WithSubstitutions(ReplacementVars)
-                    .And.WithAttachments(attachments).Build());
+                    .And.WithAttachments(attachments)
+                    .Build());
 
             var result = await mailer.SendAllAsync(CancellationToken.None);
             result
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.AllBeOfType<DeliveryItem>()
                 .And.HaveSameCount(deliveryItems)
                 .And.OnlyContain(i => i.IsSuccess);
@@ -101,7 +111,8 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
             var item = await store.GetAsync(result.First().Id, CancellationToken.None);
 
             var m = item
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<DeliveryItem>();
 
             m.Which.Body.Should().NotBeNull();
@@ -129,7 +140,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
                     Id = Guid.NewGuid(),
                     IsSuccess = true,
                     ExceptionMessage = null,
-                    Body = new ContentBody() {PlainTextContent = "content"},
+                    Body = new ContentBody {PlainTextContent = "content"},
                     FromDisplayName = "noone",
                     FromEmailAddress = "noone@nowhere.com"
                 });

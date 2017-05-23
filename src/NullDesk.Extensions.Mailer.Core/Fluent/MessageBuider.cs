@@ -21,7 +21,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
         /// <param name="emailAddress">The email address.</param>
         /// <returns>BuildFromStep.</returns>
         public BuildFromStep From(string emailAddress)
-            => new BuildFromStep(Context.From(emailAddress));
+        {
+            return new BuildFromStep(Context.From(emailAddress));
+        }
 
         /// <summary>
         ///     Add sender info from mailer settings.
@@ -29,14 +31,16 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
         /// <param name="mailerSettings">The mailer settings.</param>
         /// <returns>BuildSubjectStep.</returns>
         public BuildSubjectStep ForSettings(IMailerSettings mailerSettings)
-            => new BuildSubjectStep(Context.From(mailerSettings.FromEmailAddress, mailerSettings.FromDisplayName));
-
-        //Step 3 = MessageBuilder.BuildRecipientsStep.cs
-
-        //Step 1 = MessageBuilder.BuildFromStep.cs
+        {
+            return new BuildSubjectStep(Context.From(mailerSettings.FromEmailAddress, mailerSettings.FromDisplayName));
+        }
 
 
         //Step 2 = MessageBuilder.BuildSubjectStep.cs
+
+        //Step 1 = MessageBuilder.BuildFromStep.cs
+
+        //Step 3 = MessageBuilder.BuildRecipientsStep.cs
 
         //Step 4 = MessageBuilder.BuildContentStep.cs
 

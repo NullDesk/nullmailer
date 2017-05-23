@@ -17,15 +17,22 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var stepBuilder = messageBuilder.From(address);
 
             stepBuilder
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildFromStep>()
-                .Which.As<IBuilderContext>().Message.From
-                .Should().NotBeNull()
-                .And.BeOfType<MessageSender>().Which
+                .Which.As<IBuilderContext>()
+                .Message.From
+                .Should()
+                .NotBeNull()
+                .And.BeOfType<MessageSender>()
+                .Which
                 .EmailAddress
-                .Should().Be(address).And
+                .Should()
+                .Be(address)
+                .And
                 .BeEquivalentTo(
-                    messageBuilder.As<IBuilderContext>()?
+                    messageBuilder.As<IBuilderContext>()
+                        ?
                         .Message?
                         .From?
                         .EmailAddress);

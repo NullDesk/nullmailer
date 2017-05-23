@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NullDesk.Extensions.Mailer.Core;
+using NullDesk.Extensions.Mailer.Core.Extensions;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
@@ -35,7 +36,6 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             : base(settings.Value, logger, historyStore)
         {
             MailClient = client;
-
         }
 
         /// <summary>
@@ -59,12 +59,13 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         public SendGridClient MailClient { get; set; }
 
         /// <summary>
-        /// Delivers the message asynchronous.
+        ///     Delivers the message asynchronous.
         /// </summary>
         /// <param name="deliveryItem">The delivery item.</param>
         /// <param name="token">The token.</param>
         /// <returns>System.Threading.Tasks.Task&lt;System.String&gt;.</returns>
-        protected override async Task<string> DeliverMessageAsync(DeliveryItem deliveryItem, CancellationToken token = default(CancellationToken))
+        protected override async Task<string> DeliverMessageAsync(DeliveryItem deliveryItem,
+            CancellationToken token = default(CancellationToken))
         {
             var sgFrom = new EmailAddress(deliveryItem.FromEmailAddress, deliveryItem.FromDisplayName);
             var sgTo = new EmailAddress(deliveryItem.ToEmailAddress, deliveryItem.ToDisplayName);
@@ -89,13 +90,12 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             }
             else
             {
-                sgMessage.SetTemplateId(((TemplateBody)deliveryItem.Body).TemplateName);
+                sgMessage.SetTemplateId(((TemplateBody) deliveryItem.Body).TemplateName);
             }
 
             await AddAttachmentStreamsAsync(sgMessage, deliveryItem.Attachments, token);
 
             var sgResponse = await SendToApiAsync(sgMessage, token);
-
 
 
             var isSuccess = sgResponse?.StatusCode == HttpStatusCode.Accepted ||
@@ -139,7 +139,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
                 {
                     sgAttachments.Add(new Attachment
                     {
-                        Content = await StreamToBase64Async(stream.Value, token),
+                        Content = await stream.Value.ToBase64String(),
                         Filename = stream.Key,
                         Disposition = "attachment"
                     });
@@ -149,31 +149,6 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             }
         }
 
-        /// <summary>
-        ///     Converts a Stream to a base 64 encoded string
-        /// </summary>
-        /// <param name="input">The input stream</param>
-        /// <param name="token">The token.</param>
-        /// <returns>Task&lt;System.String&gt;.</returns>
-        /// <remarks>Will read and dispose the stream</remarks>
-        protected virtual async Task<string> StreamToBase64Async(Stream input,
-            CancellationToken token = default(CancellationToken))
-        {
-            MemoryStream ms;
-            if (input is MemoryStream stream)
-            {
-                ms = stream;
-            }
-            else
-            {
-                ms = new MemoryStream();
-                await input.CopyToAsync(ms, 81920, token);
-            }
-            using (ms)
-            {
-                return Convert.ToBase64String(ms.ToArray());
-            }
-        }
 
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

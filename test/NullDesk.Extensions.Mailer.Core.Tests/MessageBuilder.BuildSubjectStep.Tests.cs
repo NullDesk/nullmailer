@@ -17,10 +17,13 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var subStep = stepBuilder.Subject(subject);
 
             subStep
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildSubjectStep.BuildWithSubjectStep>()
-                .Which.As<IBuilderContext>().Message.Subject
-                .Should().Be(subject);
+                .Which.As<IBuilderContext>()
+                .Message.Subject
+                .Should()
+                .Be(subject);
         }
 
         [Fact]
@@ -30,10 +33,13 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var stepBuilder = new MessageBuilder.BuildSubjectStep(new MailerMessage());
             var subStep = stepBuilder.WithOutSubject();
             subStep
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildSubjectStep.BuildWithSubjectStep>()
-                .Which.As<IBuilderContext>().Message.Subject
-                .Should().BeNull();
+                .Which.As<IBuilderContext>()
+                .Message.Subject
+                .Should()
+                .BeNull();
         }
     }
 }

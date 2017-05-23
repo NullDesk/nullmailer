@@ -1,4 +1,5 @@
 ﻿// ReSharper disable once CheckNamespace
+
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>

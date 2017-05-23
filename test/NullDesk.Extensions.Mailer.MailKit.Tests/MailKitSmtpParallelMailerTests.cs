@@ -65,9 +65,11 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
                 var result = mailer.SendAsync(deliveryIds.First()).Result;
 
                 result
-                    .Should().BeOfType<DeliveryItem>()
+                    .Should()
+                    .BeOfType<DeliveryItem>()
                     .Which.IsSuccess
-                    .Should().BeTrue();
+                    .Should()
+                    .BeTrue();
             });
         }
     }

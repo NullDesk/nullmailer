@@ -27,9 +27,9 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
                 StoreWithSerializableAttachments));
 
             MailerFactoryForHistoryWithoutSerializableAttachments.Register(() => new SendGridMailerFake(
-              new OptionsWrapper<SendGridMailerSettings>(sendGridSettings),
-              logger,
-              StoreWithoutSerializableAttachments));
+                new OptionsWrapper<SendGridMailerSettings>(sendGridSettings),
+                logger,
+                StoreWithoutSerializableAttachments));
         }
 
         public MailerFactory MailerFactoryForHistoryWithSerializableAttachments { get; } = new MailerFactory();
@@ -37,9 +37,11 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
         public MailerFactory MailerFactoryForHistoryWithoutSerializableAttachments { get; } = new MailerFactory();
 
 
-        public IHistoryStore StoreWithSerializableAttachments { get; set; } = new InMemoryHistoryStore { SerializeAttachments = true };
+        public IHistoryStore StoreWithSerializableAttachments { get; set; } =
+            new InMemoryHistoryStore {SerializeAttachments = true};
 
-        public IHistoryStore StoreWithoutSerializableAttachments { get; set; } = new InMemoryHistoryStore { SerializeAttachments = false };
+        public IHistoryStore StoreWithoutSerializableAttachments { get; set; } =
+            new InMemoryHistoryStore {SerializeAttachments = false};
 
 
         public void Dispose()

@@ -14,12 +14,13 @@ namespace NullDesk.Extensions.Mailer.Core
     public class NullMailer : Mailer<NullMailerSettings>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="NullMailer" /> class.
+        ///     Initializes a new instance of the <see cref="NullMailer" /> class.
         /// </summary>
         /// <param name="settings">The mailer settings.</param>
         /// <param name="logger">The logger.</param>
         /// <param name="historyStore">The history store.</param>
-        public NullMailer(IOptions<NullMailerSettings> settings, ILogger logger = null, IHistoryStore historyStore = null) : base(settings.Value, logger, historyStore)
+        public NullMailer(IOptions<NullMailerSettings> settings, ILogger logger = null,
+            IHistoryStore historyStore = null) : base(settings.Value, logger, historyStore)
         {
         }
 

@@ -1,4 +1,5 @@
 ﻿// ReSharper disable CheckNamespace
+
 using System.Collections.Generic;
 
 namespace NullDesk.Extensions.Mailer.Core

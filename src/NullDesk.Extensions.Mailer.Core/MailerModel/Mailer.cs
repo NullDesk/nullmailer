@@ -22,15 +22,8 @@ namespace NullDesk.Extensions.Mailer.Core
     {
         private readonly AsyncLock _deliverablesLock = new AsyncLock();
 
-
         /// <summary>
-        ///     Gets the history store.
-        /// </summary>
-        /// <value>The history store.</value>
-        public IHistoryStore HistoryStore { get; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Mailer" /> class.
+        ///     Initializes a new instance of the <see cref="Mailer" /> class.
         /// </summary>
         /// <param name="settings">The mailer settings.</param>
         /// <param name="logger">The logger.</param>
@@ -46,7 +39,14 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     A collection of all messages tracked by this mailer instance.
         /// </summary>
         /// <value>The messages.</value>
-        protected ICollection<DeliveryItem> DeliveryItems => ((IMailer)this).Deliverables;
+        protected ICollection<DeliveryItem> DeliveryItems => ((IMailer) this).Deliverables;
+
+
+        /// <summary>
+        ///     Gets the history store.
+        /// </summary>
+        /// <value>The history store.</value>
+        public IHistoryStore HistoryStore { get; }
 
         /// <summary>
         ///     Settings for the mailer service
@@ -61,13 +61,14 @@ namespace NullDesk.Extensions.Mailer.Core
         public ILogger Logger { get; }
 
         /// <summary>
-        /// Gets the default message sender, usually specified by settings during mailer constructions.
+        ///     Gets the default message sender, usually specified by settings during mailer constructions.
         /// </summary>
         /// <value>The default sender.</value>
-        public MessageSender DefaultSender => new MessageSender().FromAddress(Settings.FromEmailAddress).WithDisplayName(Settings.FromDisplayName);
+        public MessageSender DefaultSender => new MessageSender().FromAddress(Settings.FromEmailAddress)
+            .WithDisplayName(Settings.FromDisplayName);
 
         /// <summary>
-        /// Gets a message builder for the mailer's default sender.
+        ///     Gets a message builder for the mailer's default sender.
         /// </summary>
         /// <returns>MessageBuilder.</returns>
         public MessageBuilder.BuildSubjectStep GetMessageBuilder()
@@ -123,7 +124,8 @@ namespace NullDesk.Extensions.Mailer.Core
         {
             CheckIsDeliverable(message);
             var items = message.Recipients.Select(recipient =>
-                new DeliveryItem(message, recipient)).ToList();
+                    new DeliveryItem(message, recipient))
+                .ToList();
 
             using (_deliverablesLock.LockAsync().Result)
             {
@@ -134,7 +136,7 @@ namespace NullDesk.Extensions.Mailer.Core
                         i.Id,
                         i.ToEmailAddress,
                         i.Subject);
-                    ((IMailer)this).Deliverables.Add(i);
+                    ((IMailer) this).Deliverables.Add(i);
                 }
             }
 
@@ -154,7 +156,7 @@ namespace NullDesk.Extensions.Mailer.Core
             using (await _deliverablesLock.LockAsync())
             {
                 foreach (var message in
-                    ((IMailer)this).Deliverables.Where(m => !m.IsSuccess && string.IsNullOrEmpty(m.ExceptionMessage)))
+                    ((IMailer) this).Deliverables.Where(m => !m.IsSuccess && string.IsNullOrEmpty(m.ExceptionMessage)))
                 {
                     sendIds.Add(message.Id);
                 }
@@ -176,7 +178,7 @@ namespace NullDesk.Extensions.Mailer.Core
         {
             using (await _deliverablesLock.LockAsync())
             {
-                var deliveryItem = ((IMailer)this).Deliverables.FirstOrDefault(d => d.Id == id);
+                var deliveryItem = ((IMailer) this).Deliverables.FirstOrDefault(d => d.Id == id);
                 try
                 {
                     deliveryItem.ProviderMessageId = await DeliverMessageAsync(deliveryItem, token);
@@ -188,11 +190,13 @@ namespace NullDesk.Extensions.Mailer.Core
                         deliveryItem.Id,
                         deliveryItem.ToEmailAddress,
                         deliveryItem.Subject
-                        );
+                    );
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(1, ex, "Mailer delivery {result} for delivery item '{deliveryItemId}' with exception {exceptionMessage}", "error", id, ex.Message);
+                    Logger.LogError(1, ex,
+                        "Mailer delivery {result} for delivery item '{deliveryItemId}' with exception {exceptionMessage}",
+                        "error", id, ex.Message);
                     deliveryItem.ExceptionMessage = $"{ex.Message}\n\n{ex.StackTrace}";
                 }
                 finally
@@ -204,23 +208,25 @@ namespace NullDesk.Extensions.Mailer.Core
         }
 
         /// <summary>
-        /// ReSends the message from history data.
+        ///     ReSends the message from history data.
         /// </summary>
         /// <param name="id">The delivery item identifier to resend.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;System.Boolean&gt;.</returns>
         /// <exception cref="System.ArgumentException">
-        /// Message with the specified id not found in the history store, unable to resend message.
+        ///     Message with the specified id not found in the history store, unable to resend message.
         /// </exception>
         /// <exception cref="System.InvalidOperationException">
-        /// DeliveryItem is not re-sendable. The message may have originally been delivered with attachments, but attachment serialization may have been disabled for the history store
+        ///     DeliveryItem is not re-sendable. The message may have originally been delivered with attachments, but attachment
+        ///     serialization may have been disabled for the history store
         /// </exception>
         public virtual async Task<DeliveryItem> ReSendAsync(Guid id, CancellationToken token)
         {
             var di = await HistoryStore.GetAsync(id, token);
             if (di == null)
             {
-                throw new ArgumentException($"Mailer re-send error for delivery item ID '{id}'. Delivery item not found in the history store, unable to resend message");
+                throw new ArgumentException(
+                    $"Mailer re-send error for delivery item ID '{id}'. Delivery item not found in the history store, unable to resend message");
             }
             if (!di.IsResendable)
             {
@@ -228,22 +234,20 @@ namespace NullDesk.Extensions.Mailer.Core
                     $"Mailer re-send error for delivery item ID '{id}'. Delivery item is not re-sendable. The message may have originally been delivered with attachments, but attachment serialization may have been disabled for the history store");
             }
 
-            di.Id = new Guid();
+            di.Id = Guid.NewGuid();
             di.ProviderMessageId = null;
             di.IsSuccess = false;
             di.CreatedDate = DateTimeOffset.Now;
             di.ExceptionMessage = null;
 
 
-            
-
             Logger.LogInformation(
                 "Mailer preparing to re-send delivery item ID '{deliveryItemId}' to '{to}' with subject '{subject}'",
                 di.Id,
                 di.ToEmailAddress,
                 di.Subject);
-            ((IMailer)this).Deliverables.Add(di);
-            return (await SendAsync(di.Id, token));
+            ((IMailer) this).Deliverables.Add(di);
+            return await SendAsync(di.Id, token);
         }
 
         ICollection<DeliveryItem> IMailer.Deliverables { get; set; } = new Collection<DeliveryItem>();
@@ -254,7 +258,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         public virtual void Dispose()
         {
-            var unsent = DeliveryItems.Where(m => !m.IsSuccess && string.IsNullOrEmpty(m.ExceptionMessage));
+            var unsent = DeliveryItems.Where(m => !m.IsSuccess && string.IsNullOrEmpty(m.ExceptionMessage)).ToArray();
             if (unsent.Any())
             {
                 var b = new StringBuilder();
@@ -265,14 +269,14 @@ namespace NullDesk.Extensions.Mailer.Core
                 {
                     b.AppendLine($"    Delivery item ID '{u.Id}' to '{u.ToEmailAddress}' with subject '{u.Subject}'");
                 }
-                Logger.LogWarning(b.ToString(), unsent.Count(), this.GetType().Name);
+                Logger.LogWarning(b.ToString(), unsent.Count(), GetType().Name);
             }
-            ((IMailer)this).Deliverables = null;
+            ((IMailer) this).Deliverables = null;
         }
 
         /// <summary>
-        /// When overridden in a derived class, uses the mailer's underlying mail delivery service to send the specified
-        /// message and return the service's native message identifier (or null if not applicable).
+        ///     When overridden in a derived class, uses the mailer's underlying mail delivery service to send the specified
+        ///     message and return the service's native message identifier (or null if not applicable).
         /// </summary>
         /// <param name="deliveryItem">The delivery item containing the message you wish to send.</param>
         /// <param name="token">The token.</param>
@@ -292,7 +296,5 @@ namespace NullDesk.Extensions.Mailer.Core
                 throw ex;
             }
         }
-
-
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-
 namespace Sample.Mailer.Cli.History
 {
     /// <summary>

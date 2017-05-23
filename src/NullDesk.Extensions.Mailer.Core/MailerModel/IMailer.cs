@@ -34,14 +34,6 @@ namespace NullDesk.Extensions.Mailer.Core
         IHistoryStore HistoryStore { get; }
 
         /// <summary>
-        ///     ReSends the message from history data.
-        /// </summary>
-        /// <param name="id">The delivery item identifier to resend.</param>
-        /// <param name="token">The token.</param>
-        /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        Task<DeliveryItem> ReSendAsync(Guid id, CancellationToken token);
-
-        /// <summary>
         ///     A collection of all messages tracked by this mailer instance.
         /// </summary>
         /// <value>The messages.</value>
@@ -58,6 +50,14 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <value>The default sender.</value>
         MessageSender DefaultSender { get; }
+
+        /// <summary>
+        ///     ReSends the message from history data.
+        /// </summary>
+        /// <param name="id">The delivery item identifier to resend.</param>
+        /// <param name="token">The token.</param>
+        /// <returns>Task&lt;System.Boolean&gt;.</returns>
+        Task<DeliveryItem> ReSendAsync(Guid id, CancellationToken token);
 
         /// <summary>
         ///     Gets a message builder for the mailer's default sender.
@@ -78,7 +78,8 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <param name="messageBuilder">The message builder.</param>
         /// <returns>A collection of delivery item identifiers.</returns>
-        IEnumerable<Guid> CreateMessage(Expression<Func<MessageBuilder.BuildSubjectStep, MailerMessage>> messageBuilder);
+        IEnumerable<Guid> CreateMessage(
+            Expression<Func<MessageBuilder.BuildSubjectStep, MailerMessage>> messageBuilder);
 
         /// <summary>
         ///     Adds a message to the list of pending messages tracked by the mailer.

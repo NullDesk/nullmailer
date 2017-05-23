@@ -20,16 +20,14 @@ namespace Sample.Mailer.Cli
 {
     public class Startup
     {
-
         private static IConfigurationRoot Config { get; set; }
 
         public void Run(string[] args)
         {
-
-           Config = AcquireConfiguration();
+            Config = AcquireConfiguration();
 
             var services = ConfigureConsoleServices(new ServiceCollection());
-            Program.ServiceProvider = services; 
+            Program.ServiceProvider = services;
             ConfigureLogging(services.GetService<ILoggerFactory>());
 
             var historySettings = services.GetService<IOptions<MailHistoryDbSettings>>();
@@ -46,8 +44,8 @@ namespace Sample.Mailer.Cli
             logger.LogInformation("History database initialized");
         }
 
-        private void ConfigureLogging(ILoggerFactory loggerFactory){
-            
+        private void ConfigureLogging(ILoggerFactory loggerFactory)
+        {
             loggerFactory.AddConsole(Config.GetSection("Logging"));
 
             loggerFactory.CreateLogger("startup").LogInformation("Application logging configured");
@@ -97,8 +95,6 @@ namespace Sample.Mailer.Cli
                 services.AddTransient<HistoryContext, MailerCliHistoryContext>();
             }
 
-
-          
 
             //Configure a mailer 
             var activeMailService = Config.GetSection("MailSettings:ActiveMailService")?.Value.ToLowerInvariant();

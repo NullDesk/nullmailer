@@ -24,14 +24,18 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
             /// <param name="subject">The subject.</param>
             /// <returns>BuildWithSubjectStep.</returns>
             public BuildWithSubjectStep Subject(string subject)
-                => new BuildWithSubjectStep(Context.WithSubject(subject));
+            {
+                return new BuildWithSubjectStep(Context.WithSubject(subject));
+            }
 
             /// <summary>
             ///     Specifies that this message should have an empty subject line.
             /// </summary>
             /// <returns>BuildWithSubjectStep.</returns>
             public BuildWithSubjectStep WithOutSubject()
-                => new BuildWithSubjectStep(Context);
+            {
+                return new BuildWithSubjectStep(Context);
+            }
 
             /// <summary>
             ///     Fluent message builder step for defining the message's subject.

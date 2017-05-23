@@ -34,7 +34,8 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <param name="attachmentFiles">A collection of files.</param>
         /// <returns>IDictionary&lt;System.String, Stream&gt;.</returns>
-        public static IDictionary<string, Stream> GetAttachmentStreamsForFiles(this IEnumerable<FileInfo> attachmentFiles)
+        public static IDictionary<string, Stream> GetAttachmentStreamsForFiles(
+            this IEnumerable<FileInfo> attachmentFiles)
         {
             IDictionary<string, Stream> attachments = null;
             if (attachmentFiles != null)

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 // ReSharper disable once CheckNamespace
 namespace NullDesk.Extensions.Mailer.Core
@@ -17,7 +18,7 @@ namespace NullDesk.Extensions.Mailer.Core
     /// <seealso cref="IHistoryStore" />
     public class InMemoryHistoryStore : IHistoryStore
     {
-        private List<DeliveryItem> Items { get; } = new List<DeliveryItem>();
+        private List<string> Items { get; } = new List<string>();
 
 
         /// <summary>
@@ -34,9 +35,11 @@ namespace NullDesk.Extensions.Mailer.Core
             }
             if (!SerializeAttachments)
             {
-                item.Attachments = item.Attachments.Select(i => new KeyValuePair<string, Stream>(i.Key, null)).ToDictionary(k=> k.Key, k => k.Value);
+                item.Attachments = item.Attachments.Select(i => new KeyValuePair<string, Stream>(i.Key, null))
+                    .ToDictionary(k => k.Key, k => k.Value);
             }
-            Items.Add(item);
+
+            Items.Add(JsonConvert.SerializeObject(item));
             return Task.FromResult(item.Id);
         }
 
@@ -48,7 +51,10 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         public Task<DeliveryItem> GetAsync(Guid id, CancellationToken token = default(CancellationToken))
         {
-            return Task.FromResult(Items.OrderByDescending(i => i.CreatedDate).FirstOrDefault(i => i.Id == id));
+            return Task.FromResult(Items
+                .Select(JsonConvert.DeserializeObject<DeliveryItem>)
+                .OrderByDescending(i => i.CreatedDate)
+                .FirstOrDefault(i => i.Id == id));
         }
 
         /// <summary>
@@ -63,6 +69,7 @@ namespace NullDesk.Extensions.Mailer.Core
             CancellationToken token = new CancellationToken())
         {
             return Task.FromResult(Items
+                .Select(JsonConvert.DeserializeObject<DeliveryItem>)
                 .OrderByDescending(i => i.CreatedDate)
                 .Skip(offset)
                 .Take(limit));
@@ -80,16 +87,17 @@ namespace NullDesk.Extensions.Mailer.Core
             CancellationToken token = new CancellationToken())
         {
             return Task.FromResult(Items
-                .Where(
-                    i =>
-                        i.ToEmailAddress.Contains(searchText) || i.ToDisplayName.Contains(searchText) ||
-                        i.Subject.Contains(searchText))
+                .Select(JsonConvert.DeserializeObject<DeliveryItem>)
+                .Where(i =>
+                    i.ToEmailAddress.Contains(searchText) || i.ToDisplayName.Contains(searchText) ||
+                    i.Subject.Contains(searchText))
                 .OrderByDescending(i => i.CreatedDate)
                 .Take(limit));
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to serialize attachments for use in the history store. If not enabled, messages with attachments cannot be resent from history.
+        ///     Gets or sets a value indicating whether to serialize attachments for use in the history store. If not enabled,
+        ///     messages with attachments cannot be resent from history.
         /// </summary>
         /// <value><c>true</c> if attachments should be serialized; otherwise, <c>false</c>.</value>
         public bool SerializeAttachments { get; set; }

@@ -24,7 +24,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
             /// <param name="emailAddress">The email address.</param>
             /// <returns>BuildRecipientsStep.BuildToStep.</returns>
             public BuildRecipientsStep.BuildToStep To(string emailAddress)
-                => new BuildRecipientsStep.BuildToStep(Context, emailAddress);
+            {
+                return new BuildRecipientsStep.BuildToStep(Context, emailAddress);
+            }
 
             /// <summary>
             ///     Add message content using the specified template.
@@ -32,14 +34,18 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
             /// <param name="templateName">Name of the template.</param>
             /// <returns>BuildContentTemplateStep.</returns>
             public BuildContentTemplateStep ForTemplate(string templateName)
-                => new BuildContentTemplateStep(Context.WithBody<TemplateBody>(b => b.TemplateName = templateName));
+            {
+                return new BuildContentTemplateStep(Context.WithBody<TemplateBody>(b => b.TemplateName = templateName));
+            }
 
             /// <summary>
             ///     Create an explicitly defined body.
             /// </summary>
             /// <returns>BuildBodyStep.</returns>
             public BuildBodyStep ForBody()
-                => new BuildBodyStep(Context);
+            {
+                return new BuildBodyStep(Context);
+            }
 
             /// <summary>
             ///     Fluent message builder step for specifying a template for the message's main content .
@@ -67,7 +73,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
                 /// </summary>
                 /// <returns>MailerMessage.</returns>
                 public MailerMessage Build()
-                    => Context;
+                {
+                    return Context;
+                }
             }
 
             /// <summary>
@@ -98,7 +106,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
                 /// <param name="html">The HTML.</param>
                 /// <returns>BuildHtmlBodyStep.</returns>
                 public BuildHtmlBodyStep WithHtml(string html)
-                    => new BuildHtmlBodyStep(Context, Body.WithHtml(html));
+                {
+                    return new BuildHtmlBodyStep(Context, Body.WithHtml(html));
+                }
 
                 /// <summary>
                 ///     Adds a plain text body to the message.
@@ -106,7 +116,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
                 /// <param name="text">The text.</param>
                 /// <returns>BuildTextBodyStep.</returns>
                 public BuildTextBodyStep WithPlainText(string text)
-                    => new BuildTextBodyStep(Context, Body.WithPlainText(text));
+                {
+                    return new BuildTextBodyStep(Context, Body.WithPlainText(text));
+                }
 
                 /// <summary>
                 ///     Fluent message builder step for explicitly defining the message's main content.
@@ -135,7 +147,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
                     /// </summary>
                     /// <returns>MailerMessage.</returns>
                     public MailerMessage Build()
-                        => Context;
+                    {
+                        return Context;
+                    }
 
                     /// <summary>
                     ///     Adds a plain text body to the message.
@@ -176,7 +190,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
                     /// </summary>
                     /// <returns>MailerMessage.</returns>
                     public MailerMessage Build()
-                        => Context;
+                    {
+                        return Context;
+                    }
 
                     /// <summary>
                     ///     Adds an HTML body to the message.
@@ -216,7 +232,9 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
                     /// </summary>
                     /// <returns>MailerMessage.</returns>
                     public MailerMessage Build()
-                        => Context;
+                    {
+                        return Context;
+                    }
                 }
             }
         }
