@@ -17,10 +17,13 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var stepBuilder = contentStep.To(address);
 
             stepBuilder
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildRecipientsStep.BuildToStep>()
-                .Which.As<IBuilderContext>().Message.Recipients
-                .Should().NotBeNull()
+                .Which.As<IBuilderContext>()
+                .Message.Recipients
+                .Should()
+                .NotBeNull()
                 .And.NotBeEmpty()
                 .And.AllBeAssignableTo<MessageRecipient>()
                 .And.Contain(r => r.EmailAddress == address);
@@ -36,11 +39,14 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var contentStep = new MessageBuilder.BuildContentStep(MailerMessage.Create());
             var stepBuilder = contentStep.ForTemplate(templateName);
             stepBuilder
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildContentStep.BuildContentTemplateStep>()
                 .Which.As<IBuilderContext>()
-                .Message.Body.As<TemplateBody>().TemplateName
-                .Should().Be(templateName);
+                .Message.Body.As<TemplateBody>()
+                .TemplateName
+                .Should()
+                .Be(templateName);
         }
 
         [Fact]
@@ -50,7 +56,8 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var contentStep = new MessageBuilder.BuildContentStep(MailerMessage.Create());
             var stepBuilder = contentStep.ForBody();
             stepBuilder
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildContentStep.BuildBodyStep>();
         }
     }

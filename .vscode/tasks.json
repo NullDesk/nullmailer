@@ -5,11 +5,7 @@
     "args": [],
     "tasks": [{
         "taskName": "build",
-        "args": [
-            "${workspaceRoot}\\test\\NullDesk.Extensions.Mailer.MailKit.Tests\\project.json",
-            "${workspaceRoot}\\test\\NullDesk.Extensions.Mailer.SendGrid.Tests\\project.json",
-            "${workspaceRoot}\\samples\\mailer-cli\\mailer\\project.json"
-        ],
+        "args": [],
         "isBuildCommand": true,
         "problemMatcher": "$msCompile"
     }]

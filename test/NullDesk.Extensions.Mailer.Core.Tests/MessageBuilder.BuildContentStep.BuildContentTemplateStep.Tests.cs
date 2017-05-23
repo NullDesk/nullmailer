@@ -16,10 +16,13 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                     new MailerMessage().WithBody<TemplateBody>(b => b.TemplateName = "toast"));
             var message = contentStep.Build();
             message
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MailerMessage>()
-                .Which.Body.As<TemplateBody>().TemplateName
-                .Should().NotBeNullOrEmpty()
+                .Which.Body.As<TemplateBody>()
+                .TemplateName
+                .Should()
+                .NotBeNullOrEmpty()
                 .And.Be("toast");
         }
 
@@ -32,7 +35,8 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                     new MailerMessage().WithBody<TemplateBody>(b => b.TemplateName = "toast"));
             var stepBuilder = contentStep.And;
             stepBuilder
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MessageBuilder.BuildPostContentStep>();
         }
     }

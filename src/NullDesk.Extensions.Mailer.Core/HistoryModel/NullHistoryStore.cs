@@ -62,7 +62,7 @@ namespace NullDesk.Extensions.Mailer.Core
         public Task<IEnumerable<DeliveryItem>> GetAsync(int offset = 0, int limit = 100,
             CancellationToken token = new CancellationToken())
         {
-            return Task.FromResult<IEnumerable<DeliveryItem>>(new DeliveryItem[] {});
+            return Task.FromResult<IEnumerable<DeliveryItem>>(new DeliveryItem[] { });
         }
 
         /// <summary>
@@ -75,11 +75,12 @@ namespace NullDesk.Extensions.Mailer.Core
         public Task<IEnumerable<DeliveryItem>> SearchAsync(string searchText, int limit = 100,
             CancellationToken token = new CancellationToken())
         {
-            return Task.FromResult<IEnumerable<DeliveryItem>>(new DeliveryItem[] {});
+            return Task.FromResult<IEnumerable<DeliveryItem>>(new DeliveryItem[] { });
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to serialize attachments for use in the history store. If not enabled, messages with attachments cannot be resent from history.
+        ///     Gets or sets a value indicating whether to serialize attachments for use in the history store. If not enabled,
+        ///     messages with attachments cannot be resent from history.
         /// </summary>
         /// <value><c>true</c> if attachments should be serialized; otherwise, <c>false</c>.</value>
         public bool SerializeAttachments { get; set; } = false;

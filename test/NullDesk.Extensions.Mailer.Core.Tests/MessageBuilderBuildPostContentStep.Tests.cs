@@ -28,13 +28,16 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 var stepBuilder = contentStep.WithAttachment(path);
 
                 stepBuilder
-                    .Should().NotBeNull()
+                    .Should()
+                    .NotBeNull()
                     .And.BeOfType<MessageBuilder.BuildPostContentStep.BuildAttachmentOrSubstitutionStep>()
                     .Which.As<IBuilderContext>()
                     .Message.Attachments
-                    .Should().NotBeEmpty()
+                    .Should()
+                    .NotBeEmpty()
                     .And.Subject.Keys.Select(Path.GetFileName)
-                    .Should().Contain(Path.GetFileName(path));
+                    .Should()
+                    .Contain(Path.GetFileName(path));
             }
         }
 
@@ -57,12 +60,16 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 var stepBuilder = contentStep.WithSubstitution(token, value);
 
                 stepBuilder
-                    .Should().NotBeNull()
+                    .Should()
+                    .NotBeNull()
                     .And.BeOfType<MessageBuilder.BuildPostContentStep.BuildAttachmentOrSubstitutionStep>()
-                    .Which.As<IBuilderContext>().Message.Substitutions
-                    .Should().NotBeEmpty()
+                    .Which.As<IBuilderContext>()
+                    .Message.Substitutions
+                    .Should()
+                    .NotBeEmpty()
                     .And.ContainKey(token)
-                    .WhichValue.Should().Be(value);
+                    .WhichValue.Should()
+                    .Be(value);
             }
         }
 
@@ -75,7 +82,8 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var message = contentStep.Build();
 
             message
-                .Should().NotBeNull()
+                .Should()
+                .NotBeNull()
                 .And.BeOfType<MailerMessage>();
         }
     }

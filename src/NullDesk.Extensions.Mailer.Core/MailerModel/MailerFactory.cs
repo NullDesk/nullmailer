@@ -24,15 +24,16 @@ namespace NullDesk.Extensions.Mailer.Core
         public virtual IMailer GetMailer()
         {
             var func = MailerRegistrations.FirstOrDefault(m => m
-                                                                   .GetType().GetTypeInfo()
+                                                                   .GetType()
+                                                                   .GetTypeInfo()
                                                                    .GenericTypeArguments
-                                                                   .FirstOrDefault()?
+                                                                   .FirstOrDefault()
+                                                                   ?
                                                                    .GetTypeInfo()
                                                                    .ImplementedInterfaces.Any(
                                                                        i => i == typeof(IMailer)) ?? false);
             return func?.Invoke();
         }
-
 
 
         /// <summary>

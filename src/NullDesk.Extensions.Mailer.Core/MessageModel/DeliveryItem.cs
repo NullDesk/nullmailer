@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 
 // ReSharper disable CheckNamespace
 namespace NullDesk.Extensions.Mailer.Core
@@ -12,13 +13,15 @@ namespace NullDesk.Extensions.Mailer.Core
     /// </summary>
     public class DeliveryItem
     {
-         /// <summary>
-        /// Initializes a new instance of the <see cref="DeliveryItem"/> class.
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="DeliveryItem" /> class.
         /// </summary>
-        public DeliveryItem() { }
+        public DeliveryItem()
+        {
+        }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeliveryItem" /> class.
+        ///     Initializes a new instance of the <see cref="DeliveryItem" /> class.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="recipient">The recipient.</param>
@@ -34,7 +37,8 @@ namespace NullDesk.Extensions.Mailer.Core
 
             //merge personalized and general subs
             Substitutions = new Dictionary<string, string>(recipient?.PersonalizedSubstitutions);
-            foreach (var gSub in message?.Substitutions?.Where(s => !Substitutions.ContainsKey(s.Key)) ?? new Dictionary<string, string>())
+            foreach (var gSub in message?.Substitutions?.Where(s => !Substitutions.ContainsKey(s.Key)) ??
+                                 new Dictionary<string, string>())
             {
                 Substitutions.Add(gSub.Key, gSub.Value);
             }
@@ -52,10 +56,10 @@ namespace NullDesk.Extensions.Mailer.Core
         public string DeliveryProvider { get; set; }
 
         /// <summary>
-        /// Gets or sets the provider's identifier for the message.
+        ///     Gets or sets the provider's identifier for the message.
         /// </summary>
         /// <remarks>
-        /// Used to reference the message in the underlying mail system after delivery has been attempted.
+        ///     Used to reference the message in the underlying mail system after delivery has been attempted.
         /// </remarks>
         /// <value>The provider message identifier.</value>
         [StringLength(100)]
@@ -110,6 +114,7 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Gets or sets the message body.
         /// </summary>
         /// <value>The body.</value>
+        [JsonConverter(typeof(MessageBodyJsonConverter))]
         public IMessageBody Body { get; set; }
 
 
@@ -117,6 +122,7 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     A collection of attachments to include with the message.
         /// </summary>
         /// <value>The attachments.</value>
+        [JsonConverter(typeof(AttachmentStreamJsonConverter))]
         public IDictionary<string, Stream> Attachments { get; set; }
 
 
@@ -129,7 +135,6 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <value>The substitutions.</value>
         public IDictionary<string, string> Substitutions { get; set; }
 
-        
 
         /// <summary>
         ///     Gets or sets the exception message if an exception occurred.
@@ -138,12 +143,10 @@ namespace NullDesk.Extensions.Mailer.Core
         public string ExceptionMessage { get; set; }
 
         /// <summary>
-        /// Gets a value indicating whether this instance is resendable.
+        ///     Gets a value indicating whether this instance is resendable.
         /// </summary>
         /// <value><c>true</c> if this instance is resendable; otherwise, <c>false</c>.</value>
-        public bool IsResendable => !Attachments.Any() || Attachments.All(a => (a.Value?.Length) > 0);
-
-
+        public bool IsResendable => !Attachments.Any() || Attachments.All(a => a.Value?.Length > 0);
 
 
         /// <summary>
@@ -156,5 +159,4 @@ namespace NullDesk.Extensions.Mailer.Core
             return content?.PerformContentSubstitution(Substitutions);
         }
     }
-   
 }

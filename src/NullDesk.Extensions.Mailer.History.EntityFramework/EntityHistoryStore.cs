@@ -14,7 +14,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
     public class EntityHistoryStore<TContext> : IHistoryStore where TContext : HistoryContext
     {
         /// <summary>
-        /// Creates an instance of the EntityHistoryStore
+        ///     Creates an instance of the EntityHistoryStore
         /// </summary>
         /// <param name="options">The options used to configure the context</param>
         /// <param name="serializeAttachments">if set to <c>true</c> will serialize attachments for storage in the database.</param>
@@ -52,7 +52,8 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         {
             using (var context = (TContext) Activator.CreateInstance(typeof(TContext), DbOptions))
             {
-                return (await context.FindAsync<EntityHistoryDeliveryItem>(new object[] {id}, token))?.FromDeliveryItem();
+                return (await context.FindAsync<EntityHistoryDeliveryItem>(new object[] {id}, token))
+                    ?.FromDeliveryItem();
             }
         }
 
@@ -72,7 +73,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
                     await context.MessageHistory.OrderByDescending(i => i.CreatedDate)
                         .Skip(offset)
                         .Take(limit)
-                        .Select(i=> i.FromDeliveryItem())
+                        .Select(i => i.FromDeliveryItem())
                         .ToListAsync(token);
             }
         }
@@ -102,7 +103,8 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to serialize attachments for use in the history store. If not enabled, messages with attachments cannot be resent from history.
+        ///     Gets or sets a value indicating whether to serialize attachments for use in the history store. If not enabled,
+        ///     messages with attachments cannot be resent from history.
         /// </summary>
         /// <value><c>true</c> if attachments should be serialized; otherwise, <c>false</c>.</value>
         public bool SerializeAttachments { get; set; }

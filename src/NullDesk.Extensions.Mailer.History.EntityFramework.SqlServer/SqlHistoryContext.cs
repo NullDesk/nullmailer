@@ -8,12 +8,13 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer
     /// <seealso cref="Microsoft.EntityFrameworkCore.DbContext" />
     public abstract class SqlHistoryContext : HistoryContext
     {
-
         /// <summary>
-        ///     Initializes a new instance of the <see cref="SqlHistoryContext"/> class.
+        ///     Initializes a new instance of the <see cref="SqlHistoryContext" /> class.
         /// </summary>
         protected SqlHistoryContext()
-        { }
+        {
+        }
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="SqlHistoryContext" /> class.
         /// </summary>
@@ -21,7 +22,5 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer
         protected SqlHistoryContext(DbContextOptions options) : base(options)
         {
         }
-
- 
     }
 }
