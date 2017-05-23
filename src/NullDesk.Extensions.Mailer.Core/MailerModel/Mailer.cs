@@ -228,7 +228,7 @@ namespace NullDesk.Extensions.Mailer.Core
                     $"Mailer re-send error for delivery item ID '{id}'. Delivery item is not re-sendable. The message may have originally been delivered with attachments, but attachment serialization may have been disabled for the history store");
             }
 
-            di.Id = new Guid();
+            di.Id = Guid.NewGuid();
             di.ProviderMessageId = null;
             di.IsSuccess = false;
             di.CreatedDate = DateTimeOffset.Now;
@@ -254,7 +254,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         public virtual void Dispose()
         {
-            var unsent = DeliveryItems.Where(m => !m.IsSuccess && string.IsNullOrEmpty(m.ExceptionMessage));
+            var unsent = DeliveryItems.Where(m => !m.IsSuccess && string.IsNullOrEmpty(m.ExceptionMessage)).ToArray();
             if (unsent.Any())
             {
                 var b = new StringBuilder();
@@ -265,7 +265,7 @@ namespace NullDesk.Extensions.Mailer.Core
                 {
                     b.AppendLine($"    Delivery item ID '{u.Id}' to '{u.ToEmailAddress}' with subject '{u.Subject}'");
                 }
-                Logger.LogWarning(b.ToString(), unsent.Count(), this.GetType().Name);
+                Logger.LogWarning(b.ToString(), unsent.Count(), GetType().Name);
             }
             ((IMailer)this).Deliverables = null;
         }

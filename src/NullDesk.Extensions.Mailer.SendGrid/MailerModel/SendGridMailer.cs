@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NullDesk.Extensions.Mailer.Core;
+using NullDesk.Extensions.Mailer.Core.Extensions;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
@@ -139,7 +140,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
                 {
                     sgAttachments.Add(new Attachment
                     {
-                        Content = await StreamToBase64Async(stream.Value, token),
+                        Content = await stream.Value.ToBase64String(),
                         Filename = stream.Key,
                         Disposition = "attachment"
                     });
@@ -149,31 +150,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             }
         }
 
-        /// <summary>
-        ///     Converts a Stream to a base 64 encoded string
-        /// </summary>
-        /// <param name="input">The input stream</param>
-        /// <param name="token">The token.</param>
-        /// <returns>Task&lt;System.String&gt;.</returns>
-        /// <remarks>Will read and dispose the stream</remarks>
-        protected virtual async Task<string> StreamToBase64Async(Stream input,
-            CancellationToken token = default(CancellationToken))
-        {
-            MemoryStream ms;
-            if (input is MemoryStream stream)
-            {
-                ms = stream;
-            }
-            else
-            {
-                ms = new MemoryStream();
-                await input.CopyToAsync(ms, 81920, token);
-            }
-            using (ms)
-            {
-                return Convert.ToBase64String(ms.ToArray());
-            }
-        }
+        
 
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

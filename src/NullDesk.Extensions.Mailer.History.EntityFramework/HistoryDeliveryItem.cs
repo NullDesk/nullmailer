@@ -213,7 +213,8 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
                     {
                         var ms = new MemoryStream();
                         a.Value.CopyTo(ms);
-                        var content = Encoding.Unicode.GetString(ms.ToArray());
+                        a.Value.Position = 0;//put stream back
+                        var content = Convert.ToBase64String(ms.ToArray());
 
                         kvp = new KeyValuePair<string, string>(a.Key, content);
                     }

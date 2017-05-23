@@ -1,33 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>    
-    <TargetFramework>netcoreapp1.1</TargetFramework>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netcoreapp1.1</TargetFramework>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Content Include="xunit.runner.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+    <ItemGroup>
+        <Content Include="xunit.runner.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Include="MessageBuidler.BuildFromStep.Tests.cs" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="MessageBuidler.BuildFromStep.Tests.cs" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="4.19.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
-    <PackageReference Include="NSubstitute" Version="2.0.2" />
-    <PackageReference Include="xunit" Version="2.2.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="FluentAssertions" Version="4.19.1" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+        <PackageReference Include="NSubstitute" Version="2.0.2" />
+        <PackageReference Include="xunit" Version="2.2.0" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="1.1.0" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\NullDesk.Extensions.Mailer.Core\NullDesk.Extensions.Mailer.Core.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\NullDesk.Extensions.Mailer.Core\NullDesk.Extensions.Mailer.Core.csproj" />
+        <ProjectReference Include="..\NullDesk.Extensions.Mailer.Tests.Common\NullDesk.Extensions.Mailer.Tests.Common.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
-  </ItemGroup>
+    <ItemGroup>
+        <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+    </ItemGroup>
 
 </Project>

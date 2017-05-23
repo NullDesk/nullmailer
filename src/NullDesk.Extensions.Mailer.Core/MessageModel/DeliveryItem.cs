@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 
 // ReSharper disable CheckNamespace
 namespace NullDesk.Extensions.Mailer.Core
@@ -110,6 +111,7 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Gets or sets the message body.
         /// </summary>
         /// <value>The body.</value>
+        [JsonConverter(typeof(MessageBodyJsonConverter))]
         public IMessageBody Body { get; set; }
 
 
@@ -117,6 +119,7 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     A collection of attachments to include with the message.
         /// </summary>
         /// <value>The attachments.</value>
+        [JsonConverter(typeof(AttachmentStreamJsonConverter))]
         public IDictionary<string, Stream> Attachments { get; set; }
 
 
@@ -138,12 +141,10 @@ namespace NullDesk.Extensions.Mailer.Core
         public string ExceptionMessage { get; set; }
 
         /// <summary>
-        /// Gets a value indicating whether this instance is resendable.
+        ///     Gets a value indicating whether this instance is resendable.
         /// </summary>
         /// <value><c>true</c> if this instance is resendable; otherwise, <c>false</c>.</value>
         public bool IsResendable => !Attachments.Any() || Attachments.All(a => (a.Value?.Length) > 0);
-
-
 
 
         /// <summary>
