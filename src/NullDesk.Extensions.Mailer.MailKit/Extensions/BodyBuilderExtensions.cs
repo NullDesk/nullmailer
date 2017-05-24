@@ -40,7 +40,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="message">The message.</param>
         /// <param name="settings">The settings.</param>
         /// <param name="logger">The logger.</param>
-        /// <param name="token">The token.</param>
+       /// <param name="token">The cancellation token.</param>
         /// <returns>System.Threading.Tasks.Task&lt;MimeKit.BodyBuilder&gt;.</returns>
         public static async Task<BodyBuilder> GetMkBody(
             this BodyBuilder builder,

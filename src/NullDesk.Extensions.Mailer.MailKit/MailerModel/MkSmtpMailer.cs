@@ -62,10 +62,16 @@ namespace NullDesk.Extensions.Mailer.MailKit
         ///     Deliver message as an asynchronous operation.
         /// </summary>
         /// <param name="deliveryItem">The delivery item containing the message you wish to send.</param>
-        /// <param name="token">The token.</param>
+        /// <param name="autoCloseConnection">
+        ///     If set to <c>true</c> will close connection immediately after delivering the message.
+        ///     If caller is sending multiple messages, optionally set to false to leave the mail service connection open.
+        /// </param>
+       /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;String&gt; a service provider specific message ID.</returns>
         /// <remarks>The implementor should return a provider specific ID value.</remarks>
-        protected override async Task<string> DeliverMessageAsync(DeliveryItem deliveryItem,
+        protected override async Task<string> DeliverMessageAsync(
+            DeliveryItem deliveryItem, 
+            bool autoCloseConnection = true,
             CancellationToken token = default(CancellationToken))
         {
             var mkMessage = new MimeMessage
@@ -95,40 +101,76 @@ namespace NullDesk.Extensions.Mailer.MailKit
                 .AddMkAttachmentStreams(deliveryItem.Attachments)
                 .ToMessageBody();
 
-            return await SendSmtpMessageAsync(mkMessage, token);
+            return await SendSmtpMessageAsync(mkMessage, autoCloseConnection, token);
         }
 
         /// <summary>
-        ///     Send an SMTP message as an asynchronous operation.
+        /// Close mail client connection as an asynchronous operation.
+        /// </summary>
+       /// <param name="token">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        /// <remarks>Used to close connections if DeliverMessageAsync was used with autoCloseConnection set to false.</remarks>
+        protected override async Task CloseMailClientConnectionAsync(CancellationToken token = default(CancellationToken))
+        {
+            if (MailClient.IsConnected)
+            {
+                await MailClient.DisconnectAsync(false, token);
+            }
+        }
+
+        /// <summary>
+        /// Send an SMTP message as an asynchronous operation.
         /// </summary>
         /// <param name="message">The message.</param>
-        /// <param name="token">The token.</param>
+        /// <param name="autoCloseConnection">if set to <c>true</c> [automatic close connection].</param>
+       /// <param name="token">The cancellation token.</param>
         /// <returns>Task.</returns>
         protected async Task<string> SendSmtpMessageAsync(MimeMessage message,
+            bool autoCloseConnection,
             CancellationToken token = default(CancellationToken))
         {
             using (await _mLock.LockAsync())
             {
-                await MailClient.ConnectAsync(Settings.SmtpServer, Settings.SmtpPort, Settings.SmtpUseSsl, token);
-                if (Settings.AuthenticationSettings?.Credentials != null)
+                if (!MailClient.IsConnected)
                 {
-                    await MailClient.AuthenticateAsync(Settings.AuthenticationSettings.Credentials, token);
+                    await MailClient.ConnectAsync(Settings.SmtpServer, Settings.SmtpPort, Settings.SmtpUseSsl,
+                        token);
                 }
-                else
+                try
                 {
-                    if (!string.IsNullOrEmpty(Settings.AuthenticationSettings?.UserName) &&
-                        !string.IsNullOrEmpty(Settings.AuthenticationSettings?.Password))
+                    if (!MailClient.IsAuthenticated)
                     {
-                        await MailClient.AuthenticateAsync(Settings.AuthenticationSettings.UserName,
-                            Settings.AuthenticationSettings.Password, token);
+                        if (Settings.AuthenticationSettings?.Credentials != null)
+                        {
+                            await MailClient.AuthenticateAsync(Settings.AuthenticationSettings.Credentials, token);
+                        }
+                        else
+                        {
+                            if (!string.IsNullOrEmpty(Settings.AuthenticationSettings?.UserName) &&
+                                !string.IsNullOrEmpty(Settings.AuthenticationSettings?.Password))
+                            {
+                                await MailClient.AuthenticateAsync(Settings.AuthenticationSettings.UserName,
+                                    Settings.AuthenticationSettings.Password, token);
+                            }
+                        }
+                    }
+
+                    await MailClient.SendAsync(message, token);
+                }
+                finally
+                {
+                    if (autoCloseConnection)
+                    {
+                        await MailClient.DisconnectAsync(false, token);
                     }
                 }
 
-                await MailClient.SendAsync(message, token);
-                await MailClient.DisconnectAsync(false, token);
-                return message.MessageId;
             }
+            return message.MessageId;
         }
+
+
+
 
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

@@ -28,6 +28,56 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
         [Theory]
         [Trait("TestType", "Unit")]
         [ClassData(typeof(StandardMailerTestData))]
+        public async Task SendGrid_SendAll_MultipleMessages(string html, string text, string[] attachments)
+        {
+            var mailer = Fixture.ServiceProvider.GetService<IMailer>();
+            var messages = new List<TestParallelMailMessage>();
+            for (var i = 0; i < 10; i++)
+            {
+                messages.Add(new TestParallelMailMessage
+                {
+                    To = $"noone{i}@toast.com",
+                    ToDisplay = "No One Important",
+                    Subject = $"#{i} - Multiple Message xunit Test run: no template",
+                    Html = html,
+                    Text = text
+                });
+            }
+            foreach (var mes in messages)
+            {
+                mailer.AddMessage(new MailerMessage
+                {
+                    From = new MessageSender { EmailAddress = mes.From },
+                    Recipients = new List<MessageRecipient>
+                    {
+                        new MessageRecipient
+                        {
+                            EmailAddress = mes.To,
+                            DisplayName = mes.ToDisplay
+                        }
+                    },
+                    Subject = mes.Subject,
+                    Body = new ContentBody
+                    {
+                        HtmlContent = mes.Html,
+                        PlainTextContent = mes.Text
+                    },
+                    Substitutions = ReplacementVars
+                });
+            }
+            var result = await mailer.SendAllAsync(CancellationToken.None);
+
+            result
+                .Should()
+                .NotBeNull()
+                .And.AllBeOfType<DeliveryItem>()
+                .And.HaveCount(10)
+                .And.OnlyContain(i => i.IsSuccess);
+        }
+
+        [Theory]
+        [Trait("TestType", "Unit")]
+        [ClassData(typeof(StandardMailerTestData))]
         public async Task SendGrid_SendAll_WithContentBody(string html, string text, string[] attachments)
         {
             attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();

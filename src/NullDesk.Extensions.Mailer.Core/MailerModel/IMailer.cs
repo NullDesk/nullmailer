@@ -52,11 +52,12 @@ namespace NullDesk.Extensions.Mailer.Core
         MessageSender DefaultSender { get; }
 
         /// <summary>
-        ///     ReSends the message from history data.
+        /// ReSends the message from history data.
         /// </summary>
         /// <param name="id">The delivery item identifier to resend.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;System.Boolean&gt;.</returns>
+        /// The cancellation token.
         Task<DeliveryItem> ReSendAsync(Guid id, CancellationToken token);
 
         /// <summary>
@@ -97,15 +98,17 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <summary>
         ///     Attempts to send all un-sent messages tracked by the mailer instance.
         /// </summary>
-        /// <param name="token">The token.</param>
+       /// <param name="token">The cancellation token.</param>
         Task<IEnumerable<DeliveryItem>> SendAllAsync(CancellationToken token = default(CancellationToken));
 
         /// <summary>
-        ///     Sends one pending message with the specified identifier.
+        /// Sends one pending message with the specified identifier.
         /// </summary>
         /// <param name="id">The identifier.</param>
+        /// <param name="autoCloseConnection">if set to <c>true</c> automaticly close the connection when the message is sent.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;IEnumerable&lt;MessageDeliveryItem&gt;&gt;.</returns>
-        Task<DeliveryItem> SendAsync(Guid id, CancellationToken token = default(CancellationToken));
+        /// The cancellation token.
+        Task<DeliveryItem> SendAsync(Guid id, bool autoCloseConnection = true, CancellationToken token = default(CancellationToken));
     }
 }

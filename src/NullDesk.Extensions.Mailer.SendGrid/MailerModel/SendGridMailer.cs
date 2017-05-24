@@ -59,12 +59,18 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         public SendGridClient MailClient { get; set; }
 
         /// <summary>
-        ///     Delivers the message asynchronous.
+        /// Delivers the message asynchronous.
         /// </summary>
         /// <param name="deliveryItem">The delivery item.</param>
-        /// <param name="token">The token.</param>
+        /// <param name="autoCloseConnection">If set to <c>true</c> will close connection immediately after delivering the message.
+        /// If caller is sending multiple messages, optionally set to false to leave the mail service connection open.</param>
+       /// <param name="token">The cancellation token.</param>
         /// <returns>System.Threading.Tasks.Task&lt;System.String&gt;.</returns>
-        protected override async Task<string> DeliverMessageAsync(DeliveryItem deliveryItem,
+        /// <exception cref="System.Exception"></exception>
+        /// <remarks>The implementor should return a provider specific ID value.</remarks>
+        protected override async Task<string> DeliverMessageAsync(
+            DeliveryItem deliveryItem,
+            bool autoCloseConnection = true, //not used in this mailer
             CancellationToken token = default(CancellationToken))
         {
             var sgFrom = new EmailAddress(deliveryItem.FromEmailAddress, deliveryItem.FromDisplayName);
@@ -111,10 +117,23 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         }
 
         /// <summary>
+        /// Close mail client connection as an asynchronous operation.
+        /// </summary>
+        /// <param name="token">The token.</param>
+        /// <returns>Task.</returns>
+        /// The cancellation token.
+        /// <remarks>Used to close connections if DeliverMessageAsync was used with autoCloseConnection set to false.</remarks>
+        protected override async Task CloseMailClientConnectionAsync(CancellationToken token = new CancellationToken())
+        {
+            await Task.CompletedTask;
+            //don nothing
+        }
+
+        /// <summary>
         ///     Sends the message through the SendGrid API.
         /// </summary>
         /// <param name="message">The message.</param>
-        /// <param name="token">The token.</param>
+       /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;Response&gt;.</returns>
         protected virtual async Task<Response> SendToApiAsync(SendGridMessage message,
             CancellationToken token = default(CancellationToken))
@@ -127,7 +146,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// </summary>
         /// <param name="mail">The mail object to which the attachments should be added.</param>
         /// <param name="attachments">The attachments.</param>
-        /// <param name="token">The token.</param>
+       /// <param name="token">The cancellation token.</param>
         /// <returns>Task.</returns>
         protected virtual async Task AddAttachmentStreamsAsync(SendGridMessage mail,
             IDictionary<string, Stream> attachments, CancellationToken token = default(CancellationToken))

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
@@ -11,9 +13,9 @@ using NullDesk.Extensions.Mailer.Core;
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 {
-    public class StandardMailFixture : MailFixture, IDisposable
+    public class FailureMailFixture :  IDisposable
     {
-        public StandardMailFixture()
+        public FailureMailFixture()
         {
             //setup the dependency injection service
             var services = new ServiceCollection();
@@ -23,9 +25,10 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 
             services.AddSingleton<IHistoryStore, InMemoryHistoryStore>();
 
+            
             var isMailServerAlive = false;
             var lazy = new Lazy<OptionsWrapper<MkSmtpMailerSettings>>(() => SetupMailerOptions(out isMailServerAlive));
-
+            IsMailServiceAlive = isMailServerAlive;
             services.AddTransient<IMailer>(s =>
             {
                 var options = lazy.Value;
@@ -39,7 +42,6 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                         s.GetService<IHistoryStore>());
             });
 
-
             ServiceProvider = services.BuildServiceProvider();
             var logging = ServiceProvider.GetService<ILoggerFactory>();
             logging.AddDebug(LogLevel.Debug);
@@ -47,7 +49,39 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 
         public IServiceProvider ServiceProvider { get; set; }
 
+        public bool IsMailServiceAlive { get; set; }
+        protected OptionsWrapper<MkSmtpMailerSettings> SetupMailerOptions(out bool isMailServerAlive)
+        {
+            var mailOptions = new OptionsWrapper<MkSmtpMailerSettings>(
+                new MkSmtpMailerSettings
+                {
+                    FromDisplayName = "xunit",
+                    FromEmailAddress = "xunit@nowhere.com",
+                    SmtpServer = "localhost",
+                    SmtpPort = 25,
+                    SmtpUseSsl = false,
+                    TemplateSettings = new MkFileTemplateSettings
+                    {
+                        TemplatePath =
+                            Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\TestData\templates"))
+                    }
+                });
 
+            isMailServerAlive = false;
+            var tcp = new TcpClient();
+            try
+            {
+                tcp.ConnectAsync(mailOptions.Value.SmtpServer, mailOptions.Value.SmtpPort).Wait();
+                isMailServerAlive = tcp.Connected;
+            }
+            catch
+            {
+                // ignored
+            }
+
+            tcp.Dispose();
+            return mailOptions;
+        }
         public void Dispose()
         {
         }

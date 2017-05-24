@@ -32,7 +32,7 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Gets the history item from the store.
         /// </summary>
         /// <param name="id">The identifier.</param>
-        /// <param name="token">The token.</param>
+       /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         Task<DeliveryItem> GetAsync(Guid id, CancellationToken token = default(CancellationToken));
 
@@ -41,7 +41,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <param name="offset">The offset.</param>
         /// <param name="limit">The limit.</param>
-        /// <param name="token">The token.</param>
+       /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         Task<IEnumerable<DeliveryItem>> GetAsync(int offset = 0, int limit = 100,
             CancellationToken token = default(CancellationToken));
@@ -51,7 +51,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <param name="searchText">The search text.</param>
         /// <param name="limit">The limit.</param>
-        /// <param name="token">The token.</param>
+       /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         Task<IEnumerable<DeliveryItem>> SearchAsync(string searchText, int limit = 100,
             CancellationToken token = default(CancellationToken));

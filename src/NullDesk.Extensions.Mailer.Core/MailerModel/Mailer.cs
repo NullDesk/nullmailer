@@ -39,7 +39,7 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     A collection of all messages tracked by this mailer instance.
         /// </summary>
         /// <value>The messages.</value>
-        protected ICollection<DeliveryItem> DeliveryItems => ((IMailer) this).Deliverables;
+        protected ICollection<DeliveryItem> DeliveryItems => ((IMailer)this).Deliverables;
 
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace NullDesk.Extensions.Mailer.Core
                         i.Id,
                         i.ToEmailAddress,
                         i.Subject);
-                    ((IMailer) this).Deliverables.Add(i);
+                    ((IMailer)this).Deliverables.Add(i);
                 }
             }
 
@@ -146,7 +146,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <summary>
         ///     Send all pending messages tracked by the mailer instance.
         /// </summary>
-        /// <param name="token">The token.</param>
+       /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;IEnumerable&lt;MessageDeliveryItem&gt;&gt; for each message sent.</returns>
         public virtual async Task<IEnumerable<DeliveryItem>> SendAllAsync(
             CancellationToken token = new CancellationToken())
@@ -156,32 +156,37 @@ namespace NullDesk.Extensions.Mailer.Core
             using (await _deliverablesLock.LockAsync())
             {
                 foreach (var message in
-                    ((IMailer) this).Deliverables.Where(m => !m.IsSuccess && string.IsNullOrEmpty(m.ExceptionMessage)))
+                    ((IMailer)this).Deliverables.Where(m => !m.IsSuccess && string.IsNullOrEmpty(m.ExceptionMessage)))
                 {
                     sendIds.Add(message.Id);
                 }
             }
-            foreach (var id in sendIds)
+            for (var i = 0; i < sendIds.Count; i++)
             {
-                sentItems.Add(await SendAsync(id, token));
+                sentItems.Add(await SendAsync(sendIds[i], !(i < sendIds.Count -1), token));
             }
             return sentItems;
         }
 
         /// <summary>
-        ///     Sends one pending delivery item with the specified identifier.
+        /// Sends one pending delivery item with the specified identifier.
         /// </summary>
         /// <param name="id">The delivery item identifier.</param>
-        /// <param name="token">The token.</param>
+        /// <param name="autoCloseConnection">If set to <c>true</c> will close connection immediately after delivering the message.
+        /// If caller is sending multiple messages, optionally set to false to leave the mail service connection open.</param>
+        /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;IEnumerable&lt;MessageDeliveryItem&gt;&gt;.</returns>
-        public virtual async Task<DeliveryItem> SendAsync(Guid id, CancellationToken token = new CancellationToken())
+        public virtual async Task<DeliveryItem> SendAsync(
+            Guid id,
+            bool autoCloseConnection = true,
+            CancellationToken token = new CancellationToken())
         {
             using (await _deliverablesLock.LockAsync())
             {
-                var deliveryItem = ((IMailer) this).Deliverables.FirstOrDefault(d => d.Id == id);
+                var deliveryItem = ((IMailer)this).Deliverables.FirstOrDefault(d => d.Id == id);
                 try
                 {
-                    deliveryItem.ProviderMessageId = await DeliverMessageAsync(deliveryItem, token);
+                    deliveryItem.ProviderMessageId = await DeliverMessageAsync(deliveryItem, autoCloseConnection, token);
                     deliveryItem.IsSuccess = true;
                     deliveryItem.DeliveryProvider = GetType().Name;
                     Logger.LogInformation(
@@ -208,18 +213,15 @@ namespace NullDesk.Extensions.Mailer.Core
         }
 
         /// <summary>
-        ///     ReSends the message from history data.
+        /// ReSends the message from history data.
         /// </summary>
         /// <param name="id">The delivery item identifier to resend.</param>
         /// <param name="token">The token.</param>
         /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        /// <exception cref="System.ArgumentException">
-        ///     Message with the specified id not found in the history store, unable to resend message.
-        /// </exception>
-        /// <exception cref="System.InvalidOperationException">
-        ///     DeliveryItem is not re-sendable. The message may have originally been delivered with attachments, but attachment
-        ///     serialization may have been disabled for the history store
-        /// </exception>
+        /// <exception cref="System.ArgumentException">Message with the specified id not found in the history store, unable to resend message.</exception>
+        /// <exception cref="System.InvalidOperationException">DeliveryItem is not re-sendable. The message may have originally been delivered with attachments, but attachment
+        /// serialization may have been disabled for the history store</exception>
+        /// The cancellation token.
         public virtual async Task<DeliveryItem> ReSendAsync(Guid id, CancellationToken token)
         {
             var di = await HistoryStore.GetAsync(id, token);
@@ -246,8 +248,8 @@ namespace NullDesk.Extensions.Mailer.Core
                 di.Id,
                 di.ToEmailAddress,
                 di.Subject);
-            ((IMailer) this).Deliverables.Add(di);
-            return await SendAsync(di.Id, token);
+            ((IMailer)this).Deliverables.Add(di);
+            return await SendAsync(di.Id, true, token);
         }
 
         ICollection<DeliveryItem> IMailer.Deliverables { get; set; } = new Collection<DeliveryItem>();
@@ -271,19 +273,31 @@ namespace NullDesk.Extensions.Mailer.Core
                 }
                 Logger.LogWarning(b.ToString(), unsent.Count(), GetType().Name);
             }
-            ((IMailer) this).Deliverables = null;
+            ((IMailer)this).Deliverables = null;
         }
 
         /// <summary>
-        ///     When overridden in a derived class, uses the mailer's underlying mail delivery service to send the specified
-        ///     message and return the service's native message identifier (or null if not applicable).
+        /// When overridden in a derived class, uses the mailer's underlying mail delivery service to send the specified
+        /// message and return the service's native message identifier (or null if not applicable).
         /// </summary>
         /// <param name="deliveryItem">The delivery item containing the message you wish to send.</param>
-        /// <param name="token">The token.</param>
+        /// <param name="autoCloseConnection">if set to <c>true</c> [automatic close connection].</param>
+        /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;String&gt; a service provider specific message ID.</returns>
+        /// The cancellation token.
         /// <remarks>The implementor should return a provider specific ID value.</remarks>
-        protected abstract Task<string> DeliverMessageAsync(DeliveryItem deliveryItem,
+        protected abstract Task<string> DeliverMessageAsync(
+            DeliveryItem deliveryItem,
+            bool autoCloseConnection = true,
             CancellationToken token = new CancellationToken());
+
+        /// <summary>
+        /// Closes any active mail client connections.
+        /// </summary>
+       /// <param name="token">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        /// <remarks>Used to close connections if DeliverMessageAsync was used with autoCloseConnection set to false.</remarks>
+        protected abstract Task CloseMailClientConnectionAsync(CancellationToken token = default(CancellationToken));
 
         private void CheckIsDeliverable(MailerMessage message)
         {
