@@ -2,16 +2,17 @@
 
 ## Overview
 
-Email extension service packages for quickly integrating common mail scenarios into any .Net Core or .Net project using a variety of message delivery frameworks and cloud service providers.
+Email extension service packages for quickly integrating common mail scenarios into any .Net Core or .Net project using a variety of email frameworks or cloud mail service providers. 
 
-Easily configure your application for different email services at startup based on environment, deployment configuration, or runtime detection of available mail providers.
+Easily configure your application for different email services at startup based on environment, deployment configuration, or custom detection of available mail providers.
+   
 
 ## Status
 
 |                                   |   |   |
 |-----------------------------------|:-:|:-:|
 |Project  [Issue Board](https://github.com/NullDesk/NullMailer/issues#boards?repos=79507993)|[![Build status](https://ci.appveyor.com/api/projects/status/5uc95cb6xho4qtdh/branch/master?svg=true)](https://ci.appveyor.com/project/StephenRedd/nullmailer/branch/master)|[![ZenHub](https://img.shields.io/badge/Shipping_faster_with-ZenHub-5e60ba.svg?style=flat-square)](https://github.com/NullDesk/NullMailer/issues#boards?repos=79507993)|
-|NullDesk.Extensions.Mailer                                                                 |[![MyGet](https://img.shields.io/myget/nulldesk-ci/vpre/NullDesk.Extensions.Mailer.Core.svg)](https://www.myget.org/feed/nulldesk-ci/package/nuget/NullDesk.Extensions.Mailer.Core)|[![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.Core.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.Core/)|
+|NullDesk.Extensions.Mailer.Core                                                             |[![MyGet](https://img.shields.io/myget/nulldesk-ci/vpre/NullDesk.Extensions.Mailer.Core.svg)](https://www.myget.org/feed/nulldesk-ci/package/nuget/NullDesk.Extensions.Mailer.Core)|[![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.Core.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.Core/)|
 |NullDesk.Extensions.Mailer.MailKit                                                         |[![MyGet](https://img.shields.io/myget/nulldesk-ci/vpre/NullDesk.Extensions.Mailer.MailKit.svg)](https://www.myget.org/feed/nulldesk-ci/package/nuget/NullDesk.Extensions.Mailer.MailKit)|[![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.MailKit.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.MailKit/)|
 |NullDesk.Extensions.Mailer.SendGrid                                                        |[![MyGet](https://img.shields.io/myget/nulldesk-ci/vpre/NullDesk.Extensions.Mailer.SendGrid.svg)](https://www.myget.org/feed/nulldesk-ci/package/nuget/NullDesk.Extensions.Mailer.SendGrid)|[![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.SendGrid.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.SendGrid/)|
 |NullDesk.Extensions.Mailer.History.EntityFramework                                         |[![MyGet](https://img.shields.io/myget/nulldesk-ci/vpre/NullDesk.Extensions.Mailer.History.EntityFramework.svg)](https://www.myget.org/feed/nulldesk-ci/package/nuget/NullDesk.Extensions.Mailer.History.EntityFramework)|[![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.History.EntityFramework.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.History.EntityFramework/)|
@@ -531,17 +532,27 @@ For the above interfaces, <code>TSettings</code> is a custom class that implemen
 
 Every effort has been made to keep inheritance of <code>Mailer&lt;TSettings&gt;</code> fairly straight forward.
 
-The primary method you must supply is a method that can deliver a single <code>DeliveryItem</code> using the email service your mailer supports. The method should return the DeliveryItem if it was successfully sent, or throw an exception if something went wrong. The base class will handle logging the exception, updating the DeliveryItem's properties, recording the delivery attempt to the history store, etc. All you have to do is send the email via the mail service, and either throw an exception or return the deliery item if it was sent.
+The primary method you must supply is a method that can deliver a single <code>DeliveryItem</code> using the email service your mailer supports. The method should return the DeliveryItem if it was successfully sent, or throw an exception if something went wrong.
+
+ The base class will handle logging the exception, updating the DeliveryItem's properties, recording the delivery attempt to the history store, etc. All you have to do is send the email via the mail service, and either throw an exception or return the deliery item if it was sent.
 
         public class MySimpleMailer : Mailer<MyMailerSettings>
         {
             protected override async Task<string> DeliverMessageAsync(
                 DeliveryItem deliveryItem,
+                bool autoCloseConnection = true,
                 CancellationToken token = default(CancellationToken))
             {
                 //... implementation here
                 // return provider supplied message ID, or null if not applicable
             }
+             
+            protected override async Task CloseMailClientConnectionAsync(CancellationToken token = default(CancellationToken))
+            {
+                //explicitly close any open mail client connections
+            }
         }
+         
+
 
 
