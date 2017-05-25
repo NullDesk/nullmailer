@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>NullDesk Mailer Extensions for SMTP Email messaging using MailKit</Description>
     <VersionPrefix>3.3.0</VersionPrefix>

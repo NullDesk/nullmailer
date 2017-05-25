@@ -10,6 +10,19 @@ namespace NullDesk.Extensions.Mailer.MailKit
     public class MkSmtpMailerSettings : SmtpMailerSettings
     {
         /// <summary>
+        ///     Require SSL connection.
+        /// </summary>
+        /// <remarks>When <c>false</c>, SSL may still be used if the SMTP server indicates that it supports it.</remarks>
+        /// <value><c>true</c> if using SSL; otherwise, <c>false</c>.</value>
+        public bool SmtpRequireSsl { get; set; } = false;
+
+        /// <summary>
+        ///     Indicates if validation for server SSL certificates is used, set <c>false</c> for untrusted or self-signed certificates.
+        /// </summary>
+        /// <value><c>true</c> if [disable SSL server certificate validation]; otherwise, <c>false</c>.</value>
+        public bool EnableSslServerCertificateValidation { get; set; } = true;
+
+        /// <summary>
         ///     Gets or sets the template settings.
         /// </summary>
         /// <value>The template settings.</value>

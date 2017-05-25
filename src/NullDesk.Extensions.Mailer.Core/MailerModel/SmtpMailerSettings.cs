@@ -19,11 +19,6 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <value>The SMTP port.</value>
         public int SmtpPort { get; set; } = 25;
 
-        /// <summary>
-        ///     Should SMTP use an SSL connections.
-        /// </summary>
-        /// <value><c>true</c> if using SSL; otherwise, <c>false</c>.</value>
-        public bool SmtpUseSsl { get; set; } = false;
 
         /// <summary>
         ///     From email address.

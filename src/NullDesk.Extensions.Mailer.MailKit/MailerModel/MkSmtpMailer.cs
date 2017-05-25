@@ -35,6 +35,10 @@ namespace NullDesk.Extensions.Mailer.MailKit
             : base(settings.Value, logger, historyStore)
         {
             MailClient = client;
+            if (!settings.Value.EnableSslServerCertificateValidation)
+            {
+                MailClient.ServerCertificateValidationCallback = (s, c, ch, e) => true;
+            }
         }
 
         /// <summary>
@@ -66,11 +70,11 @@ namespace NullDesk.Extensions.Mailer.MailKit
         ///     If set to <c>true</c> will close connection immediately after delivering the message.
         ///     If caller is sending multiple messages, optionally set to false to leave the mail service connection open.
         /// </param>
-       /// <param name="token">The cancellation token.</param>
+        /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;String&gt; a service provider specific message ID.</returns>
         /// <remarks>The implementor should return a provider specific ID value.</remarks>
         protected override async Task<string> DeliverMessageAsync(
-            DeliveryItem deliveryItem, 
+            DeliveryItem deliveryItem,
             bool autoCloseConnection = true,
             CancellationToken token = default(CancellationToken))
         {
@@ -107,7 +111,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <summary>
         /// Close mail client connection as an asynchronous operation.
         /// </summary>
-       /// <param name="token">The cancellation token.</param>
+        /// <param name="token">The cancellation token.</param>
         /// <returns>Task.</returns>
         /// <remarks>Used to close connections if DeliverMessageAsync was used with autoCloseConnection set to false.</remarks>
         protected override async Task CloseMailClientConnectionAsync(CancellationToken token = default(CancellationToken))
@@ -123,7 +127,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="autoCloseConnection">if set to <c>true</c> [automatic close connection].</param>
-       /// <param name="token">The cancellation token.</param>
+        /// <param name="token">The cancellation token.</param>
         /// <returns>Task.</returns>
         protected async Task<string> SendSmtpMessageAsync(MimeMessage message,
             bool autoCloseConnection,
@@ -133,26 +137,13 @@ namespace NullDesk.Extensions.Mailer.MailKit
             {
                 if (!MailClient.IsConnected)
                 {
-                    await MailClient.ConnectAsync(Settings.SmtpServer, Settings.SmtpPort, Settings.SmtpUseSsl,
-                        token);
+                    await MailClient.ConnectAsync(Settings.SmtpServer, Settings.SmtpPort, Settings.SmtpRequireSsl, token);
                 }
                 try
                 {
                     if (!MailClient.IsAuthenticated)
                     {
-                        if (Settings.AuthenticationSettings?.Credentials != null)
-                        {
-                            await MailClient.AuthenticateAsync(Settings.AuthenticationSettings.Credentials, token);
-                        }
-                        else
-                        {
-                            if (!string.IsNullOrEmpty(Settings.AuthenticationSettings?.UserName) &&
-                                !string.IsNullOrEmpty(Settings.AuthenticationSettings?.Password))
-                            {
-                                await MailClient.AuthenticateAsync(Settings.AuthenticationSettings.UserName,
-                                    Settings.AuthenticationSettings.Password, token);
-                            }
-                        }
+                        await AuthenticateMailClient(token);
                     }
 
                     await MailClient.SendAsync(message, token);
@@ -169,7 +160,32 @@ namespace NullDesk.Extensions.Mailer.MailKit
             return message.MessageId;
         }
 
+        private async Task AuthenticateMailClient(CancellationToken token)
+        {
+            var settings = Settings.AuthenticationSettings?.GetSettingsForAuthenticationMode();
+            var authType = settings?.GetType().Name;
+            switch (authType)
+            {
+                case nameof(MkSmtpCredentialsAuthenticationSettings):
+                    var ccred = ((MkSmtpCredentialsAuthenticationSettings)settings).Credentials;
+                    await MailClient.AuthenticateAsync(ccred, token);
+                    break;
+                case nameof(MkSmtpAccessTokenAuthenticationSettings):
+                    var acred = (MkSmtpAccessTokenAuthenticationSettings)settings;
+                    await MailClient.AuthenticateAsync(acred.UserName, acred.AccessToken, token);
+                    break;
+                case nameof(MkSmtpBasicAuthenticationSettings):
+                    var bcred = (MkSmtpBasicAuthenticationSettings)settings;
+                    MailClient.AuthenticationMechanisms.Remove("XOAUTH2");
+                    await MailClient.AuthenticateAsync(bcred.UserName, bcred.Password, token);
+                    break;
+                // ReSharper disable once RedundantEmptySwitchSection
+                default:
+                    //no authentication used
+                    break;
+            }
 
+        }
 
 
         /// <summary>

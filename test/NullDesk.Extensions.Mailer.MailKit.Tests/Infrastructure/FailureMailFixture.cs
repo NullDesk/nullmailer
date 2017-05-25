@@ -59,7 +59,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                     FromEmailAddress = "xunit@nowhere.com",
                     SmtpServer = "localhost",
                     SmtpPort = 25,
-                    SmtpUseSsl = false,
+                    SmtpRequireSsl = false,
                     TemplateSettings = new MkFileTemplateSettings
                     {
                         TemplatePath =

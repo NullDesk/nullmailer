@@ -1,12 +1,10 @@
-﻿using System.Net;
-
 // ReSharper disable once CheckNamespace
 namespace NullDesk.Extensions.Mailer.MailKit
 {
     /// <summary>
-    ///     Authentication for MailKit SMTP mailers.
+    ///     Basic authentication settings for MailKit SMTP mailers.
     /// </summary>
-    public class MkSmtpAuthenticationSettings
+    public class MkSmtpBasicAuthenticationSettings : IAuthenticationSettings
     {
         /// <summary>
         ///     If provided, specifies the username used to authenticate with the SMTP server
@@ -20,13 +18,5 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <returns></returns>
         public string Password { get; set; }
 
-        /// <summary>
-        ///     If provided, specifies the credentials used to autheticate with the SMTP server.
-        /// </summary>
-        /// <remarks>
-        ///     Will be used instead of username and password if provided.
-        /// </remarks>
-        /// <returns></returns>
-        public ICredentials Credentials { get; set; }
     }
 }
