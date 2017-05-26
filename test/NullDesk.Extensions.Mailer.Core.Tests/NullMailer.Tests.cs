@@ -58,7 +58,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 .WithSubject("Some Topic")
                 .WithBody<ContentBody>(b => b.PlainTextContent = "something"));
 
-            ((IMailer) mailer).Deliverables
+            ((IMailer) mailer).PendingDeliverables
                 .Should()
                 .NotBeEmpty()
                 .And.Contain(m => m.Subject == "Some Topic");
@@ -83,7 +83,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                     .WithBody<ContentBody>(b => b.PlainTextContent = "something")
             });
 
-            ((IMailer) mailer).Deliverables
+            ((IMailer) mailer).PendingDeliverables
                 .Should()
                 .HaveCount(2)
                 .And.Contain(m => m.Subject == "Some Topic")
@@ -102,7 +102,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 .And.ForBody()
                 .WithPlainText("body text"));
 
-            ((IMailer) mailer).Deliverables.Should().Contain(m => m.Subject == "Some Topic");
+            ((IMailer) mailer).PendingDeliverables.Should().Contain(m => m.Subject == "Some Topic");
         }
 
         [Fact]
@@ -117,7 +117,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 .WithPlainText("body text")
                 .Build());
 
-            ((IMailer) mailer).Deliverables
+            ((IMailer) mailer).PendingDeliverables
                 .Should()
                 .NotBeEmpty()
                 .And.Contain(m => m.Subject == "Some Topic");

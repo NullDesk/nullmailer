@@ -77,7 +77,7 @@ Easily configure your application for different email services at startup based 
 
 
 
-> The built-in Mailers are reusable by default, but it is recommended to create a new instance each time instead. Since the mailer will continue to track previously delivered items in memory, disposing of the mailer instance after each message (or batch) is preferable.
+> The built-in Mailers are reusable by default. As of 3.3.0, mailers no longer keep an internal reference to delivered items, but it is still recommended to create a new mailer instance each time.
 
 ### <a name="mailer-instantiation"></a>Mailer Instantiation
 

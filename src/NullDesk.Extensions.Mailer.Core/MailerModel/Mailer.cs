@@ -36,10 +36,10 @@ namespace NullDesk.Extensions.Mailer.Core
         }
 
         /// <summary>
-        ///     A collection of all messages tracked by this mailer instance.
+        ///     A collection of all pending delivery items tracked by this mailer instance.
         /// </summary>
         /// <value>The messages.</value>
-        protected ICollection<DeliveryItem> DeliveryItems => ((IMailer)this).Deliverables;
+        protected ICollection<DeliveryItem> PendingDeliveryItems => ((IMailer)this).PendingDeliverables;
 
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace NullDesk.Extensions.Mailer.Core
                         i.Id,
                         i.ToEmailAddress,
                         i.Subject);
-                    ((IMailer)this).Deliverables.Add(i);
+                    ((IMailer)this).PendingDeliverables.Add(i);
                 }
             }
 
@@ -156,7 +156,7 @@ namespace NullDesk.Extensions.Mailer.Core
             using (await _deliverablesLock.LockAsync())
             {
                 foreach (var message in
-                    ((IMailer)this).Deliverables.Where(m => !m.IsSuccess && string.IsNullOrEmpty(m.ExceptionMessage)))
+                    ((IMailer)this).PendingDeliverables.Where(m => !m.IsSuccess && string.IsNullOrEmpty(m.ExceptionMessage)))
                 {
                     sendIds.Add(message.Id);
                 }
@@ -183,7 +183,7 @@ namespace NullDesk.Extensions.Mailer.Core
         {
             using (await _deliverablesLock.LockAsync())
             {
-                var deliveryItem = ((IMailer)this).Deliverables.FirstOrDefault(d => d.Id == id);
+                var deliveryItem = ((IMailer)this).PendingDeliverables.FirstOrDefault(d => d.Id == id);
                 try
                 {
                     deliveryItem.ProviderMessageId = await DeliverMessageAsync(deliveryItem, autoCloseConnection, token);
@@ -207,6 +207,7 @@ namespace NullDesk.Extensions.Mailer.Core
                 finally
                 {
                     await HistoryStore.AddAsync(deliveryItem, token);
+                    PendingDeliveryItems.Remove(deliveryItem);
                 }
                 return deliveryItem;
             }
@@ -248,11 +249,11 @@ namespace NullDesk.Extensions.Mailer.Core
                 di.Id,
                 di.ToEmailAddress,
                 di.Subject);
-            ((IMailer)this).Deliverables.Add(di);
+            ((IMailer)this).PendingDeliverables.Add(di);
             return await SendAsync(di.Id, true, token);
         }
 
-        ICollection<DeliveryItem> IMailer.Deliverables { get; set; } = new Collection<DeliveryItem>();
+        ICollection<DeliveryItem> IMailer.PendingDeliverables { get; set; } = new Collection<DeliveryItem>();
 
 
         /// <summary>
@@ -260,7 +261,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         public virtual void Dispose()
         {
-            var unsent = DeliveryItems.Where(m => !m.IsSuccess && string.IsNullOrEmpty(m.ExceptionMessage)).ToArray();
+            var unsent = PendingDeliveryItems.Where(m => !m.IsSuccess && string.IsNullOrEmpty(m.ExceptionMessage)).ToArray();
             if (unsent.Any())
             {
                 var b = new StringBuilder();
@@ -273,7 +274,7 @@ namespace NullDesk.Extensions.Mailer.Core
                 }
                 Logger.LogWarning(b.ToString(), unsent.Count(), GetType().Name);
             }
-            ((IMailer)this).Deliverables = null;
+            ((IMailer)this).PendingDeliverables = null;
         }
 
         /// <summary>

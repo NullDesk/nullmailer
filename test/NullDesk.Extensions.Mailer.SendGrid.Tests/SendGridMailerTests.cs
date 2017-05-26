@@ -73,6 +73,9 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
                 .And.AllBeOfType<DeliveryItem>()
                 .And.HaveCount(10)
                 .And.OnlyContain(i => i.IsSuccess);
+
+
+            mailer.PendingDeliverables.Should().HaveCount(0);
         }
 
         [Theory]

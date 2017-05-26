@@ -18,5 +18,6 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <value>From display name.</value>
         string FromDisplayName { get; set; }
+
     }
 }

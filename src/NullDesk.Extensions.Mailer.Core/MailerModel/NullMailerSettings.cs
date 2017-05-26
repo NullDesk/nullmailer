@@ -3,7 +3,7 @@
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
-    ///     Class NullMailerSettings.
+    /// Class NullMailerSettings.
     /// </summary>
     /// <seealso cref="NullDesk.Extensions.Mailer.Core.IMailerSettings" />
     public class NullMailerSettings : IMailerSettings
@@ -19,5 +19,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <value>From display name.</value>
         public string FromDisplayName { get; set; }
+
+
     }
 }

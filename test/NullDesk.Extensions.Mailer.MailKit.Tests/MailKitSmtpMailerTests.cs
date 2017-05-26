@@ -73,6 +73,8 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
                 .And.AllBeOfType<DeliveryItem>()
                 .And.HaveCount(10)
                 .And.OnlyContain(i => i.IsSuccess);
+
+            mailer.PendingDeliverables.Should().HaveCount(0);
         }
 
 

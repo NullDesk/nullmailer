@@ -34,10 +34,10 @@ namespace NullDesk.Extensions.Mailer.Core
         IHistoryStore HistoryStore { get; }
 
         /// <summary>
-        ///     A collection of all messages tracked by this mailer instance.
+        ///     A collection of all pending delivery items tracked by this mailer instance.
         /// </summary>
         /// <value>The messages.</value>
-        ICollection<DeliveryItem> Deliverables { get; set; }
+        ICollection<DeliveryItem> PendingDeliverables { get; set; }
 
         /// <summary>
         ///     Optional logger
