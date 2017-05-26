@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
 
 // ReSharper disable once CheckNamespace
@@ -18,7 +20,17 @@ namespace NullDesk.Extensions.Mailer.Core
     /// <seealso cref="IHistoryStore" />
     public class InMemoryHistoryStore : IHistoryStore
     {
+
         private List<string> Items { get; } = new List<string>();
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="InMemoryHistoryStore"/> class.
+        /// </summary>
+        /// <param name="logger">An optional logger.</param>
+        public InMemoryHistoryStore(ILogger logger = null)
+        {
+            Logger = logger ?? NullLogger.Instance;
+        }
 
 
         /// <summary>
@@ -94,6 +106,12 @@ namespace NullDesk.Extensions.Mailer.Core
                 .OrderByDescending(i => i.CreatedDate)
                 .Take(limit));
         }
+
+        /// <summary>
+        /// Optional logger
+        /// </summary>
+        /// <value>The logger.</value>
+        public ILogger Logger { get; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether to serialize attachments for use in the history store. If not enabled,

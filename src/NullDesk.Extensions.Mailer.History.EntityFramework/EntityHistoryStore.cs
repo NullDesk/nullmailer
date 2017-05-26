@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using NullDesk.Extensions.Mailer.Core;
 
 namespace NullDesk.Extensions.Mailer.History.EntityFramework
@@ -14,12 +16,14 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
     public class EntityHistoryStore<TContext> : IHistoryStore where TContext : HistoryContext
     {
         /// <summary>
-        ///     Creates an instance of the EntityHistoryStore
+        /// Creates an instance of the EntityHistoryStore
         /// </summary>
         /// <param name="options">The options used to configure the context</param>
+        /// <param name="logger">An optional logger.</param>
         /// <param name="serializeAttachments">if set to <c>true</c> will serialize attachments for storage in the database.</param>
-        public EntityHistoryStore(DbContextOptions options, bool serializeAttachments = false)
+        public EntityHistoryStore(DbContextOptions options, ILogger logger = null, bool serializeAttachments = false)
         {
+            Logger = logger ?? NullLogger.Instance;
             DbOptions = options;
             SerializeAttachments = serializeAttachments;
         }
@@ -101,6 +105,12 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
                     .ToListAsync(token);
             }
         }
+
+        /// <summary>
+        /// Optional logger
+        /// </summary>
+        /// <value>The logger.</value>
+        public ILogger Logger { get; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether to serialize attachments for use in the history store. If not enabled,
