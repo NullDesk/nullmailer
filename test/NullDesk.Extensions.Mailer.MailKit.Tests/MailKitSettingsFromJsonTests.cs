@@ -16,7 +16,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
     public class MailKitSettingsFromJsonTests
     {
         [Fact]
-        public void GetSettings_NoAuthentication()
+        public void MailKit_Settings_NoAuthentication()
         {
             var config = AcquireConfiguration();
 
@@ -31,7 +31,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
             settings.Value.AuthenticationSettings.Should().BeNull();
         }
         [Fact]
-        public void GetSettings_AuthenticationNoCredentials()
+        public void MailKit_Settings_AuthenticationNoCredentials()
         {
             var config = AcquireConfiguration();
 
@@ -55,7 +55,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
         }
 
         [Fact]
-        public void GetSettings_BasicAuthentication()
+        public void MailKit_Settings_BasicAuthentication()
         {
             var config = AcquireConfiguration();
 
@@ -76,7 +76,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
         }
 
         [Fact]
-        public void GetSettings_TokenAuthentication()
+        public void MailKit_Settings_TokenAuthentication()
         {
             var config = AcquireConfiguration();
 
@@ -100,7 +100,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
         }
 
         [Fact]
-        public void GetSettings_CombinedAuthentication()
+        public void MailKit_Settings_CombinedAuthentication()
         {
             var config = AcquireConfiguration();
 
