@@ -25,7 +25,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
 
 
         [Theory]
-        [Trait("TestType", "LocalOnly")]
+        [Trait("TestType", "Unit")]
         [ClassData(typeof(StandardMailerTestData))]
         public async Task SendGrid_History_SerializedAttachments_ReSendMail(string html, string text,
             string[] attachments)
@@ -64,7 +64,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
         }
 
         [Theory]
-        [Trait("TestType", "LocalOnly")]
+        [Trait("TestType", "Unit")]
         [ClassData(typeof(StandardMailerTestData))]
         public async Task SendGrid_History_NoSerializedAttachments_ReSendMail(string html, string text,
             string[] attachments)

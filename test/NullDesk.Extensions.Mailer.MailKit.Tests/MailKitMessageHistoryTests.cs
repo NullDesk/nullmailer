@@ -26,7 +26,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
 
 
         [Theory]
-        [Trait("TestType", "LocalOnly")]
+        [Trait("TestType", "Unit")]
         [ClassData(typeof(StandardMailerTestData))]
         public async Task MailKit__History_SerializedAttachments_ReSendMail(string html, string text,
             string[] attachments)
@@ -66,7 +66,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
         }
 
         [Theory]
-        [Trait("TestType", "LocalOnly")]
+        [Trait("TestType", "Unit")]
         [ClassData(typeof(StandardMailerTestData))]
         public async Task MailKit_History_NoSerializedAttachments_ReSendMail(string html, string text,
             string[] attachments)
