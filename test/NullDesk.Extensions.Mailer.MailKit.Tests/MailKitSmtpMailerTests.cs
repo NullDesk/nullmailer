@@ -86,6 +86,8 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
             attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
 
             var mailer = Fixture.ServiceProvider.GetService<IMailer>();
+            ;
+
 
             var deliveryItems =
                 mailer.CreateMessage(b => b
@@ -106,7 +108,10 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
                 .NotBeNull()
                 .And.AllBeOfType<DeliveryItem>()
                 .And.HaveSameCount(deliveryItems)
-                .And.OnlyContain(i => i.IsSuccess);
+                .And.OnlyContain(i => i.IsSuccess)
+                .And.Subject.First()
+                .ReplyToEmailAddress.Should()
+                .Be("xunitreply@nowhere.com");
         }
 
         [Theory]

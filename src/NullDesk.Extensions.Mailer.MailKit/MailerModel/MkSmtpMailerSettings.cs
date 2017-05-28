@@ -17,7 +17,8 @@ namespace NullDesk.Extensions.Mailer.MailKit
         public bool SmtpRequireSsl { get; set; } = false;
 
         /// <summary>
-        ///     Indicates if validation for server SSL certificates is used, set <c>false</c> for untrusted or self-signed certificates.
+        ///     Indicates if validation for server SSL certificates is used, set <c>false</c> for untrusted or self-signed
+        ///     certificates.
         /// </summary>
         /// <value><c>true</c> if [disable SSL server certificate validation]; otherwise, <c>false</c>.</value>
         public bool EnableSslServerCertificateValidation { get; set; } = true;

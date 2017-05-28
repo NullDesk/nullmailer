@@ -85,6 +85,11 @@ namespace NullDesk.Extensions.Mailer.MailKit
             };
             mkMessage.From.Add(new MailboxAddress(deliveryItem.FromDisplayName, deliveryItem.FromEmailAddress));
 
+            if (!string.IsNullOrEmpty(deliveryItem.ReplyToEmailAddress))
+            {
+                mkMessage.ReplyTo.Add(
+                    new MailboxAddress(deliveryItem.ReplyToDisplayName, deliveryItem.ReplyToEmailAddress));
+            }
             try
             {
                 var box = string.IsNullOrEmpty(deliveryItem.ToDisplayName)
@@ -109,12 +114,13 @@ namespace NullDesk.Extensions.Mailer.MailKit
         }
 
         /// <summary>
-        /// Close mail client connection as an asynchronous operation.
+        ///     Close mail client connection as an asynchronous operation.
         /// </summary>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task.</returns>
         /// <remarks>Used to close connections if DeliverMessageAsync was used with autoCloseConnection set to false.</remarks>
-        protected override async Task CloseMailClientConnectionAsync(CancellationToken token = default(CancellationToken))
+        protected override async Task CloseMailClientConnectionAsync(
+            CancellationToken token = default(CancellationToken))
         {
             if (MailClient.IsConnected)
             {
@@ -123,7 +129,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         }
 
         /// <summary>
-        /// Send an SMTP message as an asynchronous operation.
+        ///     Send an SMTP message as an asynchronous operation.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="autoCloseConnection">if set to <c>true</c> [automatic close connection].</param>
@@ -137,7 +143,8 @@ namespace NullDesk.Extensions.Mailer.MailKit
             {
                 if (!MailClient.IsConnected)
                 {
-                    await MailClient.ConnectAsync(Settings.SmtpServer, Settings.SmtpPort, Settings.SmtpRequireSsl, token);
+                    await MailClient.ConnectAsync(Settings.SmtpServer, Settings.SmtpPort, Settings.SmtpRequireSsl,
+                        token);
                 }
                 try
                 {
@@ -155,7 +162,6 @@ namespace NullDesk.Extensions.Mailer.MailKit
                         await MailClient.DisconnectAsync(false, token);
                     }
                 }
-
             }
             return message.MessageId;
         }
@@ -167,15 +173,15 @@ namespace NullDesk.Extensions.Mailer.MailKit
             switch (authType)
             {
                 case nameof(MkSmtpCredentialsAuthenticationSettings):
-                    var ccred = ((MkSmtpCredentialsAuthenticationSettings)settings).Credentials;
+                    var ccred = ((MkSmtpCredentialsAuthenticationSettings) settings).Credentials;
                     await MailClient.AuthenticateAsync(ccred, token);
                     break;
                 case nameof(MkSmtpAccessTokenAuthenticationSettings):
-                    var acred = (MkSmtpAccessTokenAuthenticationSettings)settings;
+                    var acred = (MkSmtpAccessTokenAuthenticationSettings) settings;
                     await MailClient.AuthenticateAsync(acred.UserName, acred.AccessToken, token);
                     break;
                 case nameof(MkSmtpBasicAuthenticationSettings):
-                    var bcred = (MkSmtpBasicAuthenticationSettings)settings;
+                    var bcred = (MkSmtpBasicAuthenticationSettings) settings;
                     MailClient.AuthenticationMechanisms.Remove("XOAUTH2");
                     await MailClient.AuthenticateAsync(bcred.UserName, bcred.Password, token);
                     break;
@@ -184,7 +190,6 @@ namespace NullDesk.Extensions.Mailer.MailKit
                     //no authentication used
                     break;
             }
-
         }
 
 

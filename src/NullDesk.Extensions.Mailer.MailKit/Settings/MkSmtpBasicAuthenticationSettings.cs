@@ -1,4 +1,5 @@
 // ReSharper disable once CheckNamespace
+
 namespace NullDesk.Extensions.Mailer.MailKit
 {
     /// <summary>
@@ -17,6 +18,5 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// </summary>
         /// <returns></returns>
         public string Password { get; set; }
-
     }
 }

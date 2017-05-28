@@ -6,7 +6,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
     /// <summary>
     ///     System.Net.Credentials settings for SMTP authentication
     /// </summary>
-    public class MkSmtpCredentialsAuthenticationSettings: IAuthenticationSettings
+    public class MkSmtpCredentialsAuthenticationSettings : IAuthenticationSettings
     {
         /// <summary>
         ///     If provided, specifies the credentials used to autheticate with the SMTP server.

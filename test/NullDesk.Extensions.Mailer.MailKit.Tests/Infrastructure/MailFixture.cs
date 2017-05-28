@@ -14,6 +14,8 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                 {
                     FromDisplayName = "xunit",
                     FromEmailAddress = "xunit@nowhere.com",
+                    ReplyToEmailAddress = "xunitreply@nowhere.com",
+                    ReplyToDisplayName = "Xunit - NoReply",
                     SmtpServer = "localhost",
                     SmtpPort = 25,
                     SmtpRequireSsl = false,

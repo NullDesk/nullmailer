@@ -1,6 +1,5 @@
-﻿
+﻿// ReSharper disable once CheckNamespace
 
-// ReSharper disable once CheckNamespace
 namespace NullDesk.Extensions.Mailer.MailKit
 {
     /// <summary>
@@ -8,7 +7,6 @@ namespace NullDesk.Extensions.Mailer.MailKit
     /// </summary>
     public class MkSmtpAuthenticationSettings
     {
-
         /// <summary>
         ///     The active authentication mode to use for SMTP connections.
         /// </summary>
@@ -35,7 +33,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
 
 
         /// <summary>
-        /// Gets the best settings for the current authentication mode.
+        ///     Gets the best settings for the current authentication mode.
         /// </summary>
         /// <returns>IAuthenticationSettings.</returns>
         public IAuthenticationSettings GetSettingsForAuthenticationMode()
@@ -44,16 +42,17 @@ namespace NullDesk.Extensions.Mailer.MailKit
             switch (AuthenticationMode)
             {
                 case MkSmtpAuthenticationMode.Basic:
-                    settings= BasicAuthentication;
+                    settings = BasicAuthentication;
                     break;
                 case MkSmtpAuthenticationMode.Token:
-                    settings= AccessTokenAuthentication;
+                    settings = AccessTokenAuthentication;
                     break;
                 case MkSmtpAuthenticationMode.Credentials:
-                    settings= CredentialsAuthentication;
+                    settings = CredentialsAuthentication;
                     break;
                 default:
-                    settings = AccessTokenAuthentication?? ((IAuthenticationSettings)BasicAuthentication ?? CredentialsAuthentication);
+                    settings = AccessTokenAuthentication ??
+                               ((IAuthenticationSettings) BasicAuthentication ?? CredentialsAuthentication);
                     break;
             }
             return settings;

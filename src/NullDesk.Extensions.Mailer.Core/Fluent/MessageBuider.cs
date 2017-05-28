@@ -32,15 +32,16 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
         /// <returns>BuildSubjectStep.</returns>
         public BuildSubjectStep ForSettings(IMailerSettings mailerSettings)
         {
-            return new BuildSubjectStep(Context.From(mailerSettings.FromEmailAddress, mailerSettings.FromDisplayName));
+            return new BuildSubjectStep(Context.From(mailerSettings.FromEmailAddress, mailerSettings.FromDisplayName,
+                mailerSettings.ReplyToEmailAddress, mailerSettings.ReplyToDisplayName));
         }
 
-
-        //Step 2 = MessageBuilder.BuildSubjectStep.cs
+        //Step 3 = MessageBuilder.BuildRecipientsStep.cs
 
         //Step 1 = MessageBuilder.BuildFromStep.cs
 
-        //Step 3 = MessageBuilder.BuildRecipientsStep.cs
+
+        //Step 2 = MessageBuilder.BuildSubjectStep.cs
 
         //Step 4 = MessageBuilder.BuildContentStep.cs
 

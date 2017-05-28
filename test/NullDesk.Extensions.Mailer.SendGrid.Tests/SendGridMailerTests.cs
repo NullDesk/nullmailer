@@ -47,7 +47,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
             {
                 mailer.AddMessage(new MailerMessage
                 {
-                    From = new MessageSender { EmailAddress = mes.From },
+                    From = new MessageSender {EmailAddress = mes.From},
                     Recipients = new List<MessageRecipient>
                     {
                         new MessageRecipient
@@ -106,7 +106,10 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
                 .NotBeNull()
                 .And.AllBeOfType<DeliveryItem>()
                 .And.HaveSameCount(deliveryItems)
-                .And.OnlyContain(i => i.IsSuccess);
+                .And.OnlyContain(i => i.IsSuccess)
+                .And.Subject.First()
+                .ReplyToEmailAddress.Should()
+                .Be("xunitreply@nowhere.com");
         }
 
         [Theory]

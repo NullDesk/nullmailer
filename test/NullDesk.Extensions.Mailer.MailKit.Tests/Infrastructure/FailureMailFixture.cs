@@ -13,7 +13,7 @@ using NullDesk.Extensions.Mailer.Core;
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 {
-    public class FailureMailFixture :  IDisposable
+    public class FailureMailFixture : IDisposable
     {
         public FailureMailFixture()
         {
@@ -25,7 +25,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 
             services.AddSingleton<IHistoryStore, InMemoryHistoryStore>();
 
-            
+
             var isMailServerAlive = false;
             var lazy = new Lazy<OptionsWrapper<MkSmtpMailerSettings>>(() => SetupMailerOptions(out isMailServerAlive));
             IsMailServiceAlive = isMailServerAlive;
@@ -50,6 +50,11 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
         public IServiceProvider ServiceProvider { get; set; }
 
         public bool IsMailServiceAlive { get; set; }
+
+        public void Dispose()
+        {
+        }
+
         protected OptionsWrapper<MkSmtpMailerSettings> SetupMailerOptions(out bool isMailServerAlive)
         {
             var mailOptions = new OptionsWrapper<MkSmtpMailerSettings>(
@@ -81,9 +86,6 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 
             tcp.Dispose();
             return mailOptions;
-        }
-        public void Dispose()
-        {
         }
     }
 }

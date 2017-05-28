@@ -1,4 +1,5 @@
 // ReSharper disable once CheckNamespace
+
 namespace NullDesk.Extensions.Mailer.MailKit
 {
     /// <summary>
@@ -7,21 +8,23 @@ namespace NullDesk.Extensions.Mailer.MailKit
     public enum MkSmtpAuthenticationMode
     {
         /// <summary>
-        /// Automatically detemine the authenticaition mode based on supplied authentication settings
+        ///     Automatically detemine the authenticaition mode based on supplied authentication settings
         /// </summary>
         Auto,
+
         /// <summary>
-        /// Use basic authentication
+        ///     Use basic authentication
         /// </summary>
         Basic,
+
         /// <summary>
-        /// Use token authentication
+        ///     Use token authentication
         /// </summary>
         Token,
+
         /// <summary>
-        /// Use System.Net.Credential authentication
+        ///     Use System.Net.Credential authentication
         /// </summary>
         Credentials
-
     }
 }

@@ -23,7 +23,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="htmlTemplateFileExtensions">The HTML template file extensions.</param>
         /// <param name="textTemplateFileExtensions">The text template file extensions.</param>
         /// <param name="logger">The logger.</param>
-       /// <param name="token">The cancellation token.</param>
+        /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;MimeEntity&gt;.</returns>
         public static async Task<ContentBody> GetContentBodyFromFileTemplatesAsync(
             this TemplateBody tbody,

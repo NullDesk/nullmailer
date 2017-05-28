@@ -13,7 +13,7 @@ namespace Sample.Mailer.Cli.Migrations
         {
             modelBuilder
                 .HasDefaultSchema("mailerCli")
-                .HasAnnotation("ProductVersion", "1.1.1")
+                .HasAnnotation("ProductVersion", "1.1.2")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("NullDesk.Extensions.Mailer.History.EntityFramework.EntityHistoryDeliveryItem", b =>
@@ -42,6 +42,12 @@ namespace Sample.Mailer.Cli.Migrations
                 b.Property<bool>("IsSuccess");
 
                 b.Property<string>("ProviderMessageId")
+                    .HasMaxLength(200);
+
+                b.Property<string>("ReplyToDisplayName")
+                    .HasMaxLength(200);
+
+                b.Property<string>("ReplyToEmailAddress")
                     .HasMaxLength(200);
 
                 b.Property<string>("Subject")

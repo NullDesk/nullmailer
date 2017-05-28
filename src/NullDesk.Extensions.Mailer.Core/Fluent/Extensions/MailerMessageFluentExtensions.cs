@@ -42,12 +42,12 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
         ///     Add the sender's info to the specified message.
         /// </summary>
         /// <param name="message">The message.</param>
-        /// <param name="replyTo">The reply to.</param>
+        /// <param name="sender">The action to setup the sender.</param>
         /// <returns>MailerMessage.</returns>
-        public static MailerMessage From(this MailerMessage message, Action<MessageSender> replyTo)
+        public static MailerMessage From(this MailerMessage message, Action<MessageSender> sender)
         {
             message.From = new MessageSender();
-            replyTo(message.From);
+            sender(message.From);
             return message;
         }
 
@@ -69,13 +69,21 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
         /// <param name="message">The message.</param>
         /// <param name="emailAddress">The email address.</param>
         /// <param name="displayName">The display name.</param>
+        /// <param name="replyToEmailAddress">The reply to email address.</param>
+        /// <param name="replyToDisplayName">Display name of the reply to.</param>
         /// <returns>MailerMessage.</returns>
-        public static MailerMessage From(this MailerMessage message, string emailAddress, string displayName = null)
+        public static MailerMessage From(this MailerMessage message, string emailAddress, string displayName = null,
+            string replyToEmailAddress = null, string replyToDisplayName = null)
         {
-            message.From = new MessageSender {EmailAddress = emailAddress, DisplayName = displayName};
+            message.From = new MessageSender
+            {
+                EmailAddress = emailAddress,
+                DisplayName = displayName,
+                ReplyToEmailAddress = replyToEmailAddress,
+                ReplyToDisplayName = replyToDisplayName
+            };
             return message;
         }
-
 
         /// <summary>
         ///     Add the sender's info to the specified message.

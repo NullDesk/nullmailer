@@ -33,8 +33,8 @@ namespace NullDesk.Extensions.Mailer.Core
         }
 
         /// <summary>
-        /// When overridden in a derived class, uses the mailer's underlying mail delivery service to send the specified
-        /// message .
+        ///     When overridden in a derived class, uses the mailer's underlying mail delivery service to send the specified
+        ///     message .
         /// </summary>
         /// <param name="deliveryItem">The delivery item containing the message you wish to send.</param>
         /// <param name="autoCloseConnection">if set to <c>true</c> automatically close connection affter sending the message.</param>
@@ -51,7 +51,7 @@ namespace NullDesk.Extensions.Mailer.Core
         }
 
         /// <summary>
-        /// Closes any active mail client connections.
+        ///     Closes any active mail client connections.
         /// </summary>
         /// <param name="token">The token.</param>
         /// <returns>Task.</returns>

@@ -21,6 +21,8 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
                     s.ApiKey = "abc";
                     s.FromDisplayName = "xunit";
                     s.FromEmailAddress = "xunit@nowhere.com";
+                    s.ReplyToEmailAddress = "xunitreply@nowhere.com";
+                    s.ReplyToDisplayName = "Xunit - NoReply";
                 }
             );
 

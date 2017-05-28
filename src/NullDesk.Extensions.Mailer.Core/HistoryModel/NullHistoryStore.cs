@@ -48,7 +48,7 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Does nothing, returns null.
         /// </summary>
         /// <param name="id">The identifier.</param>
-       /// <param name="token">The cancellation token.</param>
+        /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt; always null.</returns>
         public Task<DeliveryItem> GetAsync(Guid id, CancellationToken token = default(CancellationToken))
         {
@@ -60,7 +60,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <param name="offset">The offset.</param>
         /// <param name="limit">The limit.</param>
-       /// <param name="token">The cancellation token.</param>
+        /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         public Task<IEnumerable<DeliveryItem>> GetAsync(int offset = 0, int limit = 100,
             CancellationToken token = new CancellationToken())
@@ -73,7 +73,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <param name="searchText">The search text.</param>
         /// <param name="limit">The limit.</param>
-       /// <param name="token">The cancellation token.</param>
+        /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         public Task<IEnumerable<DeliveryItem>> SearchAsync(string searchText, int limit = 100,
             CancellationToken token = new CancellationToken())
@@ -82,7 +82,7 @@ namespace NullDesk.Extensions.Mailer.Core
         }
 
         /// <summary>
-        /// Optional logger
+        ///     Optional logger
         /// </summary>
         /// <value>The logger.</value>
         public ILogger Logger { get; }

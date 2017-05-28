@@ -40,13 +40,16 @@
         <PackageReference Include="NSubstitute" Version="2.0.2" />
         <PackageReference Include="System.Net.Sockets" Version="4.3.0" />
         <PackageReference Include="xunit" Version="2.2.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="1.1.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="1.1.1" />
+
     </ItemGroup>
 
     <ItemGroup>
         <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
     </ItemGroup>
     <ItemGroup>
-        <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.1.0-preview4-final" />
+        <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.1" />
     </ItemGroup>
 
 </Project>

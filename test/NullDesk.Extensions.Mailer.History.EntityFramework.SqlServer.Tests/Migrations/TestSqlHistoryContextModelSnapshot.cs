@@ -12,7 +12,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Mig
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.1.1")
+                .HasAnnotation("ProductVersion", "1.1.2")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("NullDesk.Extensions.Mailer.History.EntityFramework.EntityHistoryDeliveryItem", b =>
@@ -41,6 +41,12 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Mig
                 b.Property<bool>("IsSuccess");
 
                 b.Property<string>("ProviderMessageId")
+                    .HasMaxLength(200);
+
+                b.Property<string>("ReplyToDisplayName")
+                    .HasMaxLength(200);
+
+                b.Property<string>("ReplyToEmailAddress")
                     .HasMaxLength(200);
 
                 b.Property<string>("Subject")

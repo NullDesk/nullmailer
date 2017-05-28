@@ -29,6 +29,8 @@ namespace NullDesk.Extensions.Mailer.Core
         {
             FromEmailAddress = message?.From?.EmailAddress;
             FromDisplayName = message?.From?.DisplayName;
+            ReplyToEmailAddress = message?.From?.ReplyToEmailAddress;
+            ReplyToDisplayName = message?.From?.ReplyToDisplayName;
             ToEmailAddress = recipient?.EmailAddress;
             ToDisplayName = recipient?.DisplayName;
             Subject = message?.Subject;
@@ -77,16 +79,29 @@ namespace NullDesk.Extensions.Mailer.Core
         public bool IsSuccess { get; set; } = false;
 
         /// <summary>
-        ///     Gets or sets the email address.
+        ///     Gets or sets the sender's email address.
         /// </summary>
-        /// <value>The email address.</value>
+        /// <value>The senders email address.</value>
         public string FromEmailAddress { get; set; }
 
         /// <summary>
-        ///     Gets or sets the display name for the reply address.
+        ///     Gets or sets the sender's display name for the sender.
         /// </summary>
         /// <value>The display name.</value>
         public string FromDisplayName { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the reply to email address.
+        /// </summary>
+        /// <value>The email address.</value>
+        public string ReplyToEmailAddress { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the reply to display name.
+        /// </summary>
+        /// <value>The display name.</value>
+        public string ReplyToDisplayName { get; set; }
+
 
         /// <summary>
         ///     Gets or sets the sent to email.

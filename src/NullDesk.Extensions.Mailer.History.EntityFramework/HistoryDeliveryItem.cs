@@ -60,6 +60,22 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         [StringLength(200)]
         public string FromDisplayName { get; set; }
 
+
+        /// <summary>
+        ///     Gets or sets the reply to email address.
+        /// </summary>
+        /// <value>The email address.</value>
+        [StringLength(200)]
+        public string ReplyToEmailAddress { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the reply to display name.
+        /// </summary>
+        /// <value>The display name.</value>
+        [StringLength(200)]
+        public string ReplyToDisplayName { get; set; }
+
+
         /// <summary>
         ///     Gets or sets the sent to email.
         /// </summary>

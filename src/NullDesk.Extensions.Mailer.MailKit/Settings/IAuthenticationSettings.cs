@@ -1,8 +1,11 @@
 // ReSharper disable once CheckNamespace
+
 namespace NullDesk.Extensions.Mailer.MailKit
 {
     /// <summary>
-    /// Interface IAuthenticationSettings
+    ///     Interface IAuthenticationSettings
     /// </summary>
-    public interface IAuthenticationSettings { }
+    public interface IAuthenticationSettings
+    {
+    }
 }

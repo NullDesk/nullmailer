@@ -32,5 +32,17 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// </summary>
         /// <value>From display name.</value>
         public string FromDisplayName { get; set; }
+
+        /// <summary>
+        ///     Reply to email address.
+        /// </summary>
+        /// <value>The reply to email address.</value>
+        public string ReplyToEmailAddress { get; set; }
+
+        /// <summary>
+        ///     Reply to display name.
+        /// </summary>
+        /// <value>The display name of the reply to address.</value>
+        public string ReplyToDisplayName { get; set; }
     }
 }

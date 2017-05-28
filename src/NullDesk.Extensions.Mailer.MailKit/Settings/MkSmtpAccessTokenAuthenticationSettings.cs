@@ -1,10 +1,11 @@
 // ReSharper disable once CheckNamespace
+
 namespace NullDesk.Extensions.Mailer.MailKit
 {
     /// <summary>
     ///     Settings for oAuth or similar token based SMTP authentication
     /// </summary>
-    public class MkSmtpAccessTokenAuthenticationSettings: IAuthenticationSettings
+    public class MkSmtpAccessTokenAuthenticationSettings : IAuthenticationSettings
     {
         /// <summary>
         ///     The username used to authenticate with the SMTP server

@@ -16,7 +16,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
     public class EntityHistoryStore<TContext> : IHistoryStore where TContext : HistoryContext
     {
         /// <summary>
-        /// Creates an instance of the EntityHistoryStore
+        ///     Creates an instance of the EntityHistoryStore
         /// </summary>
         /// <param name="options">The options used to configure the context</param>
         /// <param name="logger">An optional logger.</param>
@@ -50,7 +50,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         ///     Gets the history item from the store.
         /// </summary>
         /// <param name="id">The identifier.</param>
-       /// <param name="token">The cancellation token.</param>
+        /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         public async Task<DeliveryItem> GetAsync(Guid id, CancellationToken token = default(CancellationToken))
         {
@@ -66,7 +66,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// </summary>
         /// <param name="offset">The offset.</param>
         /// <param name="limit">The limit.</param>
-       /// <param name="token">The cancellation token.</param>
+        /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         public async Task<IEnumerable<DeliveryItem>> GetAsync(int offset = 0, int limit = 100,
             CancellationToken token = new CancellationToken())
@@ -87,7 +87,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// </summary>
         /// <param name="searchText">The search text.</param>
         /// <param name="limit">The limit.</param>
-       /// <param name="token">The cancellation token.</param>
+        /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         public async Task<IEnumerable<DeliveryItem>> SearchAsync(string searchText, int limit = 100,
             CancellationToken token = new CancellationToken())
@@ -107,7 +107,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         }
 
         /// <summary>
-        /// Optional logger
+        ///     Optional logger
         /// </summary>
         /// <value>The logger.</value>
         public ILogger Logger { get; }

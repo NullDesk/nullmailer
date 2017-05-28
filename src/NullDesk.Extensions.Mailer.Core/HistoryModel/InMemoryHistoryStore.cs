@@ -20,17 +20,16 @@ namespace NullDesk.Extensions.Mailer.Core
     /// <seealso cref="IHistoryStore" />
     public class InMemoryHistoryStore : IHistoryStore
     {
-
-        private List<string> Items { get; } = new List<string>();
-
         /// <summary>
-        ///     Initializes a new instance of the <see cref="InMemoryHistoryStore"/> class.
+        ///     Initializes a new instance of the <see cref="InMemoryHistoryStore" /> class.
         /// </summary>
         /// <param name="logger">An optional logger.</param>
         public InMemoryHistoryStore(ILogger logger = null)
         {
             Logger = logger ?? NullLogger.Instance;
         }
+
+        private List<string> Items { get; } = new List<string>();
 
 
         /// <summary>
@@ -59,7 +58,7 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Gets the history item from the store.
         /// </summary>
         /// <param name="id">The identifier.</param>
-       /// <param name="token">The cancellation token.</param>
+        /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         public Task<DeliveryItem> GetAsync(Guid id, CancellationToken token = default(CancellationToken))
         {
@@ -74,7 +73,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <param name="offset">The offset.</param>
         /// <param name="limit">The limit.</param>
-       /// <param name="token">The cancellation token.</param>
+        /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
         public Task<IEnumerable<DeliveryItem>> GetAsync(int offset = 0, int limit = 100,
@@ -92,7 +91,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <param name="searchText">The search text.</param>
         /// <param name="limit">The limit.</param>
-       /// <param name="token">The cancellation token.</param>
+        /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
         public Task<IEnumerable<DeliveryItem>> SearchAsync(string searchText, int limit = 100,
@@ -108,7 +107,7 @@ namespace NullDesk.Extensions.Mailer.Core
         }
 
         /// <summary>
-        /// Optional logger
+        ///     Optional logger
         /// </summary>
         /// <value>The logger.</value>
         public ILogger Logger { get; }

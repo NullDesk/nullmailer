@@ -59,12 +59,14 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         public SendGridClient MailClient { get; set; }
 
         /// <summary>
-        /// Delivers the message asynchronous.
+        ///     Delivers the message asynchronous.
         /// </summary>
         /// <param name="deliveryItem">The delivery item.</param>
-        /// <param name="autoCloseConnection">If set to <c>true</c> will close connection immediately after delivering the message.
-        /// If caller is sending multiple messages, optionally set to false to leave the mail service connection open.</param>
-       /// <param name="token">The cancellation token.</param>
+        /// <param name="autoCloseConnection">
+        ///     If set to <c>true</c> will close connection immediately after delivering the message.
+        ///     If caller is sending multiple messages, optionally set to false to leave the mail service connection open.
+        /// </param>
+        /// <param name="token">The cancellation token.</param>
         /// <returns>System.Threading.Tasks.Task&lt;System.String&gt;.</returns>
         /// <exception cref="System.Exception"></exception>
         /// <remarks>The implementor should return a provider specific ID value.</remarks>
@@ -74,10 +76,12 @@ namespace NullDesk.Extensions.Mailer.SendGrid
             CancellationToken token = default(CancellationToken))
         {
             var sgFrom = new EmailAddress(deliveryItem.FromEmailAddress, deliveryItem.FromDisplayName);
+
             var sgTo = new EmailAddress(deliveryItem.ToEmailAddress, deliveryItem.ToDisplayName);
             var sgMessage = new SendGridMessage
             {
                 From = sgFrom,
+
                 Personalizations = new List<Personalization>
                 {
                     new Personalization
@@ -88,6 +92,11 @@ namespace NullDesk.Extensions.Mailer.SendGrid
                     }
                 }
             };
+
+            if (!string.IsNullOrEmpty(deliveryItem.ReplyToEmailAddress))
+            {
+                sgMessage.ReplyTo = new EmailAddress(deliveryItem.ReplyToEmailAddress, deliveryItem.ReplyToDisplayName);
+            }
 
             if (deliveryItem.Body is ContentBody body)
             {
@@ -117,7 +126,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         }
 
         /// <summary>
-        /// Close mail client connection as an asynchronous operation.
+        ///     Close mail client connection as an asynchronous operation.
         /// </summary>
         /// <param name="token">The token.</param>
         /// <returns>Task.</returns>
@@ -133,7 +142,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         ///     Sends the message through the SendGrid API.
         /// </summary>
         /// <param name="message">The message.</param>
-       /// <param name="token">The cancellation token.</param>
+        /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;Response&gt;.</returns>
         protected virtual async Task<Response> SendToApiAsync(SendGridMessage message,
             CancellationToken token = default(CancellationToken))
@@ -146,7 +155,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// </summary>
         /// <param name="mail">The mail object to which the attachments should be added.</param>
         /// <param name="attachments">The attachments.</param>
-       /// <param name="token">The cancellation token.</param>
+        /// <param name="token">The cancellation token.</param>
         /// <returns>Task.</returns>
         protected virtual async Task AddAttachmentStreamsAsync(SendGridMessage mail,
             IDictionary<string, Stream> attachments, CancellationToken token = default(CancellationToken))

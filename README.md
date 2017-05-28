@@ -39,6 +39,7 @@ Easily configure your application for different email services at startup based 
   - [Body Content](#bodycontent)
   - [Templates](#templates)
   - [Attachments](#attachments)
+- [Using GMail](#gmail)
 - [Creating your own Mailer](#custom-mailer)
 
 ## <a name="features"></a>Features
@@ -123,6 +124,8 @@ Using the mailer factory, you can configure the mailer once in startup:
             ApiKey = "123",
             FromDisplayName = "Person Name",
             FromEmailAddress = "someone@toast.com",
+            ReplyToEmailAddress = "someoneFriendly@toast.com", //optional
+            ReplyToDisplayName = "Reply to Person Name", //optional
             IsSandboxMode = false
         };
 
@@ -164,6 +167,8 @@ When using dependency injection frameworks, it is best to register the mailers t
                     s.ApiKey = "123";
                     s.FromDisplayName = "Person Name";
                     s.FromEmailAddress = "someone@toast.com";
+                    s.ReplyToEmailAddress = "someoneFriendly@toast.com"; //optional
+                    s.ReplyToDisplayName = "Reply to Person Name"; //optional
                     s.IsSandboxMode = false;
             });
 
@@ -201,6 +206,8 @@ Example when using MS DI extensions:
                     s.ApiKey = "123";
                     s.FromDisplayName = "Person Name";
                     s.FromEmailAddress = "someone@toast.com";
+                    s.ReplyToEmailAddress = "someoneFriendly@toast.com"; //optional
+                    s.ReplyToDisplayName = "Reply to Person Name"; //optional
                     s.IsSandboxMode = false;
             });
 
@@ -394,7 +401,10 @@ Minimal Example using `CreateMessage()`
 A Complete Example:
 
         var message = new MessageBuilder()
-            .From("toast@toast.com").WithDisplayName("Toast Man")
+            .From("toast@toast.com")
+                .WithDisplayName("Toast Man")
+                .WithReplyTo("friendlyaddress@toast.com") //optional
+                .WithReplyToDisplayName("Mr. Toast Man") //optional
             .And.Subject("Subject")
             .And.To("someone@somewhere.com")
                 .WithDisplayName("Someone Nice")
@@ -512,6 +522,18 @@ The `SendGridMailer` uses SendGrid's server-side transactional templates. Here t
 ### <a name="attachments"></a>Attachments
 
 Attachments can added to a `MailMessage` as either a collection of file names, or using Dictionary of file names and Streams. When using file names, please use the full file path of the attachment.
+
+
+## <a name="gmail"></a>Using Gmail
+
+If you are using GMail with the MailKit SMTP Mailer, you will need to either use the less secure username/password authentication, or you will need to obtain and use oAuth access tokens.
+
+Review the [MailKit GMail documentation](https://github.com/jstedfast/MailKit/blob/master/FAQ.md#GMailAccess) first.
+
+When configuring your settings for GMail, you will need to use the `MkSmtpBasicAuthenticationSettings` if you are using the less secure connection method, or use `MkSmtpAccessTokenAuthenticationSettings` if using oAuth. 
+
+For oAuth, please note that you will need to ensure that you create new settings and a new mailer instance each time you want to send a mail (or a batch of messages), and it is up to the consuming application to make sure that the settings contain an up-to-date and valid access token each time. The mailer extensions will not validate the token, nor does it have any built-in mechanism to handle expired tokens. 
+
 
 ## <a name="custom-mailer"></a>Creating your own mailers
 

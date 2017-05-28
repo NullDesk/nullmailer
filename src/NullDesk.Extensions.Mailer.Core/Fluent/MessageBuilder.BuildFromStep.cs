@@ -25,7 +25,16 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
             public BuildSubjectStep And
                 => new BuildSubjectStep(Context);
 
-            //TODO: ReplyTo
+            /// <summary>
+            ///     Adds a reply to address for the sender.
+            /// </summary>
+            /// <param name="emailAddress">The email address.</param>
+            /// <returns>BuildReplyToStep.</returns>
+            public BuildReplyToStep WithReplyTo(string emailAddress)
+            {
+                return new BuildReplyToStep(Context.From(Context.From.ReplyToAddress(emailAddress)));
+            }
+
 
             /// <summary>
             ///     Adds a display name for the sender
@@ -57,6 +66,16 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
                 /// <value>The and.</value>
                 public BuildSubjectStep And
                     => new BuildSubjectStep(Context);
+
+                /// <summary>
+                ///     Adds a reply to address for the sender.
+                /// </summary>
+                /// <param name="emailAddress">The email address.</param>
+                /// <returns>BuildReplyToStep.</returns>
+                public BuildReplyToStep WithReplyTo(string emailAddress)
+                {
+                    return new BuildReplyToStep(Context.From(Context.From.ReplyToAddress(emailAddress)));
+                }
             }
         }
     }

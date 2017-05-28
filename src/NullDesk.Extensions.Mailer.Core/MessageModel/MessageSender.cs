@@ -8,15 +8,27 @@ namespace NullDesk.Extensions.Mailer.Core
     public class MessageSender : IMessageAddress
     {
         /// <summary>
-        ///     Gets or sets the email address.
+        ///     The message reply to address.
         /// </summary>
-        /// <value>The email address.</value>
+        /// <value>The reply to address.</value>
+        public string ReplyToEmailAddress { get; set; }
+
+        /// <summary>
+        ///     The display name for the reply to address.
+        /// </summary>
+        /// <value>The reply to display name.</value>
+        public string ReplyToDisplayName { get; set; }
+
+        /// <summary>
+        ///     The email address for the message sender.
+        /// </summary>
+        /// <value>The sender's email address.</value>
         public string EmailAddress { get; set; }
 
         /// <summary>
-        ///     Gets or sets the display name for the reply address.
+        ///     The display name for the sender .
         /// </summary>
-        /// <value>The display name.</value>
+        /// <value>The sender's display name.</value>
         public string DisplayName { get; set; }
     }
 }
