@@ -2,17 +2,6 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp1.1</TargetFramework>
-        <DebugType>portable</DebugType>
-        <AssemblyName>NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests</AssemblyName>
-        <OutputType>Exe</OutputType>
-        <PackageId>NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests</PackageId>
-        <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-        <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
-        <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-        <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-        <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-        <Copyright>Stephen M. Redd 2017</Copyright>
-        <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -29,15 +18,15 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
-        <PackageReference Include="FluentAssertions" Version="4.19.1" />
-        <PackageReference Include="Microsoft.CodeCoverage" Version="1.0.2" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.1" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="1.1.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.1" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
-        <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.1" />
-        <PackageReference Include="NSubstitute" Version="2.0.2" />
+        <PackageReference Include="FluentAssertions" Version="4.19.2" />
+        <PackageReference Include="Microsoft.CodeCoverage" Version="1.0.3" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.2" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="1.1.1" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.2" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.2" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.2" />
+        <PackageReference Include="NSubstitute" Version="2.0.3" />
         <PackageReference Include="System.Net.Sockets" Version="4.3.0" />
         <PackageReference Include="xunit" Version="2.2.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="1.1.2" />
