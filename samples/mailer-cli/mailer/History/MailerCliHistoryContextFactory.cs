@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using NullDesk.Extensions.Mailer.History.EntityFramework;
 
 namespace Sample.Mailer.Cli.History
 {
@@ -21,7 +22,7 @@ namespace Sample.Mailer.Cli.History
         /// <param name="options">Information about the environment an application is running in.</param>
         public MailerCliHistoryContext Create(DbContextFactoryOptions options)
         {
-            var builder = new DbContextOptionsBuilder<MailerCliHistoryContext>();
+            var builder = new DbContextOptionsBuilder<HistoryContext>();
 
             builder.UseSqlServer(
                 @"Server=(localdb)\MSSQLLocalDB;Database=MailerCliHistory;Trusted_Connection=True;");

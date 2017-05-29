@@ -19,7 +19,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer
         ///     Initializes a new instance of the <see cref="SqlHistoryContext" /> class.
         /// </summary>
         /// <param name="options">The options.</param>
-        protected SqlHistoryContext(DbContextOptions options) : base(options)
+        protected SqlHistoryContext(DbContextOptions<HistoryContext> options) : base(options)
         {
         }
     }

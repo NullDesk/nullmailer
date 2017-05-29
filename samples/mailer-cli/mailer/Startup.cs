@@ -79,9 +79,26 @@ namespace Sample.Mailer.Cli
             services.Configure<SendGridMailerSettings>(Config.GetSection("MailSettings:SendGridMailerSettings"));
 
             var historyDbEnabled = Config.GetValue<bool>("MailHistoryDbSettings:EnableHistory");
+            
             if (historyDbEnabled)
             {
-                //setup message delivery history for sql server
+                var historyDbConnString = Config.GetValue<string>("MailHistoryDbSettings:ConnectionString");
+
+                services.AddMailerHistory<MailerCliHistoryContext>(historyDbConnString);
+
+
+                //alternate method 
+                //services.AddMailerHistory<MailerCliHistoryContext>(
+                //    s =>
+                //        new DbContextOptionsBuilder<MailerCliHistoryContext>()
+                //            .UseSqlServer
+                //            (s.GetService<IOptions<MailHistoryDbSettings>>().Value.ConnectionString)
+                //            .Options
+                //);
+
+
+                /*
+                  //setup message delivery history for sql server
                 services.AddSingleton<DbContextOptions>(s =>
                 {
                     var options = s.GetService<IOptions<MailHistoryDbSettings>>();
@@ -93,6 +110,8 @@ namespace Sample.Mailer.Cli
 
                 //mail history doesn't need this, but our DB cleanup commands do
                 services.AddTransient<HistoryContext, MailerCliHistoryContext>();
+        
+                */
             }
 
 

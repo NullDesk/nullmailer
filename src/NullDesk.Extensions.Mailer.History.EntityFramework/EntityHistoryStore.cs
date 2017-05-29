@@ -21,7 +21,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// <param name="options">The options used to configure the context</param>
         /// <param name="logger">An optional logger.</param>
         /// <param name="serializeAttachments">if set to <c>true</c> will serialize attachments for storage in the database.</param>
-        public EntityHistoryStore(DbContextOptions options, ILogger logger = null, bool serializeAttachments = false)
+        public EntityHistoryStore(DbContextOptions<HistoryContext> options, ILogger logger = null, bool serializeAttachments = false)
         {
             Logger = logger ?? NullLogger.Instance;
             DbOptions = options;
