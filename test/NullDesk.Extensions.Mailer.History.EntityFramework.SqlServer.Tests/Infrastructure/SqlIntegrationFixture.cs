@@ -2,6 +2,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NullDesk.Extensions.Mailer.Core;
 
 namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Infrastructure
@@ -21,19 +22,19 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Inf
             });
 
 
-
             services.AddMailerHistory<TestSqlHistoryContext>(new SqlEntityHistoryStoreSettings
             {
                 ConnectionString =
                     @"Server=(localdb)\MSSQLLocalDB;Database=NullDeskMailerHistoryTests;Trusted_Connection=True;"
             });
 
-           
-            services.AddTransient<IMailer, NullMailer>();
+            services.AddNullMailer(s => s.GetService<IOptions<NullMailerSettings>>().Value);
 
             ServiceProvider = services.BuildServiceProvider();
 
-            using (var context = ((EntityHistoryStore<TestSqlHistoryContext>)ServiceProvider.GetService<IHistoryStore>()).GetHistoryContext())
+            using (var context =
+                ((EntityHistoryStore<TestSqlHistoryContext>) ServiceProvider.GetService<IHistoryStore>())
+                .GetHistoryContext())
             {
                 context.Database.Migrate();
             }

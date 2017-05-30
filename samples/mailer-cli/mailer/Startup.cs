@@ -22,14 +22,17 @@ namespace Sample.Mailer.Cli
     {
         private static IConfigurationRoot Config { get; set; }
 
+
         public void Run(string[] args)
         {
             Config = AcquireConfiguration();
 
             var services = ConfigureConsoleServices(new ServiceCollection());
+
             Program.ServiceProvider = services;
             ConfigureLogging(services.GetService<ILoggerFactory>());
-            if (!args.First().Equals("--help", StringComparison.OrdinalIgnoreCase) && !args.First().Equals("drop-db", StringComparison.OrdinalIgnoreCase))
+            if (!args.First().Equals("--help", StringComparison.OrdinalIgnoreCase) &&
+                !args.First().Equals("drop-db", StringComparison.OrdinalIgnoreCase))
             {
                 var historySettings = services.GetService<IOptions<SqlEntityHistoryStoreSettings>>();
                 if (historySettings.Value.IsEnabled)
@@ -82,9 +85,12 @@ namespace Sample.Mailer.Cli
             services.Configure<MailHistoryDbSettings>(Config.GetSection("MailHistoryDbSettings"));
             services.Configure<TestMessageSettings>(Config.GetSection("TestMessageSettings"));
             services.Configure<MkSmtpMailerSettings>(Config.GetSection("MailSettings:MkSmtpMailerSettings"));
+
             services.Configure<SendGridMailerSettings>(Config.GetSection("MailSettings:SendGridMailerSettings"));
 
             services.Configure<SqlEntityHistoryStoreSettings>(Config.GetSection("MailHistoryDbSettings"));
+
+
             services.AddMailerSqlHistory(s => s.GetService<IOptions<SqlEntityHistoryStoreSettings>>().Value);
 
             ////alternate way to instantiate history
@@ -101,10 +107,10 @@ namespace Sample.Mailer.Cli
             switch (activeMailService)
             {
                 case "sendgrid":
-                    services.AddMailer<SendGridMailer>();
+                    services.AddSendGridMailer(s => s.GetService<IOptions<SendGridMailerSettings>>().Value);
                     break;
                 case "mailkit":
-                    services.AddMailer<MkSmtpMailer>();
+                    services.AddMkSmtpMailer(s => s.GetService<IOptions<MkSmtpMailerSettings>>().Value);
                     break;
             }
 

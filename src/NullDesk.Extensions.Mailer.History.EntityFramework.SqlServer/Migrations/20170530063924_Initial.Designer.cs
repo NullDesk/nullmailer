@@ -3,14 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer;
 
 namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migrations
 {
+
     [DbContext(typeof(SqlHistoryContext))]
     [Migration("20170530063924_Initial")]
     partial class Initial
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
@@ -72,5 +73,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migration
                     b.ToTable("MessageHistory");
                 });
         }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
+
     }
 }

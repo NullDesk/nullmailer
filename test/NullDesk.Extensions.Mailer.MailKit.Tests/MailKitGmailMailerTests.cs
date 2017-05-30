@@ -11,9 +11,9 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
         }
 
         private GmailMailFixture Fixture { get; }
-        // https://github.com/jstedfast/MailKit/blob/master/FAQ.md#GMailAccess
 
         //Setup user and password in fixture, then uncomment
+        // https://github.com/jstedfast/MailKit/blob/master/FAQ.md#GMailAccess
 
 
         //[Fact]

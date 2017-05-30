@@ -31,6 +31,13 @@ namespace NullDesk.Extensions.Mailer.Core
         public static NullHistoryStore Instance { get; } = new NullHistoryStore();
 
         /// <summary>
+        ///     Gets or sets a value indicating whether to serialize attachments for use in the history store. If not enabled,
+        ///     messages with attachments cannot be resent from history.
+        /// </summary>
+        /// <value><c>true</c> if attachments should be serialized; otherwise, <c>false</c>.</value>
+        public bool SerializeAttachments { get; set; } = false;
+
+        /// <summary>
         ///     Does nothing.
         /// </summary>
         /// <param name="item">The item to add.</param>
@@ -89,14 +96,7 @@ namespace NullDesk.Extensions.Mailer.Core
         public ILogger Logger { get; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether to serialize attachments for use in the history store. If not enabled,
-        ///     messages with attachments cannot be resent from history.
-        /// </summary>
-        /// <value><c>true</c> if attachments should be serialized; otherwise, <c>false</c>.</value>
-        public bool SerializeAttachments { get; set; } = false;
-
-        /// <summary>
-        /// Gets or sets the settings.
+        ///     Gets or sets the settings.
         /// </summary>
         /// <value>The settings.</value>
         public StandardHistoryStoreSettings Settings { get; set; }

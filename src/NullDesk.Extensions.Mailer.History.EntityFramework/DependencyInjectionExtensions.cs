@@ -5,12 +5,12 @@ using NullDesk.Extensions.Mailer.Core;
 namespace NullDesk.Extensions.Mailer.History.EntityFramework
 {
     /// <summary>
-    /// Class DependencyInjectionExtensions.
+    ///     Class DependencyInjectionExtensions.
     /// </summary>
     public static class DependencyInjectionExtensions
     {
         /// <summary>
-        /// Adds a mailer history store of the specified HistoryContext.
+        ///     Adds a mailer history store of the specified HistoryContext.
         /// </summary>
         /// <typeparam name="TContext">The type of the History DbContext.</typeparam>
         /// <param name="services">The services collection.</param>
@@ -19,16 +19,15 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         public static IServiceCollection AddMailerHistory<TContext>(
             this IServiceCollection services,
             EntityHistoryStoreSettings entityHistorySettings)
-        where TContext : HistoryContext
+            where TContext : HistoryContext
         {
-            
             services.AddSingleton(entityHistorySettings);
             services.AddSingleton<IHistoryStore, EntityHistoryStore<TContext>>();
             return services;
         }
 
         /// <summary>
-        /// Adds a mailer history store of the specified HistoryContext.
+        ///     Adds a mailer history store of the specified HistoryContext.
         /// </summary>
         /// <typeparam name="TContext">The type of the t context.</typeparam>
         /// <param name="services">The services.</param>
@@ -39,7 +38,8 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
             Func<IServiceProvider, EntityHistoryStoreSettings> historySettings)
             where TContext : HistoryContext
         {
-            services.Add(new ServiceDescriptor(typeof(EntityHistoryStoreSettings), historySettings, ServiceLifetime.Singleton));
+            services.Add(new ServiceDescriptor(typeof(EntityHistoryStoreSettings), historySettings,
+                ServiceLifetime.Singleton));
             services.AddSingleton<IHistoryStore, EntityHistoryStore<TContext>>();
             return services;
         }

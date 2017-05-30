@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using NullDesk.Extensions.Mailer.Core;
 
 namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer
 {
     /// <summary>
-    /// Settings for an entity framework history store using SQL Server.
+    ///     Settings for an entity framework history store using SQL Server.
     /// </summary>
     /// <seealso cref="NullDesk.Extensions.Mailer.Core.StandardHistoryStoreSettings" />
-    public class SqlEntityHistoryStoreSettings: StandardHistoryStoreSettings
+    public class SqlEntityHistoryStoreSettings : StandardHistoryStoreSettings
     {
         /// <summary>
         ///     The SQL connection string for the history context.
@@ -21,7 +16,8 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer
         public string ConnectionString { get; set; }
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="SqlEntityHistoryStoreSettings"/> to <see cref="EntityHistoryStoreSettings"/>.
+        ///     Performs an implicit conversion from <see cref="SqlEntityHistoryStoreSettings" /> to
+        ///     <see cref="EntityHistoryStoreSettings" />.
         /// </summary>
         /// <param name="sqlSettings">The d.</param>
         /// <returns>The result of the conversion.</returns>
@@ -36,6 +32,5 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer
                     .Options
             };
         }
-
     }
 }

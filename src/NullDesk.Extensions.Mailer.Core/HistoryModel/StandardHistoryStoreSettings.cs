@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NullDesk.Extensions.Mailer.Core
+﻿namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
-    /// Standard History Store Settings.
+    ///     Standard History Store Settings.
     /// </summary>
     /// <seealso cref="NullDesk.Extensions.Mailer.Core.IHistoryStoreSettings" />
     public class StandardHistoryStoreSettings : IHistoryStoreSettings

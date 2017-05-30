@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 // ReSharper disable once CheckNamespace
 namespace NullDesk.Extensions.Mailer.Core
@@ -19,8 +18,8 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="settings">The mailer settings.</param>
         /// <param name="logger">The logger.</param>
         /// <param name="historyStore">The history store.</param>
-        public NullMailer(IOptions<NullMailerSettings> settings, ILogger logger = null,
-            IHistoryStore historyStore = null) : base(settings.Value, logger, historyStore)
+        public NullMailer(NullMailerSettings settings, ILogger logger = null,
+            IHistoryStore historyStore = null) : base(settings, logger, historyStore)
         {
         }
 

@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using MimeKit;
 using NSubstitute;
 using NullDesk.Extensions.Mailer.Core;
@@ -45,10 +44,10 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 
 
         public IHistoryStore StoreWithSerializableAttachments { get; set; } =
-            new InMemoryHistoryStore(new StandardHistoryStoreSettings{StoreAttachmentContents= true});
+            new InMemoryHistoryStore(new StandardHistoryStoreSettings {StoreAttachmentContents = true});
 
         public IHistoryStore StoreWithoutSerializableAttachments { get; set; } =
-            new InMemoryHistoryStore(new StandardHistoryStoreSettings { StoreAttachmentContents = false });
+            new InMemoryHistoryStore(new StandardHistoryStoreSettings {StoreAttachmentContents = false});
 
 
         public void Dispose()

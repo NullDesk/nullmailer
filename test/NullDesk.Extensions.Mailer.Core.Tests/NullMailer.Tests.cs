@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using FluentAssertions;
-using Microsoft.Extensions.Options;
 using NullDesk.Extensions.Mailer.Core.Fluent.Extensions;
 using Xunit;
 
@@ -14,12 +13,12 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             return new NullMailer(_mailerSettings);
         }
 
-        private readonly IOptions<NullMailerSettings> _mailerSettings = new OptionsWrapper<NullMailerSettings>(
+        private readonly NullMailerSettings _mailerSettings =
             new NullMailerSettings
             {
                 FromEmailAddress = "nowhere@nowhere.com",
                 FromDisplayName = "Mr. NoBody"
-            });
+            };
 
         [Theory]
         [InlineData(null, "toast@toast.com", "something")]
@@ -54,7 +53,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var mailer = GetMailer();
             mailer.AddMessage(new MailerMessage()
                 .To("noone@nowhere.com")
-                .From(_mailerSettings.Value.FromEmailAddress, _mailerSettings.Value.FromDisplayName)
+                .From(_mailerSettings.FromEmailAddress, _mailerSettings.FromDisplayName)
                 .WithSubject("Some Topic")
                 .WithBody<ContentBody>(b => b.PlainTextContent = "something"));
 
@@ -73,12 +72,12 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             {
                 new MailerMessage()
                     .To("noone@nowhere.com")
-                    .From(_mailerSettings.Value.FromEmailAddress, _mailerSettings.Value.FromDisplayName)
+                    .From(_mailerSettings.FromEmailAddress, _mailerSettings.FromDisplayName)
                     .WithSubject("Some Topic")
                     .WithBody<ContentBody>(b => b.PlainTextContent = "something"),
                 new MailerMessage()
                     .To("noone@nowhere.com")
-                    .From(_mailerSettings.Value.FromEmailAddress, _mailerSettings.Value.FromDisplayName)
+                    .From(_mailerSettings.FromEmailAddress, _mailerSettings.FromDisplayName)
                     .WithSubject("Some Other Topic")
                     .WithBody<ContentBody>(b => b.PlainTextContent = "something")
             });

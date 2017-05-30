@@ -2,7 +2,6 @@
 
 namespace NullDesk.Extensions.Mailer.History.EntityFramework
 {
-
     /// <summary>
     ///     Base DbContext for Message History.
     /// </summary>

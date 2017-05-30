@@ -10,9 +10,7 @@ namespace Sample.Mailer.Cli.Commands
     {
         public DropDb(AnsiConsole console, IHistoryStore history) : base(console)
         {
-
-            Context = ((EntityHistoryStore<SqlHistoryContext>)history).GetHistoryContext();
-
+            Context = ((EntityHistoryStore<SqlHistoryContext>) history).GetHistoryContext();
         }
 
         private HistoryContext Context { get; }
@@ -34,7 +32,6 @@ namespace Sample.Mailer.Cli.Commands
                     Reporter.WriteLine(message);
                     Context.Dispose();
                     return result ? 0 : 1;
-
                 });
             }, false);
         }

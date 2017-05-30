@@ -1,16 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migrations
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+
     public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "MessageHistory",
-                columns: table => new
+                "MessageHistory",
+                table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
                     AttachmentsJson = table.Column<string>(nullable: true),
@@ -31,16 +32,15 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migration
                     ToDisplayName = table.Column<string>(maxLength: 200, nullable: true),
                     ToEmailAddress = table.Column<string>(maxLength: 200, nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MessageHistory", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_MessageHistory", x => x.Id); });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "MessageHistory");
+                "MessageHistory");
         }
     }
+
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

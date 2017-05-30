@@ -13,7 +13,8 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
     /// <summary>
     ///     EntityFramework message and delivery history store service
     /// </summary>
-    public class EntityHistoryStore<TContext> : IHistoryStore<EntityHistoryStoreSettings> where TContext : HistoryContext
+    public class EntityHistoryStore<TContext> : IHistoryStore<EntityHistoryStoreSettings>
+        where TContext : HistoryContext
     {
         /// <summary>
         ///     Creates an instance of the EntityHistoryStore
@@ -21,19 +22,11 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// <param name="settings">The history store settings.</param>
         /// <param name="logger">An optional logger.</param>
         /// <param name="serializeAttachments">if set to <c>true</c> will serialize attachments for storage in the database.</param>
-        public EntityHistoryStore(EntityHistoryStoreSettings settings, ILogger logger = null, bool serializeAttachments = false)
+        public EntityHistoryStore(EntityHistoryStoreSettings settings, ILogger logger = null,
+            bool serializeAttachments = false)
         {
             Settings = settings;
             Logger = logger ?? NullLogger.Instance;
-        }
-
-        /// <summary>
-        /// Gets an instance of the history context.
-        /// </summary>
-        /// <returns>HistoryContext.</returns>
-        public HistoryContext GetHistoryContext()
-        {
-            return (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions);
         }
 
         /// <summary>
@@ -44,7 +37,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// <returns>Task&lt;Guid&gt; the ID of the message.</returns>
         public async Task<Guid> AddAsync(DeliveryItem item, CancellationToken token = default(CancellationToken))
         {
-            using (var context = (TContext)Activator.CreateInstance(typeof(TContext), Settings.DbOptions))
+            using (var context = (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions))
             {
                 context.MessageHistory.Add(item.ToEntityHistoryDeliveryItem(Settings.StoreAttachmentContents));
                 await context.SaveChangesAsync(token);
@@ -60,9 +53,9 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         public async Task<DeliveryItem> GetAsync(Guid id, CancellationToken token = default(CancellationToken))
         {
-            using (var context = (TContext)Activator.CreateInstance(typeof(TContext), Settings.DbOptions))
+            using (var context = (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions))
             {
-                return (await context.FindAsync<EntityHistoryDeliveryItem>(new object[] { id }, token))
+                return (await context.FindAsync<EntityHistoryDeliveryItem>(new object[] {id}, token))
                     ?.ToDeliveryItem();
             }
         }
@@ -77,7 +70,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         public async Task<IEnumerable<DeliveryItem>> GetAsync(int offset = 0, int limit = 100,
             CancellationToken token = new CancellationToken())
         {
-            using (var context = (TContext)Activator.CreateInstance(typeof(TContext), Settings.DbOptions))
+            using (var context = (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions))
             {
                 return
                     await context.MessageHistory.OrderByDescending(i => i.CreatedDate)
@@ -98,7 +91,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         public async Task<IEnumerable<DeliveryItem>> SearchAsync(string searchText, int limit = 100,
             CancellationToken token = new CancellationToken())
         {
-            using (var context = (TContext)Activator.CreateInstance(typeof(TContext), Settings.DbOptions))
+            using (var context = (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions))
             {
                 return await context.MessageHistory
                     .Where(
@@ -118,11 +111,20 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// <value>The logger.</value>
         public ILogger Logger { get; }
 
-        
+
         /// <summary>
-        /// Gets or sets the settings.
+        ///     Gets or sets the settings.
         /// </summary>
         /// <value>The settings.</value>
         public EntityHistoryStoreSettings Settings { get; set; }
+
+        /// <summary>
+        ///     Gets an instance of the history context.
+        /// </summary>
+        /// <returns>HistoryContext.</returns>
+        public HistoryContext GetHistoryContext()
+        {
+            return (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions);
+        }
     }
 }

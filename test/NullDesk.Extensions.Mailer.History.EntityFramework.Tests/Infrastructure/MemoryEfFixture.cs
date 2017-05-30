@@ -2,6 +2,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NullDesk.Extensions.Mailer.Core;
 
 namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests.Infrastructure
@@ -24,8 +25,8 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests.Infrastructur
                 .UseInMemoryDatabase("TestHistoryDb");
 
             services.AddMailerHistory<TestHistoryContext>(
-                s => new EntityHistoryStoreSettings { DbOptions = builder.Options });
-            services.AddTransient<IMailer, NullMailer>();
+                s => new EntityHistoryStoreSettings {DbOptions = builder.Options});
+            services.AddNullMailer(s => s.GetService<IOptions<NullMailerSettings>>().Value);
 
             ServiceProvider = services.BuildServiceProvider();
 

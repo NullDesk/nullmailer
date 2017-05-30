@@ -4,10 +4,10 @@ using NullDesk.Extensions.Mailer.Core;
 namespace NullDesk.Extensions.Mailer.History.EntityFramework
 {
     /// <summary>
-    /// Settings for Entity Framework History Stores.
+    ///     Settings for Entity Framework History Stores.
     /// </summary>
     /// <seealso cref="StandardHistoryStoreSettings" />
-    public class EntityHistoryStoreSettings: StandardHistoryStoreSettings
+    public class EntityHistoryStoreSettings : StandardHistoryStoreSettings
     {
         /// <summary>
         ///     The database context options.

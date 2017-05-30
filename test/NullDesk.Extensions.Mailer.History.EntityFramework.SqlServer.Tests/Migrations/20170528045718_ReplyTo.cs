@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Migrations
 {
@@ -9,14 +7,14 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Mig
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "ReplyToDisplayName",
-                table: "MessageHistory",
+                "ReplyToDisplayName",
+                "MessageHistory",
                 maxLength: 200,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "ReplyToEmailAddress",
-                table: "MessageHistory",
+                "ReplyToEmailAddress",
+                "MessageHistory",
                 maxLength: 200,
                 nullable: true);
         }
@@ -24,12 +22,12 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Mig
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "ReplyToDisplayName",
-                table: "MessageHistory");
+                "ReplyToDisplayName",
+                "MessageHistory");
 
             migrationBuilder.DropColumn(
-                name: "ReplyToEmailAddress",
-                table: "MessageHistory");
+                "ReplyToEmailAddress",
+                "MessageHistory");
         }
     }
 }

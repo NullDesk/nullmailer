@@ -147,7 +147,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
     {
         public static DeliveryItem ToDeliveryItem(this EntityHistoryDeliveryItem item)
         {
-            var settings = new JsonSerializerSettings()
+            var settings = new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
@@ -157,7 +157,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
             {
                 Body =
                     string.IsNullOrEmpty(item.TemplateName)
-                        ? (IMessageBody)new TemplateBody
+                        ? (IMessageBody) new TemplateBody
                         {
                             TemplateName = item.TemplateName
                         }
@@ -213,7 +213,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
             IDictionary<string, Stream> itemAttachments,
             bool serializeAttachments)
         {
-            var settings = new JsonSerializerSettings()
+            var settings = new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
@@ -229,7 +229,6 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
 
 
             return JsonConvert.SerializeObject(att, settings);
-
         }
     }
 }

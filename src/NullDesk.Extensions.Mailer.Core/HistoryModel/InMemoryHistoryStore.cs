@@ -88,12 +88,12 @@ namespace NullDesk.Extensions.Mailer.Core
         {
             return
                 Settings.IsEnabled
-                ? Task.FromResult(Items
-                    .Select(JsonConvert.DeserializeObject<DeliveryItem>)
-                    .OrderByDescending(i => i.CreatedDate)
-                    .Skip(offset)
-                    .Take(limit))
-                : null;
+                    ? Task.FromResult(Items
+                        .Select(JsonConvert.DeserializeObject<DeliveryItem>)
+                        .OrderByDescending(i => i.CreatedDate)
+                        .Skip(offset)
+                        .Take(limit))
+                    : null;
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace NullDesk.Extensions.Mailer.Core
 
 
         /// <summary>
-        /// The history store settings.
+        ///     The history store settings.
         /// </summary>
         /// <value>The settings.</value>
         public StandardHistoryStoreSettings Settings { get; set; }

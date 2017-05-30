@@ -7,16 +7,15 @@ using Microsoft.Extensions.Logging;
 // ReSharper disable once CheckNamespace
 namespace NullDesk.Extensions.Mailer.Core
 {
-
     /// <summary>
-    ///      Interface for a message and delivery history store provider
+    ///     Interface for a message and delivery history store provider
     /// </summary>
     /// <typeparam name="TSettings">The type of the t settings.</typeparam>
     /// <seealso cref="IHistoryStore" />
     public interface IHistoryStore<TSettings> : IHistoryStore where TSettings : class, IHistoryStoreSettings
     {
         /// <summary>
-        /// The history store settings.
+        ///     The history store settings.
         /// </summary>
         /// <value>The settings.</value>
         TSettings Settings { get; set; }
