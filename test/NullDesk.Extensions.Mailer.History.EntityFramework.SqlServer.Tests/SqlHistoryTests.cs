@@ -38,7 +38,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
             attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
 
             var mailer = Fixture.ServiceProvider.GetService<IMailer>();
-            ((Mailer<NullMailerSettings>) mailer).HistoryStore.SerializeAttachments = true;
+            ((EntityHistoryStore<TestSqlHistoryContext>)((Mailer<NullMailerSettings>) mailer).HistoryStore).Settings.StoreAttachmentContents = true;
             var deliveryItems =
                 mailer.CreateMessage(b => b
                     .Subject(Subject)
@@ -83,7 +83,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
             attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
 
             var mailer = Fixture.ServiceProvider.GetService<IMailer>();
-            ((Mailer<NullMailerSettings>) mailer).HistoryStore.SerializeAttachments = false;
+            ((EntityHistoryStore<TestSqlHistoryContext>)((Mailer<NullMailerSettings>)mailer).HistoryStore).Settings.StoreAttachmentContents = false;
             var deliveryItems =
                 mailer.CreateMessage(b => b
                     .Subject(Subject)
@@ -117,7 +117,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
 
             m.Which.Body.Should().NotBeNull();
             m.Which.Subject.Should().Be(Subject);
-            m.Which.Attachments.All(a => a.Value.Length == 0).Should().BeTrue();
+            m.Which.Attachments.All(a => a.Value == null).Should().BeTrue();
         }
 
         [Fact]

@@ -38,10 +38,10 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
 
 
         public IHistoryStore StoreWithSerializableAttachments { get; set; } =
-            new InMemoryHistoryStore {SerializeAttachments = true};
+            new InMemoryHistoryStore(new StandardHistoryStoreSettings { StoreAttachmentContents = true });
 
         public IHistoryStore StoreWithoutSerializableAttachments { get; set; } =
-            new InMemoryHistoryStore {SerializeAttachments = false};
+            new InMemoryHistoryStore(new StandardHistoryStoreSettings { StoreAttachmentContents = false });
 
 
         public void Dispose()

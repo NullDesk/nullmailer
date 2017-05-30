@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using NullDesk.Extensions.Mailer.Core;
 
 namespace NullDesk.Extensions.Mailer.History.EntityFramework
@@ -144,13 +145,19 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
 
     internal static class DeliveryItemsExtensions
     {
-        public static DeliveryItem FromDeliveryItem(this EntityHistoryDeliveryItem item)
+        public static DeliveryItem ToDeliveryItem(this EntityHistoryDeliveryItem item)
         {
+            var settings = new JsonSerializerSettings()
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+            settings.Converters.Add(new AttachmentStreamJsonConverter());
+
             return new DeliveryItem
             {
                 Body =
                     string.IsNullOrEmpty(item.TemplateName)
-                        ? (IMessageBody) new TemplateBody
+                        ? (IMessageBody)new TemplateBody
                         {
                             TemplateName = item.TemplateName
                         }
@@ -171,29 +178,15 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
                 Subject = item.Subject,
                 ToDisplayName = item.ToDisplayName,
                 ToEmailAddress = item.ToEmailAddress,
-                Attachments = GetDeliveryAttachments(item.AttachmentsJson)
+                Attachments = JsonConvert.DeserializeObject<IDictionary<string, Stream>>(item.AttachmentsJson, settings)
             };
-        }
-
-        private static IDictionary<string, Stream> GetDeliveryAttachments(string itemAttachmentsJson)
-        {
-            var att = JsonConvert.DeserializeObject<IDictionary<string, string>>(itemAttachmentsJson);
-            return att.Select(a =>
-                {
-                    var ms = new MemoryStream();
-                    var writer = new StreamWriter(ms);
-                    writer.Write(a.Value);
-                    writer.Flush();
-                    ms.Position = 0;
-                    return new KeyValuePair<string, Stream>(a.Key, ms);
-                })
-                .ToDictionary(k => k.Key, k => k.Value);
         }
     }
 
     internal static class HistoryDeliveryItemExtensions
     {
-        public static EntityHistoryDeliveryItem FromDeliveryItem(this DeliveryItem item, bool serializeAttachments)
+        public static EntityHistoryDeliveryItem ToEntityHistoryDeliveryItem(this DeliveryItem item,
+            bool serializeAttachments)
         {
             return new EntityHistoryDeliveryItem
             {
@@ -216,31 +209,27 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
             };
         }
 
-        private static string GetHistoryAttachments(IDictionary<string, Stream> itemAttachments,
+        private static string GetHistoryAttachments(
+            IDictionary<string, Stream> itemAttachments,
             bool serializeAttachments)
         {
-            var att = new Dictionary<string, string>(itemAttachments.Select(a =>
-                {
-                    KeyValuePair<string, string> kvp;
-                    if (serializeAttachments)
-                    {
-                        var ms = new MemoryStream();
-                        a.Value.CopyTo(ms);
-                        a.Value.Position = 0; //put stream back
-                        var content = Convert.ToBase64String(ms.ToArray());
+            var settings = new JsonSerializerSettings()
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+            settings.Converters.Add(new AttachmentStreamJsonConverter());
 
-                        kvp = new KeyValuePair<string, string>(a.Key, content);
-                    }
-                    else
-                    {
-                        kvp = new KeyValuePair<string, string>(a.Key, null);
-                    }
-                    return kvp;
-                })
+            if (serializeAttachments)
+            {
+                return JsonConvert.SerializeObject(itemAttachments, settings);
+            }
+            var att = new Dictionary<string, string>(itemAttachments
+                .Select(a => new KeyValuePair<string, string>(a.Key, null))
                 .ToDictionary(k => k.Key, k => k.Value));
 
 
-            return JsonConvert.SerializeObject(att, Formatting.Indented);
+            return JsonConvert.SerializeObject(att, settings);
+
         }
     }
 }

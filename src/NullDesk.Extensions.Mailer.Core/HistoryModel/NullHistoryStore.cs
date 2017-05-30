@@ -13,7 +13,7 @@ namespace NullDesk.Extensions.Mailer.Core
     ///     A HistoryStore that does nothing, used as a default when history is not enabled.
     /// </summary>
     /// <seealso cref="IHistoryStore" />
-    public class NullHistoryStore : IHistoryStore
+    public class NullHistoryStore : IHistoryStore<StandardHistoryStoreSettings>
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="NullHistoryStore" /> class.
@@ -21,6 +21,7 @@ namespace NullDesk.Extensions.Mailer.Core
         internal NullHistoryStore()
         {
             Logger = NullLogger.Instance;
+            Settings = new StandardHistoryStoreSettings();
         }
 
         /// <summary>
@@ -93,5 +94,11 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <value><c>true</c> if attachments should be serialized; otherwise, <c>false</c>.</value>
         public bool SerializeAttachments { get; set; } = false;
+
+        /// <summary>
+        /// Gets or sets the settings.
+        /// </summary>
+        /// <value>The settings.</value>
+        public StandardHistoryStoreSettings Settings { get; set; }
     }
 }

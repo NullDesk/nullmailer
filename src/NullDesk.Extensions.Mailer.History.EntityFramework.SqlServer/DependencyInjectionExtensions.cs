@@ -1,9 +1,8 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer;
 
+// ReSharper disable once CheckNamespace
 namespace NullDesk.Extensions.Mailer.History.EntityFramework
 {
     /// <summary>
@@ -16,35 +15,50 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// </summary>
         /// <typeparam name="TContext">The type of the history DbContext.</typeparam>
         /// <param name="services">The services.</param>
-        /// <param name="connectionString">The connection string for the Sql database.</param>
+        /// <param name="sqlHistorySettings">The SQL history store settings.</param>
         /// <returns>IServiceCollection.</returns>
         public static IServiceCollection AddMailerHistory<TContext>(
             this IServiceCollection services,
-            string connectionString)
+            SqlEntityHistoryStoreSettings sqlHistorySettings)
         where TContext : SqlHistoryContext
         {
-            var dbContextOptions = new DbContextOptionsBuilder<HistoryContext>()
-                .UseSqlServer(connectionString)
-                .Options;
-            return services.AddMailerHistory<TContext>(dbContextOptions);
+            //implicit conversion
+            return services.AddMailerHistory<TContext>((EntityHistoryStoreSettings)sqlHistorySettings);
         }
 
         /// <summary>
-        ///     Adds an EntityFramwork mailer history store using a default SqlHistoryContext.
+        /// Adds an EntityFramework mailer history store for the specified HistoryContext type.
         /// </summary>
+        /// <typeparam name="TContext">The type of the history DbContext.</typeparam>
         /// <param name="services">The services.</param>
-        /// <param name="connectionString">The connection string for the Sql database.</param>
+        /// <param name="sqlHistorySettings">The SQL history store settings.</param>
         /// <returns>IServiceCollection.</returns>
-        public static IServiceCollection AddMailerHistory(
+        public static IServiceCollection AddMailerHistory<TContext>(
             this IServiceCollection services,
-            string connectionString)
+            Action<SqlEntityHistoryStoreSettings> sqlHistorySettings)
+            where TContext : SqlHistoryContext
         {
-            var dbContextOptions = new DbContextOptionsBuilder<HistoryContext>()
-                .UseSqlServer(connectionString)
-                .Options;
-            return services.AddMailerHistory<SqlHistoryContext>(dbContextOptions);
+            var settings = new SqlEntityHistoryStoreSettings();
+            sqlHistorySettings(settings);
+            
+            //implicit conversion
+            return services.AddMailerHistory<TContext>((EntityHistoryStoreSettings)settings);
         }
 
-      
+        /// <summary>
+        ///      Adds a mailer history store of the specified HistoryContext.
+        /// </summary>
+        /// <typeparam name="TContext">The type of the t context.</typeparam>
+        /// <param name="services">The services.</param>
+        /// <param name="sqlHistorySettings">Function to obtain sql history settings.</param>
+        /// <returns>IServiceCollection.</returns>
+        public static IServiceCollection AddMailerHistory<TContext>(
+            this IServiceCollection services,
+            Func<IServiceProvider, SqlEntityHistoryStoreSettings> sqlHistorySettings)
+            where TContext : HistoryContext
+        {
+            return services.AddMailerHistory<TContext>(s => (EntityHistoryStoreSettings)sqlHistorySettings(s));
+        }
+
     }
 }
