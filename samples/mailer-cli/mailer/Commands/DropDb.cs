@@ -2,7 +2,7 @@
 using NullDesk.Cli;
 using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.History.EntityFramework;
-using Sample.Mailer.Cli.History;
+using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer;
 
 namespace Sample.Mailer.Cli.Commands
 {
@@ -11,7 +11,7 @@ namespace Sample.Mailer.Cli.Commands
         public DropDb(AnsiConsole console, IHistoryStore history) : base(console)
         {
 
-            Context = ((EntityHistoryStore<MailerCliHistoryContext>)history).GetHistoryContext();
+            Context = ((EntityHistoryStore<SqlHistoryContext>)history).GetHistoryContext();
 
         }
 

@@ -3,19 +3,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Sample.Mailer.Cli.History;
+using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer;
 
-namespace Sample.Mailer.Cli.Migrations
+namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migrations
 {
-    [DbContext(typeof(MailerCliHistoryContext))]
-    [Migration("20170315051343_Initial")]
+    [DbContext(typeof(SqlHistoryContext))]
+    [Migration("20170530063924_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasDefaultSchema("mailerCli")
-                .HasAnnotation("ProductVersion", "1.1.1")
+                .HasAnnotation("ProductVersion", "1.1.2")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("NullDesk.Extensions.Mailer.History.EntityFramework.EntityHistoryDeliveryItem", b =>
@@ -44,6 +43,12 @@ namespace Sample.Mailer.Cli.Migrations
                     b.Property<bool>("IsSuccess");
 
                     b.Property<string>("ProviderMessageId")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("ReplyToDisplayName")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("ReplyToEmailAddress")
                         .HasMaxLength(200);
 
                     b.Property<string>("Subject")

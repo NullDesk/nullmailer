@@ -1,18 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Sample.Mailer.Cli.Migrations
+namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migrations
 {
     public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.EnsureSchema(
-                "mailerCli");
-
             migrationBuilder.CreateTable(
-                "MessageHistory",
-                schema: "mailerCli",
+                name: "MessageHistory",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -25,6 +22,8 @@ namespace Sample.Mailer.Cli.Migrations
                     HtmlContent = table.Column<string>(nullable: true),
                     IsSuccess = table.Column<bool>(nullable: false),
                     ProviderMessageId = table.Column<string>(maxLength: 200, nullable: true),
+                    ReplyToDisplayName = table.Column<string>(maxLength: 200, nullable: true),
+                    ReplyToEmailAddress = table.Column<string>(maxLength: 200, nullable: true),
                     Subject = table.Column<string>(maxLength: 200, nullable: true),
                     SubstitutionsJson = table.Column<string>(nullable: true),
                     TemplateName = table.Column<string>(maxLength: 255, nullable: true),
@@ -32,14 +31,16 @@ namespace Sample.Mailer.Cli.Migrations
                     ToDisplayName = table.Column<string>(maxLength: 200, nullable: true),
                     ToEmailAddress = table.Column<string>(maxLength: 200, nullable: true)
                 },
-                constraints: table => { table.PrimaryKey("PK_MessageHistory", x => x.Id); });
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MessageHistory", x => x.Id);
+                });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                "MessageHistory",
-                "mailerCli");
+                name: "MessageHistory");
         }
     }
 }

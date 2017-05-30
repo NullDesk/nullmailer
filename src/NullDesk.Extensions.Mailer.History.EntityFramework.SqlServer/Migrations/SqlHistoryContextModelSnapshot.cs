@@ -3,18 +3,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Sample.Mailer.Cli.History;
+using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer;
 
-namespace Sample.Mailer.Cli.Migrations
+namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migrations
 {
-    [DbContext(typeof(MailerCliHistoryContext))]
-    [Migration("20170527205108_ReplyTo")]
-    partial class ReplyTo
+    [DbContext(typeof(SqlHistoryContext))]
+    partial class SqlHistoryContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasDefaultSchema("mailerCli")
                 .HasAnnotation("ProductVersion", "1.1.2")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
