@@ -21,9 +21,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// </summary>
         /// <param name="settings">The history store settings.</param>
         /// <param name="logger">An optional logger.</param>
-        /// <param name="serializeAttachments">if set to <c>true</c> will serialize attachments for storage in the database.</param>
-        public EntityHistoryStore(EntityHistoryStoreSettings settings, ILogger logger = null,
-            bool serializeAttachments = false)
+        public EntityHistoryStore(EntityHistoryStoreSettings settings, ILogger logger = null)
         {
             Settings = settings;
             Logger = logger ?? NullLogger.Instance;
@@ -37,12 +35,16 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// <returns>Task&lt;Guid&gt; the ID of the message.</returns>
         public async Task<Guid> AddAsync(DeliveryItem item, CancellationToken token = default(CancellationToken))
         {
-            using (var context = (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions))
+            if (Settings.IsEnabled)
             {
-                context.MessageHistory.Add(item.ToEntityHistoryDeliveryItem(Settings.StoreAttachmentContents));
-                await context.SaveChangesAsync(token);
-                return item.Id;
+                using (var context = (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions))
+                {
+                    context.MessageHistory.Add(item.ToEntityHistoryDeliveryItem(Settings.StoreAttachmentContents));
+                    await context.SaveChangesAsync(token);
+                    return item.Id;
+                }
             }
+            return item.Id;
         }
 
         /// <summary>
@@ -53,11 +55,15 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         public async Task<DeliveryItem> GetAsync(Guid id, CancellationToken token = default(CancellationToken))
         {
-            using (var context = (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions))
+            if (Settings.IsEnabled)
             {
-                return (await context.FindAsync<EntityHistoryDeliveryItem>(new object[] {id}, token))
-                    ?.ToDeliveryItem();
+                using (var context = (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions))
+                {
+                    return (await context.FindAsync<EntityHistoryDeliveryItem>(new object[] {id}, token))
+                        ?.ToDeliveryItem();
+                }
             }
+            return null;
         }
 
         /// <summary>
@@ -70,15 +76,19 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         public async Task<IEnumerable<DeliveryItem>> GetAsync(int offset = 0, int limit = 100,
             CancellationToken token = new CancellationToken())
         {
-            using (var context = (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions))
+            if (Settings.IsEnabled)
             {
-                return
-                    await context.MessageHistory.OrderByDescending(i => i.CreatedDate)
-                        .Skip(offset)
-                        .Take(limit)
-                        .Select(i => i.ToDeliveryItem())
-                        .ToListAsync(token);
+                using (var context = (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions))
+                {
+                    return
+                        await context.MessageHistory.OrderByDescending(i => i.CreatedDate)
+                            .Skip(offset)
+                            .Take(limit)
+                            .Select(i => i.ToDeliveryItem())
+                            .ToListAsync(token);
+                }
             }
+            return new DeliveryItem[]{};
         }
 
         /// <summary>
@@ -91,18 +101,22 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         public async Task<IEnumerable<DeliveryItem>> SearchAsync(string searchText, int limit = 100,
             CancellationToken token = new CancellationToken())
         {
-            using (var context = (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions))
+            if (Settings.IsEnabled)
             {
-                return await context.MessageHistory
-                    .Where(
-                        i =>
-                            i.ToEmailAddress.Contains(searchText) || i.ToDisplayName.Contains(searchText) ||
-                            i.Subject.Contains(searchText))
-                    .OrderByDescending(i => i.CreatedDate)
-                    .Take(limit)
-                    .Select(i => i.ToDeliveryItem())
-                    .ToListAsync(token);
+                using (var context = (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions))
+                {
+                    return await context.MessageHistory
+                        .Where(
+                            i =>
+                                i.ToEmailAddress.Contains(searchText) || i.ToDisplayName.Contains(searchText) ||
+                                i.Subject.Contains(searchText))
+                        .OrderByDescending(i => i.CreatedDate)
+                        .Take(limit)
+                        .Select(i => i.ToDeliveryItem())
+                        .ToListAsync(token);
+                }
             }
+            return new DeliveryItem[] { };
         }
 
         /// <summary>

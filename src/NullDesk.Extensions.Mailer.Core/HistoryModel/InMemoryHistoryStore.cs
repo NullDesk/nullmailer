@@ -93,7 +93,7 @@ namespace NullDesk.Extensions.Mailer.Core
                         .OrderByDescending(i => i.CreatedDate)
                         .Skip(offset)
                         .Take(limit))
-                    : null;
+                    : Task.FromResult<IEnumerable<DeliveryItem>>(new DeliveryItem[]{});
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace NullDesk.Extensions.Mailer.Core
                         i.Subject.Contains(searchText))
                     .OrderByDescending(i => i.CreatedDate)
                     .Take(limit))
-                : null;
+                : Task.FromResult<IEnumerable<DeliveryItem>>(new DeliveryItem[] { });
         }
 
         /// <summary>
