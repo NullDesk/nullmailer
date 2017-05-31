@@ -25,6 +25,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
                 new OptionsWrapper<SendGridMailerSettings>(sendGridSettings),
                 logger,
                 Store));
+
         }
 
         public MailerFactory Mail { get; } = new MailerFactory();

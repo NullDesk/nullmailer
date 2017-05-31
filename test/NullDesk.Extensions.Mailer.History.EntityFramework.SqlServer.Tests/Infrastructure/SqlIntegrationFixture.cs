@@ -41,6 +41,8 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Inf
 
             var logging = ServiceProvider.GetService<ILoggerFactory>();
             logging.AddDebug(LogLevel.Debug);
+
+
         }
 
         public IServiceProvider ServiceProvider { get; set; }

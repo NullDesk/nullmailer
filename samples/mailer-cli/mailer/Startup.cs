@@ -101,7 +101,7 @@ namespace Sample.Mailer.Cli
             //var connectionString = Config.GetValue<string>("MailHistoryDbSettings:ConnectionString");
             //services.AddMailerSqlHistory(new SqlEntityHistoryStoreSettings { ConnectionString = connectionString });
 
-
+            
             //Configure a mailer 
             var activeMailService = Config.GetSection("MailSettings:ActiveMailService")?.Value.ToLowerInvariant();
             switch (activeMailService)
