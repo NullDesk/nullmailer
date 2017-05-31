@@ -10,6 +10,20 @@ namespace NullDesk.Extensions.Mailer.Core
     /// <summary>
     ///     Interface for a message and delivery history store provider
     /// </summary>
+    /// <typeparam name="TSettings">The type of the t settings.</typeparam>
+    /// <seealso cref="IHistoryStore" />
+    public interface IHistoryStore<TSettings> : IHistoryStore where TSettings : class, IHistoryStoreSettings
+    {
+        /// <summary>
+        ///     The history store settings.
+        /// </summary>
+        /// <value>The settings.</value>
+        TSettings Settings { get; set; }
+    }
+
+    /// <summary>
+    ///     Interface for a message and delivery history store provider
+    /// </summary>
     public interface IHistoryStore
     {
         /// <summary>
@@ -17,13 +31,6 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <returns></returns>
         ILogger Logger { get; }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether to serialize attachments for use in the history store. If not enabled,
-        ///     messages with attachments cannot be resent from history.
-        /// </summary>
-        /// <value><c>true</c> if attachments should be serialized; otherwise, <c>false</c>.</value>
-        bool SerializeAttachments { get; set; }
 
 
         /// <summary>

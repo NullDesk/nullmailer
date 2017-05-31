@@ -16,6 +16,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
             var loggerFactory = new LoggerFactory();
             loggerFactory.AddDebug(LogLevel.Debug);
 
+            // ReSharper disable once UnusedVariable
             var mkSettings = SetupMailerOptions(out bool isMailServerAlive).Value;
 
             Func<SmtpClient> getClientFunc = () =>
@@ -43,10 +44,10 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 
 
         public IHistoryStore StoreWithSerializableAttachments { get; set; } =
-            new InMemoryHistoryStore {SerializeAttachments = true};
+            new InMemoryHistoryStore(new StandardHistoryStoreSettings {StoreAttachmentContents = true});
 
         public IHistoryStore StoreWithoutSerializableAttachments { get; set; } =
-            new InMemoryHistoryStore {SerializeAttachments = false};
+            new InMemoryHistoryStore(new StandardHistoryStoreSettings {StoreAttachmentContents = false});
 
 
         public void Dispose()

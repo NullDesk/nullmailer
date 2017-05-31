@@ -4,7 +4,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests.Infrastructur
 {
     public class TestHistoryContext : HistoryContext
     {
-        public TestHistoryContext(DbContextOptions<TestHistoryContext> options) : base(options)
+        public TestHistoryContext(DbContextOptions<HistoryContext> options) : base(options)
         {
         }
     }

@@ -14,19 +14,19 @@ namespace NullDesk.Extensions.Mailer.Core
     /// <summary>
     ///     In-memory History Store.
     /// </summary>
-    /// <remarks>
-    ///     Useful for unit tests.
-    /// </remarks>
     /// <seealso cref="IHistoryStore" />
-    public class InMemoryHistoryStore : IHistoryStore
+    /// <remarks>Useful for unit tests.</remarks>
+    public class InMemoryHistoryStore : IHistoryStore<StandardHistoryStoreSettings>
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="InMemoryHistoryStore" /> class.
         /// </summary>
+        /// <param name="settings">The settings.</param>
         /// <param name="logger">An optional logger.</param>
-        public InMemoryHistoryStore(ILogger logger = null)
+        public InMemoryHistoryStore(StandardHistoryStoreSettings settings = null, ILogger logger = null)
         {
             Logger = logger ?? NullLogger.Instance;
+            Settings = settings ?? new StandardHistoryStoreSettings();
         }
 
         private List<string> Items { get; } = new List<string>();
@@ -40,18 +40,23 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <returns>Task&lt;Guid&gt; the ID of the message.</returns>
         public Task<Guid> AddAsync(DeliveryItem item, CancellationToken token = default(CancellationToken))
         {
-            if (item.Id == default(Guid))
+            var id = Guid.Empty;
+            if (Settings.IsEnabled)
             {
-                item.Id = new Guid();
-            }
-            if (!SerializeAttachments)
-            {
-                item.Attachments = item.Attachments.Select(i => new KeyValuePair<string, Stream>(i.Key, null))
-                    .ToDictionary(k => k.Key, k => k.Value);
-            }
+                if (item.Id == default(Guid))
+                {
+                    item.Id = new Guid();
+                }
+                if (!Settings.StoreAttachmentContents)
+                {
+                    item.Attachments = item.Attachments.Select(i => new KeyValuePair<string, Stream>(i.Key, null))
+                        .ToDictionary(k => k.Key, k => k.Value);
+                }
 
-            Items.Add(JsonConvert.SerializeObject(item));
-            return Task.FromResult(item.Id);
+                Items.Add(JsonConvert.SerializeObject(item));
+                id = item.Id;
+            }
+            return Task.FromResult(id);
         }
 
         /// <summary>
@@ -62,10 +67,12 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         public Task<DeliveryItem> GetAsync(Guid id, CancellationToken token = default(CancellationToken))
         {
-            return Task.FromResult(Items
-                .Select(JsonConvert.DeserializeObject<DeliveryItem>)
-                .OrderByDescending(i => i.CreatedDate)
-                .FirstOrDefault(i => i.Id == id));
+            return Settings.IsEnabled
+                ? Task.FromResult(Items
+                    .Select(JsonConvert.DeserializeObject<DeliveryItem>)
+                    .OrderByDescending(i => i.CreatedDate)
+                    .FirstOrDefault(i => i.Id == id))
+                : null;
         }
 
         /// <summary>
@@ -79,11 +86,14 @@ namespace NullDesk.Extensions.Mailer.Core
         public Task<IEnumerable<DeliveryItem>> GetAsync(int offset = 0, int limit = 100,
             CancellationToken token = new CancellationToken())
         {
-            return Task.FromResult(Items
-                .Select(JsonConvert.DeserializeObject<DeliveryItem>)
-                .OrderByDescending(i => i.CreatedDate)
-                .Skip(offset)
-                .Take(limit));
+            return
+                Settings.IsEnabled
+                    ? Task.FromResult(Items
+                        .Select(JsonConvert.DeserializeObject<DeliveryItem>)
+                        .OrderByDescending(i => i.CreatedDate)
+                        .Skip(offset)
+                        .Take(limit))
+                    : Task.FromResult<IEnumerable<DeliveryItem>>(new DeliveryItem[]{});
         }
 
         /// <summary>
@@ -97,13 +107,15 @@ namespace NullDesk.Extensions.Mailer.Core
         public Task<IEnumerable<DeliveryItem>> SearchAsync(string searchText, int limit = 100,
             CancellationToken token = new CancellationToken())
         {
-            return Task.FromResult(Items
-                .Select(JsonConvert.DeserializeObject<DeliveryItem>)
-                .Where(i =>
-                    i.ToEmailAddress.Contains(searchText) || i.ToDisplayName.Contains(searchText) ||
-                    i.Subject.Contains(searchText))
-                .OrderByDescending(i => i.CreatedDate)
-                .Take(limit));
+            return Settings.IsEnabled
+                ? Task.FromResult(Items
+                    .Select(JsonConvert.DeserializeObject<DeliveryItem>)
+                    .Where(i =>
+                        i.ToEmailAddress.Contains(searchText) || i.ToDisplayName.Contains(searchText) ||
+                        i.Subject.Contains(searchText))
+                    .OrderByDescending(i => i.CreatedDate)
+                    .Take(limit))
+                : Task.FromResult<IEnumerable<DeliveryItem>>(new DeliveryItem[] { });
         }
 
         /// <summary>
@@ -112,11 +124,11 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <value>The logger.</value>
         public ILogger Logger { get; }
 
+
         /// <summary>
-        ///     Gets or sets a value indicating whether to serialize attachments for use in the history store. If not enabled,
-        ///     messages with attachments cannot be resent from history.
+        ///     The history store settings.
         /// </summary>
-        /// <value><c>true</c> if attachments should be serialized; otherwise, <c>false</c>.</value>
-        public bool SerializeAttachments { get; set; }
+        /// <value>The settings.</value>
+        public StandardHistoryStoreSettings Settings { get; set; }
     }
 }

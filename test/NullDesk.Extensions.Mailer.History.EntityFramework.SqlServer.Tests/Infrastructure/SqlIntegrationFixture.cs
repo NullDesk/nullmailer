@@ -2,6 +2,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NullDesk.Extensions.Mailer.Core;
 
 namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Infrastructure
@@ -20,23 +21,28 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Inf
                 s.FromEmailAddress = "xunit@nowhere.com";
             });
 
-            var builder =
-                new DbContextOptionsBuilder<TestSqlHistoryContext>().UseSqlServer(
-                    @"Server=(localdb)\MSSQLLocalDB;Database=NullDeskMailerHistoryTests;Trusted_Connection=True;");
-            services.AddSingleton<DbContextOptions>(s => builder.Options);
-            services.AddTransient<TestSqlHistoryContext>();
-            services.AddSingleton<IHistoryStore, EntityHistoryStore<TestSqlHistoryContext>>();
-            services.AddTransient<IMailer, NullMailer>();
+
+            services.AddMailerHistory<TestSqlHistoryContext>(new SqlEntityHistoryStoreSettings
+            {
+                ConnectionString =
+                    @"Server=(localdb)\MSSQLLocalDB;Database=NullDeskMailerHistoryTests;Trusted_Connection=True;"
+            });
+
+            services.AddNullMailer(s => s.GetService<IOptions<NullMailerSettings>>().Value);
 
             ServiceProvider = services.BuildServiceProvider();
 
-            using (var context = ServiceProvider.GetService<TestSqlHistoryContext>())
+            using (var context =
+                ((EntityHistoryStore<TestSqlHistoryContext>) ServiceProvider.GetService<IHistoryStore>())
+                .GetHistoryContext())
             {
                 context.Database.Migrate();
             }
 
             var logging = ServiceProvider.GetService<ILoggerFactory>();
             logging.AddDebug(LogLevel.Debug);
+
+
         }
 
         public IServiceProvider ServiceProvider { get; set; }
@@ -44,7 +50,12 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Inf
 
         public void Dispose()
         {
-            ServiceProvider.GetService<TestSqlHistoryContext>().Database.EnsureDeleted();
+            using (var context =
+                ((EntityHistoryStore<TestSqlHistoryContext>) ServiceProvider.GetService<IHistoryStore>())
+                .GetHistoryContext())
+            {
+                context.Database.EnsureDeleted();
+            }
         }
     }
 }

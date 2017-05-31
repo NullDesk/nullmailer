@@ -36,12 +36,12 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
                 mailerSettings.ReplyToEmailAddress, mailerSettings.ReplyToDisplayName));
         }
 
-        //Step 3 = MessageBuilder.BuildRecipientsStep.cs
+
+        //Step 2 = MessageBuilder.BuildSubjectStep.cs
 
         //Step 1 = MessageBuilder.BuildFromStep.cs
 
-
-        //Step 2 = MessageBuilder.BuildSubjectStep.cs
+        //Step 3 = MessageBuilder.BuildRecipientsStep.cs
 
         //Step 4 = MessageBuilder.BuildContentStep.cs
 

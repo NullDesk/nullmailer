@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using MimeKit;
 using NullDesk.Extensions.Mailer.Core;
 
@@ -29,13 +28,13 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="historyStore">The history store.</param>
         public MkSmtpMailer(
             SmtpClient client,
-            IOptions<MkSmtpMailerSettings> settings,
+            MkSmtpMailerSettings settings,
             ILogger<MkSmtpMailer> logger = null,
             IHistoryStore historyStore = null)
-            : base(settings.Value, logger, historyStore)
+            : base(settings, logger, historyStore)
         {
             MailClient = client;
-            if (!settings.Value.EnableSslServerCertificateValidation)
+            if (!settings.EnableSslServerCertificateValidation)
             {
                 MailClient.ServerCertificateValidationCallback = (s, c, ch, e) => true;
             }
@@ -48,7 +47,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
         /// <param name="logger">The logger.</param>
         /// <param name="historyStore">The history store.</param>
         public MkSmtpMailer(
-            IOptions<MkSmtpMailerSettings> settings,
+            MkSmtpMailerSettings settings,
             ILogger<MkSmtpMailer> logger = null,
             IHistoryStore historyStore = null)
             : this(new SmtpClient(), settings, logger, historyStore)

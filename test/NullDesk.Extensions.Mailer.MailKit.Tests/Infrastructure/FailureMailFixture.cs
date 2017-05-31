@@ -37,8 +37,9 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                     .SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>())
                     .Returns(Task.CompletedTask);
                 return isMailServerAlive
-                    ? new MkSmtpMailer(options, s.GetService<ILogger<MkSmtpMailer>>(), s.GetService<IHistoryStore>())
-                    : new MkSmtpMailer(client, options, s.GetService<ILogger<MkSmtpMailer>>(),
+                    ? new MkSmtpMailer(options.Value, s.GetService<ILogger<MkSmtpMailer>>(),
+                        s.GetService<IHistoryStore>())
+                    : new MkSmtpMailer(client, options.Value, s.GetService<ILogger<MkSmtpMailer>>(),
                         s.GetService<IHistoryStore>());
             });
 

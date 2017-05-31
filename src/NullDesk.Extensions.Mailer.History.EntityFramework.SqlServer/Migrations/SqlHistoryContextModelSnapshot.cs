@@ -2,17 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Sample.Mailer.Cli.History;
 
-namespace Sample.Mailer.Cli.Migrations
+namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migrations
 {
-    [DbContext(typeof(MailerCliHistoryContext))]
-    internal class MailerCliHistoryContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(SqlHistoryContext))]
+    internal class SqlHistoryContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasDefaultSchema("mailerCli")
                 .HasAnnotation("ProductVersion", "1.1.2")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 

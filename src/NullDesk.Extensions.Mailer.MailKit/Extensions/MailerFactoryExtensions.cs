@@ -1,7 +1,6 @@
 ﻿using System;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using NullDesk.Extensions.Mailer.MailKit;
 
 // ReSharper disable once CheckNamespace
@@ -27,7 +26,7 @@ namespace NullDesk.Extensions.Mailer.Core
         {
             factory.Register(() =>
                 new MkSmtpMailer(
-                    new OptionsWrapper<MkSmtpMailerSettings>(mailerSettings),
+                    mailerSettings,
                     logger,
                     store));
         }
@@ -50,7 +49,7 @@ namespace NullDesk.Extensions.Mailer.Core
             factory.Register(() =>
                 new MkSmtpMailer(
                     clientFunc(),
-                    new OptionsWrapper<MkSmtpMailerSettings>(mailerSettings),
+                    mailerSettings,
                     logger,
                     store));
         }

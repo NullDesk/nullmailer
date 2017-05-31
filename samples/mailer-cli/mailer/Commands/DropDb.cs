@@ -1,14 +1,16 @@
 ﻿using Microsoft.Extensions.CommandLineUtils;
 using NullDesk.Cli;
+using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.History.EntityFramework;
+using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer;
 
 namespace Sample.Mailer.Cli.Commands
 {
     public class DropDb : CliCommand
     {
-        public DropDb(AnsiConsole console, HistoryContext context) : base(console)
+        public DropDb(AnsiConsole console, IHistoryStore history) : base(console)
         {
-            Context = context;
+            Context = ((EntityHistoryStore<SqlHistoryContext>) history).GetHistoryContext();
         }
 
         private HistoryContext Context { get; }
@@ -28,6 +30,7 @@ namespace Sample.Mailer.Cli.Commands
                     var message = result ? "Database removed".Cyan() : "Failed to remove database".Red();
 
                     Reporter.WriteLine(message);
+                    Context.Dispose();
                     return result ? 0 : 1;
                 });
             }, false);

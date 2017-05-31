@@ -1,19 +1,17 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Sample.Mailer.Cli.Migrations
+namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migrations
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+
     public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.EnsureSchema(
-                "mailerCli");
-
             migrationBuilder.CreateTable(
                 "MessageHistory",
-                schema: "mailerCli",
-                columns: table => new
+                table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
                     AttachmentsJson = table.Column<string>(nullable: true),
@@ -25,6 +23,8 @@ namespace Sample.Mailer.Cli.Migrations
                     HtmlContent = table.Column<string>(nullable: true),
                     IsSuccess = table.Column<bool>(nullable: false),
                     ProviderMessageId = table.Column<string>(maxLength: 200, nullable: true),
+                    ReplyToDisplayName = table.Column<string>(maxLength: 200, nullable: true),
+                    ReplyToEmailAddress = table.Column<string>(maxLength: 200, nullable: true),
                     Subject = table.Column<string>(maxLength: 200, nullable: true),
                     SubstitutionsJson = table.Column<string>(nullable: true),
                     TemplateName = table.Column<string>(maxLength: 255, nullable: true),
@@ -38,8 +38,9 @@ namespace Sample.Mailer.Cli.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                "MessageHistory",
-                "mailerCli");
+                "MessageHistory");
         }
     }
+
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

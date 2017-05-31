@@ -49,7 +49,8 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                 client
                     .SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>())
                     .Returns(Task.CompletedTask);
-                return new MkSmtpMailer(settings, s.GetService<ILogger<MkSmtpMailer>>(), s.GetService<IHistoryStore>());
+                return new MkSmtpMailer(settings.Value, s.GetService<ILogger<MkSmtpMailer>>(),
+                    s.GetService<IHistoryStore>());
             });
 
 
@@ -74,7 +75,8 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                     .SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>())
                     .Returns(Task.CompletedTask);
 
-                return new MkSmtpMailer(settings, s.GetService<ILogger<MkSmtpMailer>>(), s.GetService<IHistoryStore>());
+                return new MkSmtpMailer(settings.Value, s.GetService<ILogger<MkSmtpMailer>>(),
+                    s.GetService<IHistoryStore>());
             });
 
 

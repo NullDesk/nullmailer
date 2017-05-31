@@ -10,11 +10,8 @@ namespace NullDesk.Extensions.Mailer.Core.Tests.Infrastructure
             //setup the dependency injection service
             var services = new ServiceCollection();
 
-            services.AddOptions();
-
             services.AddSingleton<IHistoryStore, InMemoryHistoryStore>(
-                o => new InMemoryHistoryStore {SerializeAttachments = true});
-
+                s => new InMemoryHistoryStore(new StandardHistoryStoreSettings {StoreAttachmentContents = true}));
 
             ServiceProvider = services.BuildServiceProvider();
         }

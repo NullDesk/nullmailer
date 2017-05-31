@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 // ReSharper disable once CheckNamespace
 namespace NullDesk.Extensions.Mailer.Core
@@ -35,7 +37,6 @@ namespace NullDesk.Extensions.Mailer.Core
             return func?.Invoke();
         }
 
-
         /// <summary>
         ///     Registers a function that can be use to create a configured mailer instance.
         /// </summary>
@@ -45,6 +46,44 @@ namespace NullDesk.Extensions.Mailer.Core
         {
             MailerRegistrations.Add(mailerFunc);
         }
+
+        /// <summary>
+        ///     Registers the specified mailer type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TSettings">The type of the t settings.</typeparam>
+        /// <param name="settings">The settings.</param>
+        /// <param name="logger">The logger.</param>
+        /// <param name="store">The store.</param>
+        public virtual void Register<T, TSettings>(TSettings settings, ILogger logger = null, IHistoryStore store = null)
+            where TSettings : class, IMailerSettings
+            where T : Mailer<TSettings>
+        {
+            Register(() =>
+            {
+                var ctor = typeof(T).GetConstructor(new[] { typeof(TSettings), typeof(ILogger), typeof(IHistoryStore) });
+                return (T)ctor.Invoke(
+                    new object[]
+                    {
+                        settings,
+                        logger ?? DefaultLoggerFactory?.CreateLogger(typeof(T)) ?? NullLogger.Instance,
+                        store ?? DefaultHistoryStore
+                    });
+            });
+        }
+
+        /// <summary>
+        /// The default history store to use when no history store is supplied for registrations.
+        /// </summary>
+        /// <value>The default history store.</value>
+        public IHistoryStore DefaultHistoryStore { get; set; } = NullHistoryStore.Instance;
+
+        /// <summary>
+        /// The default logger factory to use when no loggers are supplied for registrations.
+        /// </summary>
+        /// <value>The default logger factory.</value>
+        public ILoggerFactory DefaultLoggerFactory { get; set; }
+
 
         /// <summary>
         ///     Gets an instance of a registered mailer for the specified type.

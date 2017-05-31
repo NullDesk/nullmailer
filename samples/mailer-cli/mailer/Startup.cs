@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Configuration;
@@ -8,12 +9,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.History.EntityFramework;
+using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer;
 using NullDesk.Extensions.Mailer.MailKit;
 using NullDesk.Extensions.Mailer.SendGrid;
 using Sample.Mailer.Cli.Commands;
 using Sample.Mailer.Cli.Configuration;
-using Sample.Mailer.Cli.History;
-
 
 // ReSharper disable once CheckNamespace
 namespace Sample.Mailer.Cli
@@ -22,25 +22,34 @@ namespace Sample.Mailer.Cli
     {
         private static IConfigurationRoot Config { get; set; }
 
+
         public void Run(string[] args)
         {
             Config = AcquireConfiguration();
 
             var services = ConfigureConsoleServices(new ServiceCollection());
+
             Program.ServiceProvider = services;
             ConfigureLogging(services.GetService<ILoggerFactory>());
-
-            var historySettings = services.GetService<IOptions<MailHistoryDbSettings>>();
-            if (historySettings.Value.EnableHistory)
+            if (!args.First().Equals("--help", StringComparison.OrdinalIgnoreCase) &&
+                !args.First().Equals("drop-db", StringComparison.OrdinalIgnoreCase))
             {
-                ConfigureHistory(services.GetService<HistoryContext>(), services.GetService<ILogger<Startup>>());
+                var historySettings = services.GetService<IOptions<SqlEntityHistoryStoreSettings>>();
+                if (historySettings.Value.IsEnabled)
+                {
+                    ConfigureHistory((EntityHistoryStore<SqlHistoryContext>) services.GetService<IHistoryStore>(),
+                        services.GetService<ILogger<Startup>>());
+                }
             }
         }
 
-        private void ConfigureHistory(HistoryContext context, ILogger<Startup> logger)
+        private void ConfigureHistory(EntityHistoryStore<SqlHistoryContext> history, ILogger<Startup> logger)
         {
             logger.LogInformation("History database initializing");
-            context.Database.Migrate();
+            using (var context = history.GetHistoryContext())
+            {
+                context.Database.Migrate();
+            }
             logger.LogInformation("History database initialized");
         }
 
@@ -76,35 +85,32 @@ namespace Sample.Mailer.Cli
             services.Configure<MailHistoryDbSettings>(Config.GetSection("MailHistoryDbSettings"));
             services.Configure<TestMessageSettings>(Config.GetSection("TestMessageSettings"));
             services.Configure<MkSmtpMailerSettings>(Config.GetSection("MailSettings:MkSmtpMailerSettings"));
+
             services.Configure<SendGridMailerSettings>(Config.GetSection("MailSettings:SendGridMailerSettings"));
 
-            var historyDbEnabled = Config.GetValue<bool>("MailHistoryDbSettings:EnableHistory");
-            if (historyDbEnabled)
-            {
-                //setup message delivery history for sql server
-                services.AddSingleton<DbContextOptions>(s =>
-                {
-                    var options = s.GetService<IOptions<MailHistoryDbSettings>>();
-                    var builder = new DbContextOptionsBuilder<MailerCliHistoryContext>()
-                        .UseSqlServer(options.Value.ConnectionString);
-                    return builder.Options;
-                });
-                services.AddSingleton<IHistoryStore, EntityHistoryStore<MailerCliHistoryContext>>();
-
-                //mail history doesn't need this, but our DB cleanup commands do
-                services.AddTransient<HistoryContext, MailerCliHistoryContext>();
-            }
+            services.Configure<SqlEntityHistoryStoreSettings>(Config.GetSection("MailHistoryDbSettings"));
 
 
+            services.AddMailerSqlHistory(s => s.GetService<IOptions<SqlEntityHistoryStoreSettings>>().Value);
+
+            ////alternate way to instantiate history
+            //var connectionString = Config.GetValue<string>("MailHistoryDbSettings:ConnectionString");
+            //services.AddMailerSqlHistory(settings => settings.ConnectionString = connectionString);
+
+            ////another alternate way to instantiate history
+            //var connectionString = Config.GetValue<string>("MailHistoryDbSettings:ConnectionString");
+            //services.AddMailerSqlHistory(new SqlEntityHistoryStoreSettings { ConnectionString = connectionString });
+
+            
             //Configure a mailer 
             var activeMailService = Config.GetSection("MailSettings:ActiveMailService")?.Value.ToLowerInvariant();
             switch (activeMailService)
             {
                 case "sendgrid":
-                    services.AddMailer<SendGridMailer>();
+                    services.AddSendGridMailer(s => s.GetService<IOptions<SendGridMailerSettings>>().Value);
                     break;
                 case "mailkit":
-                    services.AddMailer<MkSmtpMailer>();
+                    services.AddMkSmtpMailer(s => s.GetService<IOptions<MkSmtpMailerSettings>>().Value);
                     break;
             }
 

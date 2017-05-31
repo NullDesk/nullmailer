@@ -21,7 +21,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Inf
         /// <param name="options">Information about the environment an application is running in.</param>
         public TestSqlHistoryContext Create(DbContextFactoryOptions options)
         {
-            var builder = new DbContextOptionsBuilder<TestSqlHistoryContext>();
+            var builder = new DbContextOptionsBuilder<HistoryContext>();
 
             builder.UseSqlServer(
                 @"Server=(localdb)\MSSQLLocalDB;Database=NullMailerHistory;Trusted_Connection=True;");

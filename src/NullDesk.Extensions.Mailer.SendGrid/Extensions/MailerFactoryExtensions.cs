@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using NullDesk.Extensions.Mailer.SendGrid;
 using SendGrid;
 
@@ -26,7 +25,7 @@ namespace NullDesk.Extensions.Mailer.Core
             IHistoryStore store = null)
         {
             factory.Register(() => new SendGridMailer(
-                new OptionsWrapper<SendGridMailerSettings>(settings),
+                settings,
                 logger,
                 store));
         }
@@ -48,7 +47,7 @@ namespace NullDesk.Extensions.Mailer.Core
         {
             factory.Register(() => new SendGridMailer(
                 clientFunc(),
-                new OptionsWrapper<SendGridMailerSettings>(settings),
+                settings,
                 logger,
                 store));
         }

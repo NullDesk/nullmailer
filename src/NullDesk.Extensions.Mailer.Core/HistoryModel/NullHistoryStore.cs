@@ -13,7 +13,7 @@ namespace NullDesk.Extensions.Mailer.Core
     ///     A HistoryStore that does nothing, used as a default when history is not enabled.
     /// </summary>
     /// <seealso cref="IHistoryStore" />
-    public class NullHistoryStore : IHistoryStore
+    public class NullHistoryStore : IHistoryStore<StandardHistoryStoreSettings>
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="NullHistoryStore" /> class.
@@ -21,6 +21,7 @@ namespace NullDesk.Extensions.Mailer.Core
         internal NullHistoryStore()
         {
             Logger = NullLogger.Instance;
+            Settings = new StandardHistoryStoreSettings();
         }
 
         /// <summary>
@@ -28,6 +29,13 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <value>The instance.</value>
         public static NullHistoryStore Instance { get; } = new NullHistoryStore();
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether to serialize attachments for use in the history store. If not enabled,
+        ///     messages with attachments cannot be resent from history.
+        /// </summary>
+        /// <value><c>true</c> if attachments should be serialized; otherwise, <c>false</c>.</value>
+        public bool SerializeAttachments { get; set; } = false;
 
         /// <summary>
         ///     Does nothing.
@@ -88,10 +96,9 @@ namespace NullDesk.Extensions.Mailer.Core
         public ILogger Logger { get; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether to serialize attachments for use in the history store. If not enabled,
-        ///     messages with attachments cannot be resent from history.
+        ///     Gets or sets the settings.
         /// </summary>
-        /// <value><c>true</c> if attachments should be serialized; otherwise, <c>false</c>.</value>
-        public bool SerializeAttachments { get; set; } = false;
+        /// <value>The settings.</value>
+        public StandardHistoryStoreSettings Settings { get; set; }
     }
 }

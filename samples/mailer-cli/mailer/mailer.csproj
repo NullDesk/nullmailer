@@ -17,18 +17,6 @@
         </Content>
     </ItemGroup>
     <ItemGroup>
-        <Compile Remove="Migrations\**" />
-        <EmbeddedResource Remove="Migrations\**" />
-        <None Remove="Migrations\**" />
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="Migrations\20170315051343_Initial.cs" />
-        <Compile Include="Migrations\20170315051343_Initial.Designer.cs" />
-        <Compile Include="Migrations\20170527205108_ReplyTo.cs" />
-        <Compile Include="Migrations\20170527205108_ReplyTo.Designer.cs" />
-        <Compile Include="Migrations\MailerCliHistoryContextModelSnapshot.cs" />
-    </ItemGroup>
-    <ItemGroup>
         <ProjectReference Include="..\..\..\src\NullDesk.Extensions.Mailer.MailKit\NullDesk.Extensions.Mailer.MailKit.csproj" />
         <ProjectReference Include="..\..\..\src\NullDesk.Extensions.Mailer.SendGrid\NullDesk.Extensions.Mailer.SendGrid.csproj" />
         <ProjectReference Include="..\..\..\src\NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer\NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.csproj" />

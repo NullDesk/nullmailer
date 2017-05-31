@@ -6,7 +6,6 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.Core.Extensions;
 using SendGrid;
@@ -30,10 +29,10 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="historyStore">The history store.</param>
         public SendGridMailer(
             SendGridClient client,
-            IOptions<SendGridMailerSettings> settings,
+            SendGridMailerSettings settings,
             ILogger<SendGridMailer> logger = null,
             IHistoryStore historyStore = null)
-            : base(settings.Value, logger, historyStore)
+            : base(settings, logger, historyStore)
         {
             MailClient = client;
         }
@@ -45,10 +44,10 @@ namespace NullDesk.Extensions.Mailer.SendGrid
         /// <param name="logger">The logger.</param>
         /// <param name="historyStore">The history store.</param>
         public SendGridMailer(
-            IOptions<SendGridMailerSettings> settings,
+            SendGridMailerSettings settings,
             ILogger<SendGridMailer> logger = null,
             IHistoryStore historyStore = null)
-            : this(new SendGridClient(settings.Value.ApiKey), settings, logger, historyStore)
+            : this(new SendGridClient(settings.ApiKey), settings, logger, historyStore)
         {
         }
 

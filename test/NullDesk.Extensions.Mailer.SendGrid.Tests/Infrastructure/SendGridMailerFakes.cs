@@ -13,12 +13,12 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
     {
         public SendGridMailerFake(SendGridClient client, IOptions<SendGridMailerSettings> settings,
             ILogger<SendGridMailer> logger = null, IHistoryStore historyStore = null)
-            : base(client, settings, logger, historyStore)
+            : base(client, settings.Value, logger, historyStore)
         {
         }
 
         public SendGridMailerFake(IOptions<SendGridMailerSettings> settings, ILogger<SendGridMailer> logger = null,
-            IHistoryStore historyStore = null) : base(settings, logger, historyStore)
+            IHistoryStore historyStore = null) : base(settings.Value, logger, historyStore)
         {
         }
 
