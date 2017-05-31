@@ -116,7 +116,7 @@ In the above example, the settings are supplied via the `OptionsWrapper<T>` clas
 
 For most real-world scenarios, you would use dependency injection or the provided factory to obtain mailer instances, without having to supply all the constructor parameters each time.
 
-Using the mailer factory, you can configure the mailer once in startup:
+There are several extensions and overloads for working with the `MailerFactory`, these samples only show the more common usages.
 
         var settings = new SendGridMailerSettings
         {
@@ -129,7 +129,7 @@ Using the mailer factory, you can configure the mailer once in startup:
         };
 
         var factory = new MailerFactory();
-        factory.AddSendGridMailer(sendGridSettings);
+        factory.AddSendGridMailer(settings);
 
 Then anytime you need to send mail, just grab a new mailer instance from the factory and go:
 
@@ -155,7 +155,14 @@ Then anytime you need to send mail, just grab a new mailer instance from the fac
 
 ### <a name="dependency-injection"></a>Dependency Injection
 
-When using dependency injection frameworks, it is best to register the mailers to be transient instances. This example demonstrates this using Microsoft's own dependency injection extensions:
+When using any dependency injection framework, it is best to register types as follows:
+
+- Mailers should be registered as `IMailer` with a transient or limited scope.
+- Mailer and History settings should usually be registered as their actual type, with a singleton lifecycle.
+- History Stores should be registered as `IHistoryStore` with a singleton lifecyle
+  - History stores control the lifecycle of any associated `DbContext` automatically.
+
+When using the Microsoft DI framework, there are numerous extension methods to assist in registering and setting up mailers, settings, and the optional loggers and history stores:
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
@@ -186,14 +193,18 @@ Example using the MailerFactory:
                 .AddConsole(consoleLoggerConfig)
         };
 
-        mailerFactory.AddSendGridMailer(sendGridSettings);
+        mailerFactory.AddSendGridMailer(new SendGridMailerSettings{
+            ApiKey = "123",
+            FromDisplayName = "Person Name",
+            FromEmailAddress = "someone@toast.com",
+            IsSandboxMode = false
+        });
 
 Example when using MS DI extensions:
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddLogging(); //that's all you need
-
             services.AddOptions();
             services.Configure<SendGridMailerSettings>(s =>
             {
@@ -205,6 +216,7 @@ Example when using MS DI extensions:
                     s.IsSandboxMode = false;
             });
 
+            // gets settings from config options
             services.AddSendGridMailer(s => s.GetService<IOptions<SendGridMailerSettings>>().Value);
 
             return services.BuildServiceProvider();
@@ -213,9 +225,8 @@ Example when using MS DI extensions:
 
 Example when instantiating a Mailer directly:
 
-        //optional: configure your desired logging providers
-        var loggerFactory = new LoggerFactory();
-        loggerFactory.AddConsole(consoleLoggerConfig);
+        var loggerFactory = new LoggerFactory()
+            .AddConsole(consoleLoggerConfig);
 
         using (var mailer = new SendGridMailer(
             settings,
@@ -230,13 +241,17 @@ If a logger isn't supplied, the framework will automatically use the `Microsoft.
 
 The mailer extensions also support recording messages and their delivery details in an optional message history store. Depending on which history package you select, configuration may be different.
 
-The core package includes a `NullHistoryStore` (does nothing), which is the default for instantiating mailers when no history store is specified. The core package also includes an `InMemoryHistoryStore`, which is usually used for testing purposes.
+The core package includes a `NullHistoryStore` (does nothing) and an `InMemoryHistoryStore`, which is usually used for testing purposes.
 
 #### <a name="sqlhistory"></a>Setup History using EntityFramework and SQL Server
 
 To store history in SQL server using Entity Framework 7, add the `NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer` NuGet package.
 
-The standard SQL history store can be created like this:
+There are two settings types you can choose from. The simplified `SqlEntityHistoryStoreSettings` that can be serialized easily to or from JSON (good when using .NET Core configuration), or `EntityHistoryStoreSettings` which requires a `DbContextOptions<HistoryContext>` value --harder to serialize, but offers the full range of EF context options.
+
+Either type of settings can be used.
+
+The standard SQL history store with `SqlEntityHistoryStoreSettings`:
 
     var historyStore = new EntityHistoryStore<SqlHistoryContext>(
         new SqlEntityHistoryStoreSettings()
@@ -244,9 +259,7 @@ The standard SQL history store can be created like this:
             ConnectionString = connectionString
         });
 
-There are two settings types you can choose from. The `SqlEntityHistoryStoreSettings` is a simplified settings class that can also be serialized easily to or from JSON (good when using .NET Core configuration). The other is `EntityHistoryStoreSettings`, which requires DbContextOptions. Either can be used to instantiate your history.
-
-Alternate SQL history instantiation:
+Alternate SQL history instantiation with `EntityHistoryStoreSettings`:
 
     var historyStore = new EntityHistoryStore<SqlHistoryContext>(
         new EntityHistoryStoreSettings
@@ -256,14 +269,36 @@ Alternate SQL history instantiation:
                 .Options
         });
 
-You can use your own DbContext type, just inherit from `SqlHistoryContext` and override any members you wish. You can treat this as any EF DbContext and generate migrations, customize the persistance model using the module builder, etc.
+You can also create your own DbContext type, derived from `SqlHistoryContext`, and override any members you wish. You can treat this as any other EF DbContext and generate your own migrations, customize the persistance model using the module builder, etc.
 
+Note that the Db options should still be of type `DbContextOptionsBuilder<HistoryContext>` even when using a custom context type.
+
+Example of a custom DbContext:
+
+    public class TestSqlHistoryContext : SqlHistoryContext
+    {
+        public TestSqlHistoryContext(DbContextOptions<HistoryContext> options) : base(options)
+        {
+        }
+    }
+
+Using the custom DbContext:
+
+    var historyStore = new EntityHistoryStore<MyCustomHistoryContext>(
+        new EntityHistoryStoreSettings
+        {
+            DbOptions = new DbContextOptionsBuilder<HistoryContext>()
+                .UseSqlServer(connectionString)
+                .Options
+        });
+
+You could also inherit from `HistoryContext` directly if you wanted to use another EF database provider framework instead of SQL server. In this case, you only need to reference the `NullDesk.Extensions.Mailer.History.EntityFramework` package.
 
 #### <a name="ihistorystore"></a>Delivery History with IHistoryStore
 
 Creating and using the History store features is similar to using the logging support described above. You just need to pass in an `IHistoryStore`.
 
-The below examples demonstrate usage with the EntityFramework SQL Server History Store package, but usage will be similar for any IHistoryStore implementation. There are a number of overloads and extensions for the built-in history stores that can be used instead of those shown here.
+The below examples demonstrate usage with the EntityFramework SQL Server History Store package, but usage will be similar for any IHistoryStore implementation. 
 
 Example using the MailerFactory:
 
@@ -341,14 +376,9 @@ The re-send will **immediately attempt** to re-deliver the message, but will not
 
 **Limitations**
 
-- By default, messages with attachments cannot be resent.
+By default, messages with attachments cannot be resent. Since the default setting for for most implementations of `IHistoryStore` is to ignore the attachment file contents, the complete message is not available for re-delivery.
 
-Since the default setting for for most implementations of `IHistoryStore` is to ignore the attachment file contents, the complete message is not available for re-delivery.
-
-You can enable attachment serialization for the history store by explicitly changing this setting in code.
-
-     myHistoryStore.SerializeAttachments = true;
-
+You can enable attachment serialization and storage for the history store in the settings by changing the `StoreAttachmentContents` value to `true`.
 
 ## <a name="creating-messages"></a>Creating MailerMessages
 
@@ -384,7 +414,7 @@ Minimal Example using `MessageBuilder` directly:
             .And.ForTemplate("MyTemplate")
             .Build()
 
-If using `CreateMessage()`, the sender details will be provided by your mailer's settings, and the builder will begin with the subject step.
+If using `CreateMessage()`, the sender and replyTo details will be provided by your mailer's settings, and the builder will begin with the subject step.
 
 Minimal Example using `CreateMessage()`
 
@@ -425,9 +455,7 @@ A Complete Example:
 
 ### <a name="fluent-extensions"></a>Fluent Extensions
 
-The Mailer Extensions also includes a more traditional set of fluent extension methods that can sometimes be useful in creating messages.
-
-While these are mostly intended for internal use in the fluent message builder, they are available for your convenience if you choose to use them. They are often handy for modifying a message after it has been created by another mechanism.
+The Mailer Extensions also includes a more traditional set of fluent extension methods.
 
 With these extensions, the order in which you chain the methods is largely irrelevant.
 
@@ -450,7 +478,7 @@ Here is a basic example:
 
 ### <a name="class-instantiation"></a>Class Instantiation
 
-While the message builder fluent API is probably the best way to create a new message, direct instantiation is also straight-forward:
+While the message builder fluent API is usually best, direct instantiation is also straight-forward:
 
         var message = new MailerMessage
         {
@@ -489,7 +517,9 @@ While the message builder fluent API is probably the best way to create a new me
 
 A `MailMessage` may define multiple recipients, each potentially having their own personalized substitutions. The Mailer extensions will ensure that **each recipient receives a separate and isolated email** message.
 
-Each `MailMessage` is converted into one `DeliveryItem`. When sending, each delivery item is sent as a unique email. If a history store is used, each `DeliveryItem` has its own status and history.
+Each `MailMessage` is converted into one or more `DeliveryItem` instances. When sending mail, each delivery item will be sent as a unique email. 
+
+If a history store is used, then each `DeliveryItem` has its own history record.
 
 ### <a name="subs"></a>Substitutions and PersonalizedSubstitutions
 
