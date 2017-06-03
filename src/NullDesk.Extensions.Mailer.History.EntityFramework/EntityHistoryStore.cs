@@ -16,15 +16,18 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
     public class EntityHistoryStore<TContext> : IHistoryStore<EntityHistoryStoreSettings>
         where TContext : HistoryContext
     {
+
+        private bool _isInitialized;
+
         /// <summary>
         ///     Creates an instance of the EntityHistoryStore
         /// </summary>
         /// <param name="settings">The history store settings.</param>
         /// <param name="logger">An optional logger.</param>
-        public EntityHistoryStore(EntityHistoryStoreSettings settings, ILogger logger = null)
+        public EntityHistoryStore(EntityHistoryStoreSettings settings, ILogger<EntityHistoryStore<TContext>> logger = null)
         {
             Settings = settings;
-            Logger = logger ?? NullLogger.Instance;
+            Logger = (ILogger) logger ?? NullLogger.Instance;
         }
 
         /// <summary>
@@ -37,7 +40,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         {
             if (Settings.IsEnabled)
             {
-                using (var context = (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions))
+                using (var context = GetContext())
                 {
                     context.MessageHistory.Add(item.ToEntityHistoryDeliveryItem(Settings.StoreAttachmentContents));
                     await context.SaveChangesAsync(token);
@@ -46,6 +49,8 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
             }
             return item.Id;
         }
+
+       
 
         /// <summary>
         ///     Gets the history item from the store.
@@ -57,9 +62,9 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         {
             if (Settings.IsEnabled)
             {
-                using (var context = (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions))
+                using (var context = GetContext())
                 {
-                    return (await context.FindAsync<EntityHistoryDeliveryItem>(new object[] {id}, token))
+                    return (await context.FindAsync<EntityHistoryDeliveryItem>(new object[] { id }, token))
                         ?.ToDeliveryItem();
                 }
             }
@@ -78,7 +83,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         {
             if (Settings.IsEnabled)
             {
-                using (var context = (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions))
+                using (var context = GetContext())
                 {
                     return
                         await context.MessageHistory.OrderByDescending(i => i.CreatedDate)
@@ -88,7 +93,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
                             .ToListAsync(token);
                 }
             }
-            return new DeliveryItem[]{};
+            return new DeliveryItem[] { };
         }
 
         /// <summary>
@@ -103,7 +108,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         {
             if (Settings.IsEnabled)
             {
-                using (var context = (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions))
+                using (var context = GetContext())
                 {
                     return await context.MessageHistory
                         .Where(
@@ -138,7 +143,21 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// <returns>HistoryContext.</returns>
         public HistoryContext GetHistoryContext()
         {
-            return (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions);
+            return (TContext)Activator.CreateInstance(typeof(TContext), Settings.DbOptions);
+        }
+
+        private TContext GetContext()
+        {
+            var context = (TContext)Activator.CreateInstance(typeof(TContext), Settings.DbOptions);
+            if (Settings.AutoInitializeDatabase && !_isInitialized)
+            {
+                Logger.LogInformation("Beginning history database auto-initialization");
+                context.InitializeDatabase();
+                _isInitialized = true;
+                Logger.LogInformation("Completed history database auto-initialization");
+            }
+            return context;
+
         }
     }
 }

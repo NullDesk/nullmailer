@@ -11,16 +11,21 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer
         /// <summary>
         ///     Initializes a new instance of the <see cref="SqlHistoryContext" /> class.
         /// </summary>
-        protected SqlHistoryContext()
-        {
-        }
+        protected SqlHistoryContext() { }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SqlHistoryContext" /> class.
         /// </summary>
         /// <param name="options">The options.</param>
-        public SqlHistoryContext(DbContextOptions<HistoryContext> options) : base(options)
+        public SqlHistoryContext(DbContextOptions<HistoryContext> options) : base(options) { }
+
+        /// <summary>
+        /// Initializes the database.
+        /// </summary>
+        /// <remarks>Used to run migrations.</remarks>
+        public override void InitializeDatabase()
         {
+            Database.Migrate();
         }
     }
 }

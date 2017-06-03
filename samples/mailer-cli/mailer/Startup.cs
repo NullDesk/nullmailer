@@ -31,27 +31,10 @@ namespace Sample.Mailer.Cli
 
             Program.ServiceProvider = services;
             ConfigureLogging(services.GetService<ILoggerFactory>());
-            if (!args.First().Equals("--help", StringComparison.OrdinalIgnoreCase) &&
-                !args.First().Equals("drop-db", StringComparison.OrdinalIgnoreCase))
-            {
-                var historySettings = services.GetService<IOptions<SqlEntityHistoryStoreSettings>>();
-                if (historySettings.Value.IsEnabled)
-                {
-                    ConfigureHistory((EntityHistoryStore<SqlHistoryContext>) services.GetService<IHistoryStore>(),
-                        services.GetService<ILogger<Startup>>());
-                }
-            }
+           
         }
 
-        private void ConfigureHistory(EntityHistoryStore<SqlHistoryContext> history, ILogger<Startup> logger)
-        {
-            logger.LogInformation("History database initializing");
-            using (var context = history.GetHistoryContext())
-            {
-                context.Database.Migrate();
-            }
-            logger.LogInformation("History database initialized");
-        }
+       
 
         private void ConfigureLogging(ILoggerFactory loggerFactory)
         {
@@ -79,17 +62,19 @@ namespace Sample.Mailer.Cli
         private IServiceProvider ConfigureConsoleServices(IServiceCollection services)
         {
             services.AddOptions();
+
             services.AddLogging();
 
             //register config options
             services.Configure<MailHistoryDbSettings>(Config.GetSection("MailHistoryDbSettings"));
+
             services.Configure<TestMessageSettings>(Config.GetSection("TestMessageSettings"));
+
             services.Configure<MkSmtpMailerSettings>(Config.GetSection("MailSettings:MkSmtpMailerSettings"));
 
             services.Configure<SendGridMailerSettings>(Config.GetSection("MailSettings:SendGridMailerSettings"));
 
             services.Configure<SqlEntityHistoryStoreSettings>(Config.GetSection("MailHistoryDbSettings"));
-
 
             services.AddMailerSqlHistory(s => s.GetService<IOptions<SqlEntityHistoryStoreSettings>>().Value);
 
@@ -101,7 +86,6 @@ namespace Sample.Mailer.Cli
             //var connectionString = Config.GetValue<string>("MailHistoryDbSettings:ConnectionString");
             //services.AddMailerSqlHistory(new SqlEntityHistoryStoreSettings { ConnectionString = connectionString });
 
-            
             //Configure a mailer 
             var activeMailService = Config.GetSection("MailSettings:ActiveMailService")?.Value.ToLowerInvariant();
             switch (activeMailService)

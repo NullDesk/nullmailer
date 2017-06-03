@@ -16,6 +16,12 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer
         public string ConnectionString { get; set; }
 
         /// <summary>
+        ///     Indicates whether to automaticly initialize the database on startup.
+        /// </summary>
+        /// <value><c>true</c> to automaticly initialize database; otherwise, <c>false</c>.</value>
+        public bool AutoInitializeDatabase { get; } = true;
+
+        /// <summary>
         ///     Performs an implicit conversion from <see cref="SqlEntityHistoryStoreSettings" /> to
         ///     <see cref="EntityHistoryStoreSettings" />.
         /// </summary>
@@ -25,8 +31,10 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer
         {
             return new EntityHistoryStoreSettings
             {
+                AutoInitializeDatabase   = sqlSettings.AutoInitializeDatabase,
                 IsEnabled = sqlSettings.IsEnabled,
                 StoreAttachmentContents = sqlSettings.StoreAttachmentContents,
+                
                 DbOptions = new DbContextOptionsBuilder<HistoryContext>()
                     .UseSqlServer(sqlSettings.ConnectionString)
                     .Options

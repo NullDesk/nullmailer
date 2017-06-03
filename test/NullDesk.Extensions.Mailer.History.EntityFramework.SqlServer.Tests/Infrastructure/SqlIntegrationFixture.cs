@@ -22,6 +22,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Inf
             });
 
 
+            
             services.AddMailerHistory<TestSqlHistoryContext>(new SqlEntityHistoryStoreSettings
             {
                 ConnectionString =

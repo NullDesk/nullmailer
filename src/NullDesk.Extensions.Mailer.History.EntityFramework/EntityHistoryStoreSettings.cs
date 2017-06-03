@@ -14,5 +14,11 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// </summary>
         /// <value>The database context options.</value>
         public DbContextOptions<HistoryContext> DbOptions { get; set; }
+
+        /// <summary>
+        ///     Indicates whether to automaticly initialize the database on startup.
+        /// </summary>
+        /// <value><c>true</c> to automaticly initialize database; otherwise, <c>false</c>.</value>
+        public bool AutoInitializeDatabase { get; set; } = true;
     }
 }
