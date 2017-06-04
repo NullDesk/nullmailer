@@ -70,10 +70,10 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="limit">The limit.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
-        public Task<IEnumerable<DeliveryItem>> GetAsync(int offset = 0, int limit = 100,
+        public Task<IEnumerable<DeliverySummary>> GetAsync(int offset = 0, int limit = 100,
             CancellationToken token = new CancellationToken())
         {
-            return Task.FromResult<IEnumerable<DeliveryItem>>(new DeliveryItem[] { });
+            return Task.FromResult<IEnumerable<DeliverySummary>>(new DeliverySummary[] { });
         }
 
         /// <summary>
@@ -83,10 +83,10 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="limit">The limit.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
-        public Task<IEnumerable<DeliveryItem>> SearchAsync(string searchText, int limit = 100,
+        public Task<IEnumerable<DeliverySummary>> SearchAsync(string searchText, int limit = 100,
             CancellationToken token = new CancellationToken())
         {
-            return Task.FromResult<IEnumerable<DeliveryItem>>(new DeliveryItem[] { });
+            return Task.FromResult<IEnumerable<DeliverySummary>>(new DeliverySummary[] { });
         }
 
         /// <summary>

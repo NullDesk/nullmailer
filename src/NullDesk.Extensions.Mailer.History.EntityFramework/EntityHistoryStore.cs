@@ -78,7 +78,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// <param name="limit">The limit.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
-        public async Task<IEnumerable<DeliveryItem>> GetAsync(int offset = 0, int limit = 100,
+        public async Task<IEnumerable<DeliverySummary>> GetAsync(int offset = 0, int limit = 100,
             CancellationToken token = new CancellationToken())
         {
             if (Settings.IsEnabled)
@@ -89,7 +89,22 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
                         await context.MessageHistory.OrderByDescending(i => i.CreatedDate)
                             .Skip(offset)
                             .Take(limit)
-                            .Select(i => i.ToDeliveryItem())
+                            .Select(i => new DeliverySummary()
+                            {
+                                ReplyToEmailAddress = i.ReplyToEmailAddress,
+                                ReplyToDisplayName = i.ReplyToDisplayName,
+                                Subject = i.Subject,
+                                Id = i.Id,
+                                FromEmailAddress = i.FromEmailAddress,
+                                FromDisplayName = i.FromDisplayName,
+                                CreatedDate = i.CreatedDate,
+                                DeliveryProvider = i.DeliveryProvider,
+                                ExceptionMessage = i.ExceptionMessage,
+                                IsSuccess = i.IsSuccess,
+                                ProviderMessageId = i.ProviderMessageId,
+                                ToDisplayName = i.ToDisplayName,
+                                ToEmailAddress = i.ToDisplayName
+                            })
                             .ToListAsync(token);
                 }
             }
@@ -103,7 +118,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// <param name="limit">The limit.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
-        public async Task<IEnumerable<DeliveryItem>> SearchAsync(string searchText, int limit = 100,
+        public async Task<IEnumerable<DeliverySummary>> SearchAsync(string searchText, int limit = 100,
             CancellationToken token = new CancellationToken())
         {
             if (Settings.IsEnabled)
@@ -113,11 +128,29 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
                     return await context.MessageHistory
                         .Where(
                             i =>
-                                i.ToEmailAddress.Contains(searchText) || i.ToDisplayName.Contains(searchText) ||
-                                i.Subject.Contains(searchText))
+                                i.ToEmailAddress.Contains(searchText) 
+                             || i.ToDisplayName.Contains(searchText) 
+                             || i.Subject.Contains(searchText) 
+                             || i.ReplyToEmailAddress.Contains(searchText) 
+                             || i.ReplyToDisplayName.Contains(searchText))
                         .OrderByDescending(i => i.CreatedDate)
                         .Take(limit)
-                        .Select(i => i.ToDeliveryItem())
+                        .Select(i => new DeliverySummary()
+                        {
+                            ReplyToEmailAddress = i.ReplyToEmailAddress,
+                            ReplyToDisplayName = i.ReplyToDisplayName,
+                            Subject = i.Subject,
+                            Id = i.Id,
+                            FromEmailAddress = i.FromEmailAddress,
+                            FromDisplayName = i.FromDisplayName,
+                            CreatedDate = i.CreatedDate,
+                            DeliveryProvider = i.DeliveryProvider,
+                            ExceptionMessage = i.ExceptionMessage,
+                            IsSuccess = i.IsSuccess,
+                            ProviderMessageId = i.ProviderMessageId,
+                            ToDisplayName = i.ToDisplayName,
+                            ToEmailAddress = i.ToDisplayName
+                        })
                         .ToListAsync(token);
                 }
             }

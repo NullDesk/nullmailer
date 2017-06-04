@@ -83,17 +83,17 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        public Task<IEnumerable<DeliveryItem>> GetAsync(int offset = 0, int limit = 100,
+        public Task<IEnumerable<DeliverySummary>> GetAsync(int offset = 0, int limit = 100,
             CancellationToken token = new CancellationToken())
         {
             return
                 Settings.IsEnabled
                     ? Task.FromResult(Items
-                        .Select(JsonConvert.DeserializeObject<DeliveryItem>)
+                        .Select(JsonConvert.DeserializeObject<DeliverySummary>)
                         .OrderByDescending(i => i.CreatedDate)
                         .Skip(offset)
                         .Take(limit))
-                    : Task.FromResult<IEnumerable<DeliveryItem>>(new DeliveryItem[]{});
+                    : Task.FromResult<IEnumerable<DeliverySummary>>(new DeliverySummary[]{});
         }
 
         /// <summary>
@@ -104,18 +104,22 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        public Task<IEnumerable<DeliveryItem>> SearchAsync(string searchText, int limit = 100,
+        public Task<IEnumerable<DeliverySummary>> SearchAsync(string searchText, int limit = 100,
             CancellationToken token = new CancellationToken())
         {
             return Settings.IsEnabled
                 ? Task.FromResult(Items
-                    .Select(JsonConvert.DeserializeObject<DeliveryItem>)
-                    .Where(i =>
-                        i.ToEmailAddress.Contains(searchText) || i.ToDisplayName.Contains(searchText) ||
-                        i.Subject.Contains(searchText))
+                    .Select(JsonConvert.DeserializeObject<DeliverySummary>)
+                    .Where(
+                        i =>
+                            i.ToEmailAddress.Contains(searchText)
+                            || i.ToDisplayName.Contains(searchText)
+                            || i.Subject.Contains(searchText)
+                            || i.ReplyToEmailAddress.Contains(searchText)
+                            || i.ReplyToDisplayName.Contains(searchText))
                     .OrderByDescending(i => i.CreatedDate)
                     .Take(limit))
-                : Task.FromResult<IEnumerable<DeliveryItem>>(new DeliveryItem[] { });
+                : Task.FromResult<IEnumerable<DeliverySummary>>(new DeliverySummary[] { });
         }
 
         /// <summary>
