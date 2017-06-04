@@ -10,8 +10,8 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Inf
 
         public override void InitializeDatabase()
         {
+            Database.EnsureDeleted();
             Database.EnsureCreated();
-            base.InitializeDatabase();
         }
     }
 }

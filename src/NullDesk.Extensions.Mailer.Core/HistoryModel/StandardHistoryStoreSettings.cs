@@ -1,4 +1,6 @@
-﻿namespace NullDesk.Extensions.Mailer.Core
+﻿
+// ReSharper disable once CheckNamespace
+namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
     ///     Standard History Store Settings.
@@ -19,5 +21,14 @@
         /// <value><c>true</c> if content of attachments should be included in history otherwise, <c>false</c>.</value>
         /// <remarks>If <c>false</c> messages in history will not be resendable if the original had attachments.</remarks>
         public bool StoreAttachmentContents { get; set; } = false;
+
+
+        /// <summary>
+        ///     The name of the application to be include in history.
+        /// </summary>
+        /// <value>The name of the delivery provider.</value>
+        /// <remarks>Use to give a name to the system recording history.</remarks>
+        public string SourceApplicationName { get; set; }
+       
     }
 }

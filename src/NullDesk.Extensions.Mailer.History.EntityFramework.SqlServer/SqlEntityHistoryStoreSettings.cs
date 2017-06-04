@@ -34,7 +34,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer
                 AutoInitializeDatabase   = sqlSettings.AutoInitializeDatabase,
                 IsEnabled = sqlSettings.IsEnabled,
                 StoreAttachmentContents = sqlSettings.StoreAttachmentContents,
-                
+                SourceApplicationName = sqlSettings.SourceApplicationName,
                 DbOptions = new DbContextOptionsBuilder<HistoryContext>()
                     .UseSqlServer(sqlSettings.ConnectionString)
                     .Options

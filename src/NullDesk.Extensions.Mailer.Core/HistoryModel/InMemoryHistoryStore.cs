@@ -52,6 +52,7 @@ namespace NullDesk.Extensions.Mailer.Core
                     item.Attachments = item.Attachments.Select(i => new KeyValuePair<string, Stream>(i.Key, null))
                         .ToDictionary(k => k.Key, k => k.Value);
                 }
+                item.SourceApplicationName = Settings.SourceApplicationName;
 
                 Items.Add(JsonConvert.SerializeObject(item));
                 id = item.Id;

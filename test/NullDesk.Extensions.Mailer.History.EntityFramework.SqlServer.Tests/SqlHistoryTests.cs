@@ -65,6 +65,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
             store.Should().BeOfType<EntityHistoryStore<TestSqlHistoryContext>>();
 
             var item = await store.GetAsync(result.First().Id, CancellationToken.None);
+            item.SourceApplicationName.Should().Be("xunit");
 
             var m = item
                 .Should()
@@ -150,7 +151,9 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
 
             var items = await store.GetAsync(0, 10, CancellationToken.None);
 
-            items.Should().HaveCount(10);
+            items.Should().HaveCount(10)
+                .And.AllBeOfType<DeliverySummary>()
+                .And.OnlyContain(m => m.SourceApplicationName == "xunit");
 
             var secondPageitems = await store.GetAsync(10, 5, CancellationToken.None);
 

@@ -141,10 +141,40 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// <value>The exception message.</value>
         [StringLength(500)]
         public string ExceptionMessage { get; set; }
+
+        /// <summary>
+        ///     The name of the sending application.
+        /// </summary>
+        /// <remarks>Use to give a name to the system recording history.</remarks>
+        /// <value>The name of the delivery provider.</value>
+        [StringLength(100)]
+        public string SourceApplicationName { get; set; }
     }
 
     internal static class DeliveryItemsExtensions
     {
+
+        public static DeliverySummary ToDeliverySummary(this EntityHistoryDeliveryItem item)
+        {
+            return new DeliverySummary()
+            {
+                SourceApplicationName = item.SourceApplicationName,
+                ReplyToEmailAddress = item.ReplyToEmailAddress,
+                ReplyToDisplayName = item.ReplyToDisplayName,
+                Subject = item.Subject,
+                Id = item.Id,
+                FromEmailAddress = item.FromEmailAddress,
+                FromDisplayName = item.FromDisplayName,
+                CreatedDate = item.CreatedDate,
+                DeliveryProvider = item.DeliveryProvider,
+                ExceptionMessage = item.ExceptionMessage,
+                IsSuccess = item.IsSuccess,
+                ProviderMessageId = item.ProviderMessageId,
+                ToDisplayName = item.ToDisplayName,
+                ToEmailAddress = item.ToDisplayName
+            };
+        }
+
         public static DeliveryItem ToDeliveryItem(this EntityHistoryDeliveryItem item)
         {
             var settings = new JsonSerializerSettings
@@ -155,6 +185,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
 
             return new DeliveryItem
             {
+                SourceApplicationName = item.SourceApplicationName,
                 Body =
                     string.IsNullOrEmpty(item.TemplateName)
                         ? (IMessageBody) new TemplateBody
@@ -190,6 +221,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         {
             return new EntityHistoryDeliveryItem
             {
+                SourceApplicationName = item.SourceApplicationName,
                 HtmlContent = (item.Body as ContentBody)?.HtmlContent,
                 TextContent = (item.Body as ContentBody)?.PlainTextContent,
                 TemplateName = (item.Body as TemplateBody)?.TemplateName,

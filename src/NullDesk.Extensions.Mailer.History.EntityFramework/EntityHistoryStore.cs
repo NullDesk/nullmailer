@@ -40,6 +40,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         {
             if (Settings.IsEnabled)
             {
+                item.SourceApplicationName = Settings.SourceApplicationName;
                 using (var context = GetContext())
                 {
                     context.MessageHistory.Add(item.ToEntityHistoryDeliveryItem(Settings.StoreAttachmentContents));
@@ -89,22 +90,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
                         await context.MessageHistory.OrderByDescending(i => i.CreatedDate)
                             .Skip(offset)
                             .Take(limit)
-                            .Select(i => new DeliverySummary()
-                            {
-                                ReplyToEmailAddress = i.ReplyToEmailAddress,
-                                ReplyToDisplayName = i.ReplyToDisplayName,
-                                Subject = i.Subject,
-                                Id = i.Id,
-                                FromEmailAddress = i.FromEmailAddress,
-                                FromDisplayName = i.FromDisplayName,
-                                CreatedDate = i.CreatedDate,
-                                DeliveryProvider = i.DeliveryProvider,
-                                ExceptionMessage = i.ExceptionMessage,
-                                IsSuccess = i.IsSuccess,
-                                ProviderMessageId = i.ProviderMessageId,
-                                ToDisplayName = i.ToDisplayName,
-                                ToEmailAddress = i.ToDisplayName
-                            })
+                            .Select(i => i.ToDeliverySummary())
                             .ToListAsync(token);
                 }
             }
@@ -135,22 +121,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
                              || i.ReplyToDisplayName.Contains(searchText))
                         .OrderByDescending(i => i.CreatedDate)
                         .Take(limit)
-                        .Select(i => new DeliverySummary()
-                        {
-                            ReplyToEmailAddress = i.ReplyToEmailAddress,
-                            ReplyToDisplayName = i.ReplyToDisplayName,
-                            Subject = i.Subject,
-                            Id = i.Id,
-                            FromEmailAddress = i.FromEmailAddress,
-                            FromDisplayName = i.FromDisplayName,
-                            CreatedDate = i.CreatedDate,
-                            DeliveryProvider = i.DeliveryProvider,
-                            ExceptionMessage = i.ExceptionMessage,
-                            IsSuccess = i.IsSuccess,
-                            ProviderMessageId = i.ProviderMessageId,
-                            ToDisplayName = i.ToDisplayName,
-                            ToEmailAddress = i.ToDisplayName
-                        })
+                        .Select(i => i.ToDeliverySummary())
                         .ToListAsync(token);
                 }
             }

@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-
+using Microsoft.EntityFrameworkCore.Migrations;
+using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer;
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migrations
 {
     [DbContext(typeof(SqlHistoryContext))]
-    partial class SqlHistoryContextModelSnapshot : ModelSnapshot
+    [Migration("20170604221538_SourceAppName")]
+    partial class SourceAppName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
