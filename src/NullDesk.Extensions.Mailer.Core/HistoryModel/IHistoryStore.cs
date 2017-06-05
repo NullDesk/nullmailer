@@ -39,7 +39,9 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="item">The item to add.</param>
         /// <param name="token">A cancellation token.</param>
         /// <returns>Task&lt;Guid&gt; the ID of the message.</returns>
-        Task<Guid> AddAsync(DeliveryItem item, CancellationToken token = default(CancellationToken));
+        Task<Guid> AddAsync(
+            DeliveryItem item, 
+            CancellationToken token = default(CancellationToken));
 
 
         /// <summary>
@@ -48,7 +50,9 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="id">The identifier.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
-        Task<DeliveryItem> GetAsync(Guid id, CancellationToken token = default(CancellationToken));
+        Task<DeliveryItem> GetAsync(
+            Guid id, 
+            CancellationToken token = default(CancellationToken));
 
         /// <summary>
         ///     Gets a pagable list of summary delivery items from the store.
@@ -57,17 +61,28 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="limit">The limit.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
-        Task<IEnumerable<DeliverySummary>> GetAsync(int offset = 0, int limit = 100,
+        Task<IEnumerable<DeliverySummary>> GetAsync(
+            int offset = 0, 
+            int limit = 100,
             CancellationToken token = default(CancellationToken));
 
         /// <summary>
-        ///     Searches common fields in history items and returns the specific number of matches.
+        ///     Simple search over common fields in history items, returns the specific number of matches.
         /// </summary>
+        /// <remarks>Searches the sender, reply to, and recipient email and display names, and the subject</remarks>
         /// <param name="searchText">The search text.</param>
         /// <param name="limit">The limit.</param>
+        /// <param name="sourceApplicationName">Optional, if supplied limits the search to just the supplied source application.</param>
+        /// <param name="startDate">Optional start date for range searches.</param>
+        /// <param name="endDate">Optional end date for range searches.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
-        Task<IEnumerable<DeliverySummary>> SearchAsync(string searchText, int limit = 100,
+        Task<IEnumerable<DeliverySummary>> SearchAsync(
+            string searchText, 
+            int limit = 100, 
+            string sourceApplicationName = null,
+            DateTimeOffset? startDate = null, 
+            DateTimeOffset? endDate = null,
             CancellationToken token = default(CancellationToken));
     }
 }

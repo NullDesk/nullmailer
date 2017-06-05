@@ -34,7 +34,7 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Gets or sets the message created date.
         /// </summary>
         /// <value>The message date.</value>
-        public virtual DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.Now;
+        public virtual DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
 
         /// <summary>
         ///     Gets or sets a value indicating whether the message was successfully sent.

@@ -40,7 +40,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         ///     Gets or sets the message created date.
         /// </summary>
         /// <value>The message date.</value>
-        public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.Now;
+        public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
 
         /// <summary>
         ///     Gets or sets a value indicating whether the message was successfully sent.
@@ -171,7 +171,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
                 IsSuccess = item.IsSuccess,
                 ProviderMessageId = item.ProviderMessageId,
                 ToDisplayName = item.ToDisplayName,
-                ToEmailAddress = item.ToDisplayName
+                ToEmailAddress = item.ToEmailAddress
             };
         }
 
@@ -203,6 +203,8 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
                 ExceptionMessage = item.ExceptionMessage,
                 FromDisplayName = item.FromDisplayName,
                 FromEmailAddress = item.FromEmailAddress,
+                ReplyToDisplayName = item.ReplyToDisplayName,
+                ReplyToEmailAddress = item.ReplyToEmailAddress,
                 Id = item.Id,
                 IsSuccess = item.IsSuccess,
                 ProviderMessageId = item.ProviderMessageId,
@@ -231,6 +233,8 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
                 ExceptionMessage = item.ExceptionMessage,
                 FromDisplayName = item.FromDisplayName,
                 FromEmailAddress = item.FromEmailAddress,
+                ReplyToDisplayName = item.ReplyToDisplayName,
+                ReplyToEmailAddress = item.ReplyToEmailAddress,
                 Id = item.Id,
                 IsSuccess = item.IsSuccess,
                 ProviderMessageId = item.ProviderMessageId,

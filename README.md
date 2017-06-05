@@ -393,7 +393,8 @@ Example: standard SQL history store with `SqlEntityHistoryStoreSettings`:
     var historyStore = new EntityHistoryStore<SqlHistoryContext>(
         new SqlEntityHistoryStoreSettings()
         {
-            ConnectionString = connectionString
+            ConnectionString = connectionString,
+            SourceApplicationName = "MyApplication"
         });
 
 Example: standard SQL history with `EntityHistoryStoreSettings`:
@@ -403,8 +404,16 @@ Example: standard SQL history with `EntityHistoryStoreSettings`:
         {
             DbOptions = new DbContextOptionsBuilder<HistoryContext>()
                 .UseSqlServer(connectionString)
-                .Options
+                .Options,
+            SourceApplicationName = "MyApplication"
         });
+
+Other settings of interest:
+
+- **SourceApplicationName**: Useful when you have more than one application targeting the same history database.
+- **AutoInitializeDatabase** (default=true): Run DB initialization automatically; for the SQL history store will ensure migrations have run; disable if you want manual control of the DB schema.
+- **StoreAttachmentContents** (default=false): Set true to serialize the content of attachments into history; all history items will be re-sendable, but this can consume a lot of data storage (hint: if you need this kind of thing, you might want to write your own history store and store attachments to a filesystem, and otherwise optimize space usage).
+- **IsEnabled** (default=true): Set to false to disable recording history.
 
 
 #### <a name="ihistorystore"></a>Using History with Mailers
