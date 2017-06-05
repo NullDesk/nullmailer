@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
-
+// ReSharper disable VirtualMemberCallInConstructor
 // ReSharper disable CheckNamespace
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
     ///     Flattened mailer message for a single recipient with delivery meta-data.
     /// </summary>
-    public class DeliveryItem
+    public class DeliveryItem : DeliverySummary
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="DeliveryItem" /> class.
@@ -44,93 +43,14 @@ namespace NullDesk.Extensions.Mailer.Core
             {
                 Substitutions.Add(gSub.Key, gSub.Value);
             }
-        }
-
-        /// <summary>
-        ///     The unique message identifier
-        /// </summary>
-        public Guid Id { get; set; } = Guid.NewGuid();
-
-        /// <summary>
-        ///     Gets or sets the delivery provider.
-        /// </summary>
-        /// <value>The delivery provider.</value>
-        public string DeliveryProvider { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the provider's identifier for the message.
-        /// </summary>
-        /// <remarks>
-        ///     Used to reference the message in the underlying mail system after delivery has been attempted.
-        /// </remarks>
-        /// <value>The provider message identifier.</value>
-        [StringLength(100)]
-        public string ProviderMessageId { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the message created date.
-        /// </summary>
-        /// <value>The message date.</value>
-        public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.Now;
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether the message was successfully sent.
-        /// </summary>
-        public bool IsSuccess { get; set; } = false;
-
-        /// <summary>
-        ///     Gets or sets the sender's email address.
-        /// </summary>
-        /// <value>The senders email address.</value>
-        public string FromEmailAddress { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the sender's display name for the sender.
-        /// </summary>
-        /// <value>The display name.</value>
-        public string FromDisplayName { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the reply to email address.
-        /// </summary>
-        /// <value>The email address.</value>
-        public string ReplyToEmailAddress { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the reply to display name.
-        /// </summary>
-        /// <value>The display name.</value>
-        public string ReplyToDisplayName { get; set; }
-
-
-        /// <summary>
-        ///     Gets or sets the sent to email.
-        /// </summary>
-        /// <value>The sent to email.</value>
-        public string ToEmailAddress { get; set; }
-
-        /// <summary>
-        ///     Gets or sets to display name.
-        /// </summary>
-        /// <value>To display name.</value>
-        public string ToDisplayName { get; set; }
-
-        /// <summary>
-        ///     The message subject.
-        /// </summary>
-        /// <remarks>
-        ///     If substitutions are provided, they will be used here. Some services may ignore this value when using templates,
-        ///     others will use this value in place of any subject defined in the template.
-        /// </remarks>
-        /// <value>The subject.</value>
-        public string Subject { get; set; }
+        }       
 
         /// <summary>
         ///     Gets or sets the message body.
         /// </summary>
         /// <value>The body.</value>
         [JsonConverter(typeof(MessageBodyJsonConverter))]
-        public IMessageBody Body { get; set; }
+        public virtual IMessageBody Body { get; set; }
 
 
         /// <summary>
@@ -138,7 +58,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <value>The attachments.</value>
         [JsonConverter(typeof(AttachmentStreamJsonConverter))]
-        public IDictionary<string, Stream> Attachments { get; set; }
+        public virtual IDictionary<string, Stream> Attachments { get; set; }
 
 
         /// <summary>
@@ -148,20 +68,13 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     This collection contains the merged dictionary of personalized substitutions and general message substitutions.
         /// </remarks>
         /// <value>The substitutions.</value>
-        public IDictionary<string, string> Substitutions { get; set; }
-
-
-        /// <summary>
-        ///     Gets or sets the exception message if an exception occurred.
-        /// </summary>
-        /// <value>The exception message.</value>
-        public string ExceptionMessage { get; set; }
+        public virtual IDictionary<string, string> Substitutions { get; set; }
 
         /// <summary>
         ///     Gets a value indicating whether this instance is resendable.
         /// </summary>
         /// <value><c>true</c> if this instance is resendable; otherwise, <c>false</c>.</value>
-        public bool IsResendable => !Attachments.Any() || Attachments.All(a => a.Value?.Length > 0);
+        public virtual bool IsResendable => !Attachments.Any() || Attachments.All(a => a.Value?.Length > 0);
 
 
         /// <summary>
@@ -169,7 +82,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <param name="content">The content.</param>
         /// <returns>System.String.</returns>
-        public string ProcessSubstitutions(string content)
+        public virtual string ProcessSubstitutions(string content)
         {
             return content?.PerformContentSubstitution(Substitutions);
         }

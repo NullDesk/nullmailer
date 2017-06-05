@@ -65,6 +65,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
             store.Should().BeOfType<EntityHistoryStore<TestSqlHistoryContext>>();
 
             var item = await store.GetAsync(result.First().Id, CancellationToken.None);
+            item.SourceApplicationName.Should().Be("xunit");
 
             var m = item
                 .Should()
@@ -150,11 +151,66 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
 
             var items = await store.GetAsync(0, 10, CancellationToken.None);
 
-            items.Should().HaveCount(10);
+            items.Should().HaveCount(10)
+                .And.AllBeOfType<DeliverySummary>()
+                .And.OnlyContain(m => m.SourceApplicationName == "xunit");
 
             var secondPageitems = await store.GetAsync(10, 5, CancellationToken.None);
 
             secondPageitems.Should().HaveCount(5).And.NotBeSameAs(items);
+        }
+
+        [Fact]
+        [Trait("TestType", "Integration")]
+        public async Task Ef_Sql_History_Search()
+        {
+            var history = Fixture.ServiceProvider.GetService<IHistoryStore>();
+            await history.AddAsync(new DeliveryItem(MailerMessage.Create(), new MessageRecipient())
+            {
+                CreatedDate = DateTimeOffset.Now,
+                ToDisplayName = "No One",
+                Subject = "test message",
+                ToEmailAddress = "noone@toast.com",
+                DeliveryProvider = "xunit",
+                SourceApplicationName = "xunit",
+                Id = Guid.NewGuid(),
+                IsSuccess = true,
+                ExceptionMessage = null,
+                Body = new ContentBody { PlainTextContent = "content" },
+                FromDisplayName = "noone",
+                FromEmailAddress = "noone@nowhere.com"
+            });
+
+            await history.AddAsync(new DeliveryItem(MailerMessage.Create(), new MessageRecipient())
+            {
+                CreatedDate = DateTimeOffset.Now,
+                ToDisplayName = "Some One",
+                Subject = "test message",
+                ToEmailAddress = "someoneelse@toast.com",
+                DeliveryProvider = "xunit",
+                SourceApplicationName = "xunit",
+                Id = Guid.NewGuid(),
+                IsSuccess = true,
+                ExceptionMessage = null,
+                Body = new ContentBody { PlainTextContent = "content" },
+                FromDisplayName = "noone",
+                FromEmailAddress = "noone@nowhere.com"
+            });
+            
+            var searchA = await history.SearchAsync("else");
+            searchA.Should().NotBeNull().And.OnlyContain(i => i.SourceApplicationName == "xunit");
+            searchA.Should().NotBeNull().And.OnlyContain(i => i.ToEmailAddress == "someoneelse@toast.com");
+
+            var searchB = await history.SearchAsync("else", sourceApplicationName: "noxunit");
+            searchB.Should().BeEmpty();
+
+            var searchC = await history.SearchAsync("else", startDate: DateTimeOffset.UtcNow.AddHours(-1), endDate: DateTimeOffset.UtcNow);
+            searchC.Should().NotBeNull().And.OnlyContain(i => i.SourceApplicationName == "xunit");
+            searchC.Should().NotBeNull().And.OnlyContain(i => i.ToEmailAddress == "someoneelse@toast.com");
+
+            var searchD = await history.SearchAsync("else", startDate: DateTimeOffset.UtcNow.AddHours(-2), endDate: DateTimeOffset.UtcNow.AddHours(-1));
+            searchD.Should().BeEmpty();
+
         }
     }
 }

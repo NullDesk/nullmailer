@@ -44,10 +44,10 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 
 
         public IHistoryStore StoreWithSerializableAttachments { get; set; } =
-            new InMemoryHistoryStore(new StandardHistoryStoreSettings {StoreAttachmentContents = true});
+            new InMemoryHistoryStore(new StandardHistoryStoreSettings {StoreAttachmentContents = true, SourceApplicationName = "xunit" });
 
         public IHistoryStore StoreWithoutSerializableAttachments { get; set; } =
-            new InMemoryHistoryStore(new StandardHistoryStoreSettings {StoreAttachmentContents = false});
+            new InMemoryHistoryStore(new StandardHistoryStoreSettings {StoreAttachmentContents = false, SourceApplicationName = "xunit"});
 
 
         public void Dispose()

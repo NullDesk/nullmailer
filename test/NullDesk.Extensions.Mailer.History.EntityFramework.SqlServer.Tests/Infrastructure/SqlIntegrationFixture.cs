@@ -25,6 +25,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Inf
             
             services.AddMailerHistory<TestSqlHistoryContext>(new SqlEntityHistoryStoreSettings
             {
+                SourceApplicationName = "xunit",
                 ConnectionString =
                     @"Server=(localdb)\MSSQLLocalDB;Database=NullDeskMailerHistoryTests;Trusted_Connection=True;"
             });
@@ -33,12 +34,6 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Inf
 
             ServiceProvider = services.BuildServiceProvider();
 
-            using (var context =
-                ((EntityHistoryStore<TestSqlHistoryContext>) ServiceProvider.GetService<IHistoryStore>())
-                .GetHistoryContext())
-            {
-                context.Database.Migrate();
-            }
 
             var logging = ServiceProvider.GetService<ILoggerFactory>();
             logging.AddDebug(LogLevel.Debug);

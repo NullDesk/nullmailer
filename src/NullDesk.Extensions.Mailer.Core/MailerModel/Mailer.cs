@@ -249,7 +249,7 @@ namespace NullDesk.Extensions.Mailer.Core
             di.Id = Guid.NewGuid();
             di.ProviderMessageId = null;
             di.IsSuccess = false;
-            di.CreatedDate = DateTimeOffset.Now;
+            di.CreatedDate = DateTimeOffset.UtcNow;
             di.ExceptionMessage = null;
 
 

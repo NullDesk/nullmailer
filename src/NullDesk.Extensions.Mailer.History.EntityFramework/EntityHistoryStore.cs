@@ -27,7 +27,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         public EntityHistoryStore(EntityHistoryStoreSettings settings, ILogger<EntityHistoryStore<TContext>> logger = null)
         {
             Settings = settings;
-            Logger = (ILogger) logger ?? NullLogger.Instance;
+            Logger = (ILogger)logger ?? NullLogger.Instance;
         }
 
         /// <summary>
@@ -40,6 +40,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         {
             if (Settings.IsEnabled)
             {
+                item.SourceApplicationName = Settings.SourceApplicationName;
                 using (var context = GetContext())
                 {
                     context.MessageHistory.Add(item.ToEntityHistoryDeliveryItem(Settings.StoreAttachmentContents));
@@ -50,7 +51,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
             return item.Id;
         }
 
-       
+
 
         /// <summary>
         ///     Gets the history item from the store.
@@ -78,7 +79,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// <param name="limit">The limit.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
-        public async Task<IEnumerable<DeliveryItem>> GetAsync(int offset = 0, int limit = 100,
+        public async Task<IEnumerable<DeliverySummary>> GetAsync(int offset = 0, int limit = 100,
             CancellationToken token = new CancellationToken())
         {
             if (Settings.IsEnabled)
@@ -89,7 +90,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
                         await context.MessageHistory.OrderByDescending(i => i.CreatedDate)
                             .Skip(offset)
                             .Take(limit)
-                            .Select(i => i.ToDeliveryItem())
+                            .Select(i => i.ToDeliverySummary())
                             .ToListAsync(token);
                 }
             }
@@ -97,28 +98,58 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         }
 
         /// <summary>
-        ///     search as an asynchronous operation.
+        /// search as an asynchronous operation.
         /// </summary>
         /// <param name="searchText">The search text.</param>
         /// <param name="limit">The limit.</param>
+        /// <param name="sourceApplicationName">Optional, if supplied limits the search to just the supplied source application.</param>
+        /// <param name="startDate">Optional start date for range searches.</param>
+        /// <param name="endDate">Optional end date for range searches.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
-        public async Task<IEnumerable<DeliveryItem>> SearchAsync(string searchText, int limit = 100,
+        /// <remarks>Searches the sender, reply to, and recipient email and display names, and the subject</remarks>
+        public async Task<IEnumerable<DeliverySummary>> SearchAsync(
+            string searchText,
+            int limit = 100,
+            string sourceApplicationName = null,
+            DateTimeOffset? startDate = null,
+            DateTimeOffset? endDate = null,
+
             CancellationToken token = new CancellationToken())
         {
             if (Settings.IsEnabled)
             {
                 using (var context = GetContext())
                 {
-                    return await context.MessageHistory
+                    var results = context.MessageHistory
                         .Where(
                             i =>
-                                i.ToEmailAddress.Contains(searchText) || i.ToDisplayName.Contains(searchText) ||
-                                i.Subject.Contains(searchText))
+                                i.ToEmailAddress.Contains(searchText)
+                                || i.ToDisplayName.Contains(searchText)
+                                || i.Subject.Contains(searchText)
+                                || i.FromEmailAddress.Contains(searchText)
+                                || i.FromDisplayName.Contains(searchText)
+                                || i.ReplyToEmailAddress.Contains(searchText)
+                                || i.ReplyToDisplayName.Contains(searchText))
                         .OrderByDescending(i => i.CreatedDate)
                         .Take(limit)
-                        .Select(i => i.ToDeliveryItem())
-                        .ToListAsync(token);
+                        .Select(i => i.ToDeliverySummary());
+
+                    if (!string.IsNullOrEmpty(sourceApplicationName))
+                    {
+                        results = results
+                            .Where(i => 
+                                i.SourceApplicationName.Equals(sourceApplicationName, StringComparison.OrdinalIgnoreCase));
+                    }
+                    if (startDate.HasValue)
+                    {
+                        results = results.Where(i => i.CreatedDate >= startDate);
+                    }
+                    if (endDate.HasValue)
+                    {
+                        results = results.Where(i => i.CreatedDate <= endDate);
+                    }
+                    return await results.ToListAsync(token);
                 }
             }
             return new DeliveryItem[] { };

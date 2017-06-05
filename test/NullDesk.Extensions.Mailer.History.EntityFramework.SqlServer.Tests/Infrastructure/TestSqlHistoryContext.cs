@@ -7,5 +7,11 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Inf
         public TestSqlHistoryContext(DbContextOptions<HistoryContext> options) : base(options)
         {
         }
+
+        public override void InitializeDatabase()
+        {
+            Database.EnsureDeleted();
+            Database.EnsureCreated();
+        }
     }
 }

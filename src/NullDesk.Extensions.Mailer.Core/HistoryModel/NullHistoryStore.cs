@@ -70,23 +70,32 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="limit">The limit.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
-        public Task<IEnumerable<DeliveryItem>> GetAsync(int offset = 0, int limit = 100,
+        public Task<IEnumerable<DeliverySummary>> GetAsync(int offset = 0, int limit = 100,
             CancellationToken token = new CancellationToken())
         {
-            return Task.FromResult<IEnumerable<DeliveryItem>>(new DeliveryItem[] { });
+            return Task.FromResult<IEnumerable<DeliverySummary>>(new DeliverySummary[] { });
         }
 
         /// <summary>
-        ///     Does nothing, returns empty collection.
+        /// Does nothing, returns empty collection.
         /// </summary>
         /// <param name="searchText">The search text.</param>
         /// <param name="limit">The limit.</param>
+        /// <param name="sourceApplicationName">Optional, if supplied limits the search to just the supplied source application.</param>
+        /// <param name="startDate">Optional start date for range searches.</param>
+        /// <param name="endDate">Optional end date for range searches.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
-        public Task<IEnumerable<DeliveryItem>> SearchAsync(string searchText, int limit = 100,
+        /// <remarks>Searches the sender, reply to, and recipient email and display names, and the subject</remarks>
+        public Task<IEnumerable<DeliverySummary>> SearchAsync(
+            string searchText, 
+            int limit = 100,
+            string sourceApplicationName = null,
+            DateTimeOffset? startDate = null,
+            DateTimeOffset? endDate = null,
             CancellationToken token = new CancellationToken())
         {
-            return Task.FromResult<IEnumerable<DeliveryItem>>(new DeliveryItem[] { });
+            return Task.FromResult<IEnumerable<DeliverySummary>>(new DeliverySummary[] { });
         }
 
         /// <summary>

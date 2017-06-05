@@ -50,6 +50,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             {
                 var id = await history.AddAsync(item);
                 var savedItem = await history.GetAsync(id);
+                savedItem.SourceApplicationName.Should().Be("xunit");
                 var postDeliveryAttachments = savedItem
                     .Attachments
                     .Select(a => new KeyValuePair<string, string>(a.Key, a.Value.ToBase64String().Result))

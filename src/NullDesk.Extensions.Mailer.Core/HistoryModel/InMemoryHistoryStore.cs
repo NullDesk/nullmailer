@@ -52,6 +52,7 @@ namespace NullDesk.Extensions.Mailer.Core
                     item.Attachments = item.Attachments.Select(i => new KeyValuePair<string, Stream>(i.Key, null))
                         .ToDictionary(k => k.Key, k => k.Value);
                 }
+                item.SourceApplicationName = Settings.SourceApplicationName;
 
                 Items.Add(JsonConvert.SerializeObject(item));
                 id = item.Id;
@@ -83,40 +84,80 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        public Task<IEnumerable<DeliveryItem>> GetAsync(int offset = 0, int limit = 100,
+        public Task<IEnumerable<DeliverySummary>> GetAsync(int offset = 0, int limit = 100,
             CancellationToken token = new CancellationToken())
         {
             return
                 Settings.IsEnabled
                     ? Task.FromResult(Items
-                        .Select(JsonConvert.DeserializeObject<DeliveryItem>)
+                        .Select(JsonConvert.DeserializeObject<DeliverySummary>)
                         .OrderByDescending(i => i.CreatedDate)
                         .Skip(offset)
                         .Take(limit))
-                    : Task.FromResult<IEnumerable<DeliveryItem>>(new DeliveryItem[]{});
+                    : Task.FromResult<IEnumerable<DeliverySummary>>(new DeliverySummary[] { });
         }
 
         /// <summary>
-        ///     Searches common fields in history items and returns the specific number of matches.
+        /// Searches common fields in history items and returns the specific number of matches.
         /// </summary>
         /// <param name="searchText">The search text.</param>
         /// <param name="limit">The limit.</param>
+        /// <param name="sourceApplicationName">Optional, if supplied limits the search to just the supplied source application.</param>
+        /// <param name="startDate">Optional start date for range searches.</param>
+        /// <param name="endDate">Optional end date for range searches.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        public Task<IEnumerable<DeliveryItem>> SearchAsync(string searchText, int limit = 100,
+        /// <remarks>Searches the sender, reply to, and recipient email and display names, and the subject</remarks>
+        public Task<IEnumerable<DeliverySummary>> SearchAsync(
+            string searchText,
+            int limit = 100,
+            string sourceApplicationName = null,
+            DateTimeOffset? startDate = null,
+            DateTimeOffset? endDate = null,
             CancellationToken token = new CancellationToken())
         {
             return Settings.IsEnabled
-                ? Task.FromResult(Items
-                    .Select(JsonConvert.DeserializeObject<DeliveryItem>)
-                    .Where(i =>
-                        i.ToEmailAddress.Contains(searchText) || i.ToDisplayName.Contains(searchText) ||
-                        i.Subject.Contains(searchText))
-                    .OrderByDescending(i => i.CreatedDate)
-                    .Take(limit))
-                : Task.FromResult<IEnumerable<DeliveryItem>>(new DeliveryItem[] { });
+                ? Task.FromResult(GetSearchResults(searchText, limit, sourceApplicationName, startDate, endDate))
+                : Task.FromResult<IEnumerable<DeliverySummary>>(new DeliverySummary[] { });
         }
+
+        private IEnumerable<DeliverySummary> GetSearchResults(
+            string searchText,
+            int limit,
+            string sourceApplicationName,
+            DateTimeOffset? startDate,
+            DateTimeOffset? endDate)
+        {
+            var results = Items
+                .Select(JsonConvert.DeserializeObject<DeliverySummary>);
+            results = results.Where(
+                    i =>
+                        (i.ToEmailAddress?.Contains(searchText) ?? false)
+                        || (i.ToDisplayName?.Contains(searchText) ?? false)
+                        || (i.Subject?.Contains(searchText) ?? false)
+                        || (i.FromEmailAddress?.Contains(searchText) ?? false)
+                        || (i.FromDisplayName?.Contains(searchText) ?? false)
+                        || (i.ReplyToEmailAddress?.Contains(searchText) ?? false)
+                        || (i.ReplyToDisplayName?.Contains(searchText) ?? false))
+                .OrderByDescending(i => i.CreatedDate)
+                .Take(limit);
+            if (!string.IsNullOrEmpty(sourceApplicationName))
+            {
+                results = results.Where(
+                    i => i.SourceApplicationName.Equals(sourceApplicationName, StringComparison.OrdinalIgnoreCase));
+            }
+            if (startDate.HasValue)
+            {
+                results = results.Where(i => i.CreatedDate >= startDate);
+            }
+            if (endDate.HasValue)
+            {
+                results = results.Where(i => i.CreatedDate <= endDate);
+            }
+            return results;
+        }
+
 
         /// <summary>
         ///     Optional logger

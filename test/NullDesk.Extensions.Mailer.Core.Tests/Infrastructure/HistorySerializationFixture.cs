@@ -11,7 +11,11 @@ namespace NullDesk.Extensions.Mailer.Core.Tests.Infrastructure
             var services = new ServiceCollection();
 
             services.AddSingleton<IHistoryStore, InMemoryHistoryStore>(
-                s => new InMemoryHistoryStore(new StandardHistoryStoreSettings {StoreAttachmentContents = true}));
+                s => new InMemoryHistoryStore(new StandardHistoryStoreSettings
+                {
+                    SourceApplicationName = "xunit",
+                    StoreAttachmentContents = true
+                }));
 
             ServiceProvider = services.BuildServiceProvider();
         }
