@@ -40,7 +40,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="token">A cancellation token.</param>
         /// <returns>Task&lt;Guid&gt; the ID of the message.</returns>
         Task<Guid> AddAsync(
-            DeliveryItem item, 
+            DeliveryItem item,
             CancellationToken token = default(CancellationToken));
 
 
@@ -51,7 +51,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         Task<DeliveryItem> GetAsync(
-            Guid id, 
+            Guid id,
             CancellationToken token = default(CancellationToken));
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         Task<IEnumerable<DeliverySummary>> GetAsync(
-            int offset = 0, 
+            int offset = 0,
             int limit = 100,
             CancellationToken token = default(CancellationToken));
 
@@ -78,10 +78,10 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         Task<IEnumerable<DeliverySummary>> SearchAsync(
-            string searchText, 
-            int limit = 100, 
+            string searchText,
+            int limit = 100,
             string sourceApplicationName = null,
-            DateTimeOffset? startDate = null, 
+            DateTimeOffset? startDate = null,
             DateTimeOffset? endDate = null,
             CancellationToken token = default(CancellationToken));
     }

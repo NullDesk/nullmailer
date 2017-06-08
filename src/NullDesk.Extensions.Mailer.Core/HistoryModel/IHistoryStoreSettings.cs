@@ -1,5 +1,5 @@
-﻿
-// ReSharper disable once CheckNamespace
+﻿// ReSharper disable once CheckNamespace
+
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
@@ -23,12 +23,10 @@ namespace NullDesk.Extensions.Mailer.Core
         bool StoreAttachmentContents { get; set; }
 
         /// <summary>
-        /// The name of the application to be include in history.
+        ///     The name of the application to be include in history.
         /// </summary>
         /// <remarks>Use to give a name to the system recording history.</remarks>
         /// <value>The name of the delivery provider.</value>
         string SourceApplicationName { get; set; }
-
-       
     }
 }

@@ -10,6 +10,7 @@ using NullDesk.Extensions.Mailer.Core.Fluent.Extensions;
 using NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure;
 using NullDesk.Extensions.Mailer.Tests.Common;
 using Xunit;
+
 // ReSharper disable PossibleMultipleEnumeration
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests
@@ -25,8 +26,6 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
 
         private HistoryMailFixture Fixture { get; }
         private Dictionary<string, string> ReplacementVars { get; } = new Dictionary<string, string>();
-
-
 
 
         [Theory]
@@ -135,11 +134,11 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
                     .To("someoneelse@nowhere.com")
                     .From("someone@somewhere.com", "New Guy")
                     .WithSubject("Some Topic")
-                    .WithBody<ContentBody>(b => b.PlainTextContent = "something"),
+                    .WithBody<ContentBody>(b => b.PlainTextContent = "something")
             });
             await mailer.SendAllAsync(CancellationToken.None);
             var history = Fixture.StoreWithoutSerializableAttachments;
-                
+
             var searchA = await history.SearchAsync("else");
             searchA.Should().NotBeNull().And.OnlyContain(i => i.SourceApplicationName == "xunit");
             searchA.Should().NotBeNull().And.OnlyContain(i => i.ToEmailAddress == "someoneelse@nowhere.com");
@@ -147,13 +146,14 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
             var searchB = await history.SearchAsync("else", sourceApplicationName: "noxunit");
             searchB.Should().BeEmpty();
 
-            var searchC = await history.SearchAsync("else", startDate: DateTimeOffset.UtcNow.AddHours(-1), endDate: DateTimeOffset.UtcNow);
+            var searchC = await history.SearchAsync("else", startDate: DateTimeOffset.UtcNow.AddHours(-1),
+                endDate: DateTimeOffset.UtcNow);
             searchC.Should().NotBeNull().And.OnlyContain(i => i.SourceApplicationName == "xunit");
             searchC.Should().NotBeNull().And.OnlyContain(i => i.ToEmailAddress == "someoneelse@nowhere.com");
 
-            var searchD = await history.SearchAsync("else", startDate: DateTimeOffset.UtcNow.AddHours(-2), endDate: DateTimeOffset.UtcNow.AddHours(-1));
+            var searchD = await history.SearchAsync("else", startDate: DateTimeOffset.UtcNow.AddHours(-2),
+                endDate: DateTimeOffset.UtcNow.AddHours(-1));
             searchD.Should().BeEmpty();
-
         }
     }
 }

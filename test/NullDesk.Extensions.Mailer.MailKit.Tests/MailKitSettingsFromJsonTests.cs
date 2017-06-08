@@ -4,6 +4,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using NullDesk.Extensions.Mailer.MailKit.Authentication;
 using Xunit;
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests
@@ -27,15 +28,15 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
         }
 
         [Fact]
-        public void MailKit_Settings_AuthenticationNoCredentials()
+        public void MailKit_Settings_BasicAuthentication()
         {
             var config = AcquireConfiguration();
 
             //setup the dependency injection service
             var services = new ServiceCollection();
             services.AddOptions();
-            services.Configure<MkSmtpMailerSettings>(
-                config.GetSection("AuthMailNoCredentialsSettings:MkSmtpMailerSettings"));
+            var c = config.GetSection("BasicAuthMailSettings:MkSmtpMailerSettings");
+            services.Configure<MkSmtpMailerSettings>(c);
 
             var provider = services.BuildServiceProvider();
             var settings = provider.GetService<IOptions<MkSmtpMailerSettings>>();
@@ -44,32 +45,8 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
                 .Should()
                 .NotBeNull()
                 .And.BeOfType<MkSmtpAuthenticationSettings>()
-                .Which.AuthenticationMode.Should()
-                .Be(MkSmtpAuthenticationMode.Token);
-
-            settings.Value.AuthenticationSettings.AccessTokenAuthentication.Should().BeNull();
-            settings.Value.AuthenticationSettings.BasicAuthentication.Should().BeNull();
-            settings.Value.AuthenticationSettings.CredentialsAuthentication.Should().BeNull();
-            settings.Value.EnableSslServerCertificateValidation.Should().BeTrue();
-        }
-
-        [Fact]
-        public void MailKit_Settings_BasicAuthentication()
-        {
-            var config = AcquireConfiguration();
-
-            //setup the dependency injection service
-            var services = new ServiceCollection();
-            services.AddOptions();
-            services.Configure<MkSmtpMailerSettings>(config.GetSection("BasicAuthMailSettings:MkSmtpMailerSettings"));
-
-            var provider = services.BuildServiceProvider();
-            var settings = provider.GetService<IOptions<MkSmtpMailerSettings>>();
-            settings.Value.FromEmailAddress.Should().Be("test@test.com");
-            settings.Value.AuthenticationSettings.BasicAuthentication
-                .Should()
-                .NotBeNull()
-                .And.BeOfType<MkSmtpBasicAuthenticationSettings>()
+                .Which.Authenticator.Should()
+                .BeOfType<MkSmtpBasicAuthenticator>()
                 .Which.Password.Should()
                 .Be("xyz");
 
@@ -77,31 +54,27 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
         }
 
         [Fact]
-        public void MailKit_Settings_CombinedAuthentication()
+        public void MailKit_Settings_EmptyAuthentication()
         {
             var config = AcquireConfiguration();
 
             //setup the dependency injection service
             var services = new ServiceCollection();
             services.AddOptions();
-            services.Configure<MkSmtpMailerSettings>(
-                config.GetSection("CombinedAuthMailSettings:MkSmtpMailerSettings"));
+            services.Configure<MkSmtpMailerSettings>(config.GetSection("EmptyAuthMailSettings:MkSmtpMailerSettings"));
 
             var provider = services.BuildServiceProvider();
             var settings = provider.GetService<IOptions<MkSmtpMailerSettings>>();
             settings.Value.FromEmailAddress.Should().Be("test@test.com");
-            settings.Value.AuthenticationSettings.GetSettingsForAuthenticationMode()
+            settings.Value.AuthenticationSettings
                 .Should()
                 .NotBeNull()
-                .And.BeOfType<MkSmtpBasicAuthenticationSettings>()
-                .Which.Password.Should()
-                .Be("xyz");
-            settings.Value.AuthenticationSettings.AccessTokenAuthentication
-                .Should()
-                .NotBeNull();
-
-            settings.Value.EnableSslServerCertificateValidation.Should().BeTrue();
+                .And.BeOfType<MkSmtpAuthenticationSettings>()
+                .Which.Authenticator.Should()
+                .NotBeNull()
+                .And.BeOfType<NullAuthenticator>();
         }
+
 
         [Fact]
         public void MailKit_Settings_NoAuthentication()
@@ -116,7 +89,13 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
             var provider = services.BuildServiceProvider();
             var settings = provider.GetService<IOptions<MkSmtpMailerSettings>>();
             settings.Value.FromEmailAddress.Should().Be("test@test.com");
-            settings.Value.AuthenticationSettings.Should().BeNull();
+            settings.Value.AuthenticationSettings
+                .Should()
+                .NotBeNull()
+                .And.BeOfType<MkSmtpAuthenticationSettings>()
+                .Which.Authenticator.Should()
+                .NotBeNull()
+                .And.BeOfType<NullAuthenticator>();
         }
 
         [Fact]
@@ -131,17 +110,27 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
 
             var provider = services.BuildServiceProvider();
             var settings = provider.GetService<IOptions<MkSmtpMailerSettings>>();
+            settings.Value.AuthenticationSettings.Authenticator = new MkSmtpAccessTokenAuthenticator
+            {
+                AccessTokenFactory = () => "tokenabc",
+                UserName = settings.Value.AuthenticationSettings.UserName
+            };
             settings.Value.FromEmailAddress.Should().Be("test@test.com");
-            settings.Value.AuthenticationSettings
+            var authSettings = settings.Value.AuthenticationSettings
                 .Should()
                 .NotBeNull()
-                .And.BeOfType<MkSmtpAuthenticationSettings>()
-                .Which.AccessTokenAuthentication
+                .And.BeOfType<MkSmtpAuthenticationSettings>();
+
+
+            var auth = authSettings.Which.Authenticator.Should()
+                .BeOfType<MkSmtpAccessTokenAuthenticator>();
+            auth
+                .Which.AccessTokenFactory()
                 .Should()
-                .NotBeNull()
-                .And.BeOfType<MkSmtpAccessTokenAuthenticationSettings>()
-                .Which.AccessToken.Should()
-                .Be("abc");
+                .Be("tokenabc");
+            auth
+                .Which.UserName.Should()
+                .Be("toast@toast.com");
 
             settings.Value.EnableSslServerCertificateValidation.Should().BeFalse();
         }

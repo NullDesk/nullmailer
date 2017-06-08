@@ -153,10 +153,9 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
 
     internal static class DeliveryItemsExtensions
     {
-
         public static DeliverySummary ToDeliverySummary(this EntityHistoryDeliveryItem item)
         {
-            return new DeliverySummary()
+            return new DeliverySummary
             {
                 SourceApplicationName = item.SourceApplicationName,
                 ReplyToEmailAddress = item.ReplyToEmailAddress,

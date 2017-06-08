@@ -31,7 +31,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer
         {
             return new EntityHistoryStoreSettings
             {
-                AutoInitializeDatabase   = sqlSettings.AutoInitializeDatabase,
+                AutoInitializeDatabase = sqlSettings.AutoInitializeDatabase,
                 IsEnabled = sqlSettings.IsEnabled,
                 StoreAttachmentContents = sqlSettings.StoreAttachmentContents,
                 SourceApplicationName = sqlSettings.SourceApplicationName,

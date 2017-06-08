@@ -1,14 +1,14 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+
 // ReSharper disable CheckNamespace
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
-    /// Summary of Delivery details.
+    ///     Summary of Delivery details.
     /// </summary>
     public class DeliverySummary
     {
-       
         /// <summary>
         ///     The unique message identifier
         /// </summary>
@@ -95,11 +95,10 @@ namespace NullDesk.Extensions.Mailer.Core
         public virtual string ExceptionMessage { get; set; }
 
         /// <summary>
-        /// The name of the application to be include in history.
+        ///     The name of the application to be include in history.
         /// </summary>
         /// <remarks>Use to give a name to the system recording history.</remarks>
         /// <value>The name of the delivery provider.</value>
         public virtual string SourceApplicationName { get; set; }
-
     }
 }

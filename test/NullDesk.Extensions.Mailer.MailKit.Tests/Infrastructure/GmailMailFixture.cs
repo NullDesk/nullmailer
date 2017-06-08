@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using MimeKit;
 using NSubstitute;
 using NullDesk.Extensions.Mailer.Core;
+using NullDesk.Extensions.Mailer.MailKit.Authentication;
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 {
@@ -95,12 +96,8 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                     SmtpRequireSsl = true,
                     AuthenticationSettings = new MkSmtpAuthenticationSettings
                     {
-                        AuthenticationMode = MkSmtpAuthenticationMode.Basic,
-                        BasicAuthentication = new MkSmtpBasicAuthenticationSettings
-                        {
-                            Password = "abc",
-                            UserName = "abc@xyz.com"
-                        }
+                        Password = "abc",
+                        UserName = "abc@xyz.com"
                     },
                     TemplateSettings = new MkFileTemplateSettings
                     {
@@ -135,10 +132,9 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                     SmtpRequireSsl = true,
                     AuthenticationSettings = new MkSmtpAuthenticationSettings
                     {
-                        AuthenticationMode = MkSmtpAuthenticationMode.Basic,
-                        AccessTokenAuthentication = new MkSmtpAccessTokenAuthenticationSettings
+                        Authenticator = new MkSmtpAccessTokenAuthenticator
                         {
-                            AccessToken = credential.Token.AccessToken,
+                            AccessTokenFactory = () => credential.Token.AccessToken,
                             UserName = "abc@xyz.com"
                         }
                     },

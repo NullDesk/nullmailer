@@ -16,7 +16,6 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
     public class EntityHistoryStore<TContext> : IHistoryStore<EntityHistoryStoreSettings>
         where TContext : HistoryContext
     {
-
         private bool _isInitialized;
 
         /// <summary>
@@ -24,10 +23,11 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// </summary>
         /// <param name="settings">The history store settings.</param>
         /// <param name="logger">An optional logger.</param>
-        public EntityHistoryStore(EntityHistoryStoreSettings settings, ILogger<EntityHistoryStore<TContext>> logger = null)
+        public EntityHistoryStore(EntityHistoryStoreSettings settings,
+            ILogger<EntityHistoryStore<TContext>> logger = null)
         {
             Settings = settings;
-            Logger = (ILogger)logger ?? NullLogger.Instance;
+            Logger = (ILogger) logger ?? NullLogger.Instance;
         }
 
         /// <summary>
@@ -52,7 +52,6 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         }
 
 
-
         /// <summary>
         ///     Gets the history item from the store.
         /// </summary>
@@ -65,7 +64,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
             {
                 using (var context = GetContext())
                 {
-                    return (await context.FindAsync<EntityHistoryDeliveryItem>(new object[] { id }, token))
+                    return (await context.FindAsync<EntityHistoryDeliveryItem>(new object[] {id}, token))
                         ?.ToDeliveryItem();
                 }
             }
@@ -98,7 +97,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         }
 
         /// <summary>
-        /// search as an asynchronous operation.
+        ///     search as an asynchronous operation.
         /// </summary>
         /// <param name="searchText">The search text.</param>
         /// <param name="limit">The limit.</param>
@@ -114,7 +113,6 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
             string sourceApplicationName = null,
             DateTimeOffset? startDate = null,
             DateTimeOffset? endDate = null,
-
             CancellationToken token = new CancellationToken())
         {
             if (Settings.IsEnabled)
@@ -138,8 +136,9 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
                     if (!string.IsNullOrEmpty(sourceApplicationName))
                     {
                         results = results
-                            .Where(i => 
-                                i.SourceApplicationName.Equals(sourceApplicationName, StringComparison.OrdinalIgnoreCase));
+                            .Where(i =>
+                                i.SourceApplicationName.Equals(sourceApplicationName,
+                                    StringComparison.OrdinalIgnoreCase));
                     }
                     if (startDate.HasValue)
                     {
@@ -174,12 +173,12 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// <returns>HistoryContext.</returns>
         public HistoryContext GetHistoryContext()
         {
-            return (TContext)Activator.CreateInstance(typeof(TContext), Settings.DbOptions);
+            return (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions);
         }
 
         private TContext GetContext()
         {
-            var context = (TContext)Activator.CreateInstance(typeof(TContext), Settings.DbOptions);
+            var context = (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions);
             if (Settings.AutoInitializeDatabase && !_isInitialized)
             {
                 Logger.LogInformation("Beginning history database auto-initialization");
@@ -188,7 +187,6 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
                 Logger.LogInformation("Completed history database auto-initialization");
             }
             return context;
-
         }
     }
 }

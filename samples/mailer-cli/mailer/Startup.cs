@@ -1,13 +1,10 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.History.EntityFramework;
 using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer;
 using NullDesk.Extensions.Mailer.MailKit;
@@ -31,10 +28,8 @@ namespace Sample.Mailer.Cli
 
             Program.ServiceProvider = services;
             ConfigureLogging(services.GetService<ILoggerFactory>());
-           
         }
 
-       
 
         private void ConfigureLogging(ILoggerFactory loggerFactory)
         {

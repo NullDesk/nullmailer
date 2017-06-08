@@ -82,7 +82,7 @@ Easily configure your application for different email services at startup based 
 
 ### <a name="mailer-instantiation"></a>Mailer Instantiation
 
-The simplest usage is to instantiate the mailer of your choice, use the fluent message builder API to create a message, then send the messages:
+The simplest usage is to instantiate the mailer of your choice, use the fluent message builder API to create one or more messages, then send the messages:
 
          var settings = new SendGridMailerSettings
          {
@@ -108,7 +108,7 @@ The simplest usage is to instantiate the mailer of your choice, use the fluent m
 
 ### <a name="mailer-factory-usage"></a>Mailer Factory Usage
 
-For real-world scenarios, you would use dependency injection or the provided mailer factory to obtain a mailer instance.
+For real-world scenarios, you would normally use dependency injection or the provided mailer factory to obtain a mailer instance more convieniently.
 
         var settings = new SendGridMailerSettings
         {
@@ -428,7 +428,7 @@ Example: History with the `MailerFactory`:
                 .AddConsole(consoleLoggerConfig)
         };
 
-        fact.RegisterDefaultSqlHistory(
+        mailerFactory.RegisterDefaultSqlHistory(
             new SqlEntityHistoryStoreSettings(){
                 //your settings here
             });
@@ -496,10 +496,34 @@ If you are using GMail with the MailKit SMTP Mailer, you will need to either use
 
 Review the [MailKit GMail documentation](https://github.com/jstedfast/MailKit/blob/master/FAQ.md#GMailAccess) first.
 
-When configuring your settings for GMail, you will need to use the `MkSmtpBasicAuthenticationSettings` if you are using the less secure connection method, or use `MkSmtpAccessTokenAuthenticationSettings` if using oAuth. 
+When configuring your settings for GMail, you will need to supply a username and password to `MkSmtpAuthenticationSettings` if you are using the less secure connection method.
 
-For oAuth, please note that you will need to ensure that you create new settings and a new mailer instance each time you want to send a mail (or a batch of messages), and it is up to the consuming application to make sure that the settings contain an up-to-date and valid access token each time. The mailer extensions will not validate the token, nor does it have any built-in mechanism to handle expired tokens. 
+        var settings = new MkSmtpMailerSettings
+        {
+            FromDisplayName = "Person Name",
+            FromEmailAddress = "someone@toast.com",
+            AuthenticationSettings= new MkSmtpAuthenticationSettings
+            {
+                UserName = "myuser@gmail.com",
+                Password = "abc"
+            }
+        };
 
+When using oAuth, you will need to supply a value to the `Authenticator` property of `MkSmtpAuthenticationSettings`.
+
+        var settings = new MkSmtpMailerSettings
+        {
+            FromDisplayName = "Person Name",
+            FromEmailAddress = "someone@toast.com",
+            AuthenticationSettings= new MkSmtpAuthenticationSettings
+            {
+                Authenticator = new MkSmtpAccessTokenAuthenticator
+                {
+                    UserName = "myuser@gmail.com",
+                    AccessTokenFactory = () => MyTokenManager.SomeMethodThatGetsTokens()
+                }
+            }
+        };
 
 ## <a name="custom-mailer"></a>Creating your own mailers
 

@@ -33,6 +33,6 @@ namespace NullDesk.Extensions.Mailer.MailKit
         ///     Gets or sets the authentication settings.
         /// </summary>
         /// <value>The authentication settings.</value>
-        public MkSmtpAuthenticationSettings AuthenticationSettings { get; set; }
+        public MkSmtpAuthenticationSettings AuthenticationSettings { get; set; } = new MkSmtpAuthenticationSettings();
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -22,7 +21,6 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Inf
             });
 
 
-            
             services.AddMailerHistory<TestSqlHistoryContext>(new SqlEntityHistoryStoreSettings
             {
                 SourceApplicationName = "xunit",
@@ -37,8 +35,6 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Inf
 
             var logging = ServiceProvider.GetService<ILoggerFactory>();
             logging.AddDebug(LogLevel.Debug);
-
-
         }
 
         public IServiceProvider ServiceProvider { get; set; }

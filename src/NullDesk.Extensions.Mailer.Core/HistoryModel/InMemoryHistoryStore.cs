@@ -98,7 +98,7 @@ namespace NullDesk.Extensions.Mailer.Core
         }
 
         /// <summary>
-        /// Searches common fields in history items and returns the specific number of matches.
+        ///     Searches common fields in history items and returns the specific number of matches.
         /// </summary>
         /// <param name="searchText">The search text.</param>
         /// <param name="limit">The limit.</param>
@@ -121,6 +121,20 @@ namespace NullDesk.Extensions.Mailer.Core
                 ? Task.FromResult(GetSearchResults(searchText, limit, sourceApplicationName, startDate, endDate))
                 : Task.FromResult<IEnumerable<DeliverySummary>>(new DeliverySummary[] { });
         }
+
+
+        /// <summary>
+        ///     Optional logger
+        /// </summary>
+        /// <value>The logger.</value>
+        public ILogger Logger { get; }
+
+
+        /// <summary>
+        ///     The history store settings.
+        /// </summary>
+        /// <value>The settings.</value>
+        public StandardHistoryStoreSettings Settings { get; set; }
 
         private IEnumerable<DeliverySummary> GetSearchResults(
             string searchText,
@@ -157,19 +171,5 @@ namespace NullDesk.Extensions.Mailer.Core
             }
             return results;
         }
-
-
-        /// <summary>
-        ///     Optional logger
-        /// </summary>
-        /// <value>The logger.</value>
-        public ILogger Logger { get; }
-
-
-        /// <summary>
-        ///     The history store settings.
-        /// </summary>
-        /// <value>The settings.</value>
-        public StandardHistoryStoreSettings Settings { get; set; }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+
 // ReSharper disable VirtualMemberCallInConstructor
 // ReSharper disable CheckNamespace
 namespace NullDesk.Extensions.Mailer.Core
@@ -43,7 +43,7 @@ namespace NullDesk.Extensions.Mailer.Core
             {
                 Substitutions.Add(gSub.Key, gSub.Value);
             }
-        }       
+        }
 
         /// <summary>
         ///     Gets or sets the message body.

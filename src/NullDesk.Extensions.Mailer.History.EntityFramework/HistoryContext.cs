@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-
 namespace NullDesk.Extensions.Mailer.History.EntityFramework
 {
     /// <summary>
@@ -32,7 +31,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
 
 
         /// <summary>
-        /// Initializes the database.
+        ///     Initializes the database.
         /// </summary>
         /// <remarks>Used to run migrations, provision schemas, setup document templates, etc.</remarks>
         public abstract void InitializeDatabase();

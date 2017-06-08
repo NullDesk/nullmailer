@@ -77,7 +77,7 @@ namespace NullDesk.Extensions.Mailer.Core
         }
 
         /// <summary>
-        /// Does nothing, returns empty collection.
+        ///     Does nothing, returns empty collection.
         /// </summary>
         /// <param name="searchText">The search text.</param>
         /// <param name="limit">The limit.</param>
@@ -88,7 +88,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <returns>Task&lt;HistoryItem&gt;.</returns>
         /// <remarks>Searches the sender, reply to, and recipient email and display names, and the subject</remarks>
         public Task<IEnumerable<DeliverySummary>> SearchAsync(
-            string searchText, 
+            string searchText,
             int limit = 100,
             string sourceApplicationName = null,
             DateTimeOffset? startDate = null,

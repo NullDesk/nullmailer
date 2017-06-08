@@ -1,5 +1,5 @@
-﻿
-// ReSharper disable once CheckNamespace
+﻿// ReSharper disable once CheckNamespace
+
 namespace NullDesk.Extensions.Mailer.Core
 {
     /// <summary>
@@ -29,6 +29,5 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <value>The name of the delivery provider.</value>
         /// <remarks>Use to give a name to the system recording history.</remarks>
         public string SourceApplicationName { get; set; }
-       
     }
 }

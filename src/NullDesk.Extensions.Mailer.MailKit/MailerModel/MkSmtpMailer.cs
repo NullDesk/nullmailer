@@ -149,7 +149,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
                 {
                     if (!MailClient.IsAuthenticated)
                     {
-                        await AuthenticateMailClient(token);
+                        await Settings.AuthenticationSettings.Authenticator.Authenticate(MailClient, token);
                     }
 
                     await MailClient.SendAsync(message, token);
@@ -164,33 +164,6 @@ namespace NullDesk.Extensions.Mailer.MailKit
             }
             return message.MessageId;
         }
-
-        private async Task AuthenticateMailClient(CancellationToken token)
-        {
-            var settings = Settings.AuthenticationSettings?.GetSettingsForAuthenticationMode();
-            var authType = settings?.GetType().Name;
-            switch (authType)
-            {
-                case nameof(MkSmtpCredentialsAuthenticationSettings):
-                    var ccred = ((MkSmtpCredentialsAuthenticationSettings) settings).Credentials;
-                    await MailClient.AuthenticateAsync(ccred, token);
-                    break;
-                case nameof(MkSmtpAccessTokenAuthenticationSettings):
-                    var acred = (MkSmtpAccessTokenAuthenticationSettings) settings;
-                    await MailClient.AuthenticateAsync(acred.UserName, acred.AccessToken, token);
-                    break;
-                case nameof(MkSmtpBasicAuthenticationSettings):
-                    var bcred = (MkSmtpBasicAuthenticationSettings) settings;
-                    MailClient.AuthenticationMechanisms.Remove("XOAUTH2");
-                    await MailClient.AuthenticateAsync(bcred.UserName, bcred.Password, token);
-                    break;
-                // ReSharper disable once RedundantEmptySwitchSection
-                default:
-                    //no authentication used
-                    break;
-            }
-        }
-
 
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
