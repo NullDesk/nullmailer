@@ -153,7 +153,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
 
     internal static class DeliveryItemsExtensions
     {
-        public static DeliverySummary ToDeliverySummary(this EntityHistoryDeliveryItem item)
+        internal static DeliverySummary ToDeliverySummary(this EntityHistoryDeliveryItem item)
         {
             return new DeliverySummary
             {
@@ -174,7 +174,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
             };
         }
 
-        public static DeliveryItem ToDeliveryItem(this EntityHistoryDeliveryItem item)
+        internal static DeliveryItem ToDeliveryItem(this EntityHistoryDeliveryItem item)
         {
             var settings = new JsonSerializerSettings
             {
@@ -217,7 +217,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
 
     internal static class HistoryDeliveryItemExtensions
     {
-        public static EntityHistoryDeliveryItem ToEntityHistoryDeliveryItem(this DeliveryItem item,
+        internal static EntityHistoryDeliveryItem ToEntityHistoryDeliveryItem(this DeliveryItem item,
             bool serializeAttachments)
         {
             return new EntityHistoryDeliveryItem
