@@ -136,6 +136,7 @@ namespace NullDesk.Extensions.Mailer.Core
                         i.Id,
                         i.ToEmailAddress,
                         i.Subject);
+                    i.DeliveryProvider = GetType().Name;
                     ((IMailer) this).PendingDeliverables.Add(i);
                 }
             }
@@ -192,7 +193,7 @@ namespace NullDesk.Extensions.Mailer.Core
                     deliveryItem.ProviderMessageId =
                         await DeliverMessageAsync(deliveryItem, autoCloseConnection, token);
                     deliveryItem.IsSuccess = true;
-                    deliveryItem.DeliveryProvider = GetType().Name;
+                    
                     Logger.LogInformation(
                         "Mailer delivery {result} for delivery item '{deliveryItemId}' sent to '{to}' with subject '{subject}'",
                         deliveryItem.IsSuccess ? "success" : "failure",
