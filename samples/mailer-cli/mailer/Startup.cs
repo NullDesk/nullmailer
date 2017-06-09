@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using NullDesk.Extensions.Mailer.History.EntityFramework;
 using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer;
 using NullDesk.Extensions.Mailer.MailKit;
+using NullDesk.Extensions.Mailer.MailKit.Authentication;
 using NullDesk.Extensions.Mailer.SendGrid;
 using Sample.Mailer.Cli.Commands;
 using Sample.Mailer.Cli.Configuration;
@@ -54,6 +55,7 @@ namespace Sample.Mailer.Cli
             return builder.Build();
         }
 
+
         private IServiceProvider ConfigureConsoleServices(IServiceCollection services)
         {
             services.AddOptions();
@@ -72,6 +74,8 @@ namespace Sample.Mailer.Cli
             services.Configure<SqlEntityHistoryStoreSettings>(Config.GetSection("MailHistoryDbSettings"));
 
             services.AddMailerSqlHistory(s => s.GetService<IOptions<SqlEntityHistoryStoreSettings>>().Value);
+
+
 
             ////alternate way to instantiate history
             //var connectionString = Config.GetValue<string>("MailHistoryDbSettings:ConnectionString");
