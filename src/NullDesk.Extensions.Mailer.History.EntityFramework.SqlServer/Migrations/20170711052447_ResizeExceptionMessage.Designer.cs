@@ -8,9 +8,10 @@ using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer;
 namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migrations
 {
     [DbContext(typeof(SqlHistoryContext))]
-    partial class SqlHistoryContextModelSnapshot : ModelSnapshot
+    [Migration("20170711052447_ResizeExceptionMessage")]
+    partial class ResizeExceptionMessage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")

@@ -139,7 +139,6 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         ///     Gets or sets the exception message if an exception occurred.
         /// </summary>
         /// <value>The exception message.</value>
-        [StringLength(500)]
         public string ExceptionMessage { get; set; }
 
         /// <summary>
