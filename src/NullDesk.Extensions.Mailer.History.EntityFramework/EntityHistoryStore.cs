@@ -27,7 +27,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
             ILogger<EntityHistoryStore<TContext>> logger = null)
         {
             Settings = settings;
-            Logger = (ILogger) logger ?? NullLogger.Instance;
+            Logger = (ILogger)logger ?? NullLogger.Instance;
         }
 
         /// <summary>
@@ -40,7 +40,11 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         {
             if (Settings.IsEnabled)
             {
-                item.SourceApplicationName = Settings.SourceApplicationName;
+                if (string.IsNullOrEmpty(item.SourceApplicationName) &&
+                    !string.IsNullOrEmpty(Settings.SourceApplicationName))
+                {
+                    item.SourceApplicationName = Settings.SourceApplicationName;
+                }
                 using (var context = GetContext())
                 {
                     context.MessageHistory.Add(item.ToEntityHistoryDeliveryItem(Settings.StoreAttachmentContents));
@@ -64,7 +68,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
             {
                 using (var context = GetContext())
                 {
-                    return (await context.FindAsync<EntityHistoryDeliveryItem>(new object[] {id}, token))
+                    return (await context.FindAsync<EntityHistoryDeliveryItem>(new object[] { id }, token))
                         ?.ToDeliveryItem();
                 }
             }
@@ -173,12 +177,12 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         /// <returns>HistoryContext.</returns>
         public HistoryContext GetHistoryContext()
         {
-            return (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions);
+            return (TContext)Activator.CreateInstance(typeof(TContext), Settings.DbOptions);
         }
 
         private TContext GetContext()
         {
-            var context = (TContext) Activator.CreateInstance(typeof(TContext), Settings.DbOptions);
+            var context = (TContext)Activator.CreateInstance(typeof(TContext), Settings.DbOptions);
             if (Settings.AutoInitializeDatabase && !_isInitialized)
             {
                 Logger.LogInformation("Beginning history database auto-initialization");

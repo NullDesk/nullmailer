@@ -10,6 +10,7 @@ using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Infrastructure;
 using NullDesk.Extensions.Mailer.Tests.Common;
 using Xunit;
+using NullDesk.Extensions.Mailer.Core.Fluent;
 
 // ReSharper disable PossibleMultipleEnumeration
 
@@ -33,7 +34,35 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
         [Theory]
         [Trait("TestType", "Integration")]
         [ClassData(typeof(StandardMailerTestData))]
-        public async Task Ef_Sql_History__SerializeAttachments_SendMail(string html, string text, string[] attachments)
+        public async Task Ef_Sql_History_AddWithCustomSourceApplicationName(string html, string text, string[] attachments)
+        {
+            var store = Fixture.ServiceProvider.GetService<IHistoryStore>();
+
+            var message = new MessageBuilder().From("xunit@test.com")
+                .And
+                .Subject($"xunit Test run: content body")
+                .And.To("noone@toast.com")
+                .WithDisplayName("No One Important")
+                .And.ForBody()
+                .WithHtml(html)
+                .AndPlainText(text)
+                .And.WithSubstitutions(ReplacementVars)
+                .Build();
+          
+            var deliveries = message.Recipients.Select(recipient => new DeliveryItem(message, recipient)).ToList();
+            foreach (var item in deliveries)
+            {
+                item.SourceApplicationName = "testUpdatedValue";
+                var id = await store.AddAsync(item);
+                var savedItem = await store.GetAsync(id);
+                savedItem.SourceApplicationName.Should().Be("testUpdatedValue");
+            }
+        }
+
+        [Theory]
+        [Trait("TestType", "Integration")]
+        [ClassData(typeof(StandardMailerTestData))]
+        public async Task Ef_Sql_History_SerializeAttachments_SendMail(string html, string text, string[] attachments)
         {
             attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
 
