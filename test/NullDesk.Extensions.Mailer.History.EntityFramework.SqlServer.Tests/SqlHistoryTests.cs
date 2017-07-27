@@ -56,6 +56,9 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
                 var id = await store.AddAsync(item);
                 var savedItem = await store.GetAsync(id);
                 savedItem.SourceApplicationName.Should().Be("testUpdatedValue");
+                var body = savedItem.Body.Should().BeOfType<ContentBody>();
+                body.Which.HtmlContent.Should().Be(html);
+                body.Which.PlainTextContent.Should().Be(text);
             }
         }
 

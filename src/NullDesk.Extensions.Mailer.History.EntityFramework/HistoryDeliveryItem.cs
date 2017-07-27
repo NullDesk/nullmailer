@@ -186,14 +186,14 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
                 SourceApplicationName = item.SourceApplicationName,
                 Body =
                     string.IsNullOrEmpty(item.TemplateName)
-                        ? (IMessageBody) new TemplateBody
-                        {
-                            TemplateName = item.TemplateName
-                        }
-                        : new ContentBody
+                        ? new ContentBody
                         {
                             HtmlContent = item.HtmlContent,
                             PlainTextContent = item.TextContent
+                        }
+                        : (IMessageBody)new TemplateBody
+                        {
+                            TemplateName = item.TemplateName
                         },
                 Substitutions = JsonConvert.DeserializeObject<IDictionary<string, string>>(item.SubstitutionsJson),
                 CreatedDate = item.CreatedDate,
