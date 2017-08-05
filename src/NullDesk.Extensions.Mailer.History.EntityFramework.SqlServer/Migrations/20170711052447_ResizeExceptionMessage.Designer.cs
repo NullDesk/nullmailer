@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migrations
 {
@@ -76,3 +77,5 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Migration
         }
     }
 }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
+

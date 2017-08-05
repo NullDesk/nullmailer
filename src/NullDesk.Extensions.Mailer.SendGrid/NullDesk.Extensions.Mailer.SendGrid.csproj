@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>NullDesk Mailer Extensions for Email messaging using SendGrid API services</Description>
-    <VersionPrefix>4.1.0</VersionPrefix>
+    <VersionPrefix>4.2.0</VersionPrefix>
     <Authors>Stephen M. Redd</Authors>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFrameworks>netstandard1.3;net46</TargetFrameworks>
     <DebugType>portable</DebugType>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>NullDesk.Extensions.Mailer.SendGrid</AssemblyName>
@@ -24,6 +24,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.2" />
-    <PackageReference Include="SendGrid" Version="9.4.1" />
+    <PackageReference Include="SendGrid" Version="9.7.0" />
   </ItemGroup>
 </Project>

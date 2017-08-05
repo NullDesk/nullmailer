@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>NullDesk Mailer Extensions for SMTP Email messaging using MailKit</Description>
-    <VersionPrefix>4.1.0</VersionPrefix>
+    <VersionPrefix>4.2.0</VersionPrefix>
     <Authors>Stephen M. Redd</Authors>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFrameworks>netstandard1.3;net46</TargetFrameworks>
     <DebugType>portable</DebugType>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>NullDesk.Extensions.Mailer.MailKit</AssemblyName>
@@ -20,7 +20,7 @@
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MailKit" Version="1.16.1" />
+    <PackageReference Include="MailKit" Version="1.16.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.2" />
     <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
   </ItemGroup>
