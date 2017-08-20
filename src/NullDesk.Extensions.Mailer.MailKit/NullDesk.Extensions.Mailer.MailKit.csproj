@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>NullDesk Mailer Extensions for SMTP Email messaging using MailKit</Description>
-    <VersionPrefix>4.2.0</VersionPrefix>
+    <VersionPrefix>4.2.1</VersionPrefix>
     <Authors>Stephen M. Redd</Authors>
     <TargetFrameworks>netstandard1.3;net46</TargetFrameworks>
     <DebugType>portable</DebugType>

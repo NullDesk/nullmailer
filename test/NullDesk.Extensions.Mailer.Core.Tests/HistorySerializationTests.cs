@@ -43,7 +43,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var preDeliveryBody = message.Body;
             var preDeliveryAttachments = message
                 .Attachments
-                .Select(a => new KeyValuePair<string, string>(a.Key, a.Value.ToBase64String().Result))
+                .Select(a => new KeyValuePair<string, string>(a.Key, a.Value.ToBase64StringAsync().Result))
                 .ToDictionary(k => k.Key, k => k.Value);
             var deliveries = message.Recipients.Select(recipient => new DeliveryItem(message, recipient)).ToList();
             foreach (var item in deliveries)
@@ -53,7 +53,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 savedItem.SourceApplicationName.Should().Be("xunit");
                 var postDeliveryAttachments = savedItem
                     .Attachments
-                    .Select(a => new KeyValuePair<string, string>(a.Key, a.Value.ToBase64String().Result))
+                    .Select(a => new KeyValuePair<string, string>(a.Key, a.Value.ToBase64StringAsync().Result))
                     .ToDictionary(k => k.Key, k => k.Value);
                 var postDeliveryBody = savedItem.Body;
 
@@ -88,7 +88,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var preDeliveryBody = message.Body;
             var preDeliveryAttachments = message
                 .Attachments
-                .Select(a => new KeyValuePair<string, string>(a.Key, a.Value.ToBase64String().Result))
+                .Select(a => new KeyValuePair<string, string>(a.Key, a.Value.ToBase64StringAsync().Result))
                 .ToDictionary(k => k.Key, k => k.Value);
             var deliveries = message.Recipients.Select(recipient => new DeliveryItem(message, recipient)).ToList();
             foreach (var item in deliveries)
@@ -97,7 +97,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 var savedItem = await history.GetAsync(id);
                 var postDeliveryAttachments = savedItem
                     .Attachments
-                    .Select(a => new KeyValuePair<string, string>(a.Key, a.Value.ToBase64String().Result))
+                    .Select(a => new KeyValuePair<string, string>(a.Key, a.Value.ToBase64StringAsync().Result))
                     .ToDictionary(k => k.Key, k => k.Value);
                 var postDeliveryBody = savedItem.Body;
 

@@ -166,7 +166,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid
                 {
                     sgAttachments.Add(new Attachment
                     {
-                        Content = await stream.Value.ToBase64String(),
+                        Content = await stream.Value.ToBase64StringAsync(),
                         Filename = stream.Key,
                         Disposition = "attachment"
                     });

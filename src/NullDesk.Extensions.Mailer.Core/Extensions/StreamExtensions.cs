@@ -14,7 +14,7 @@ namespace NullDesk.Extensions.Mailer.Core.Extensions
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns>Task&lt;System.String&gt;.</returns>
-        public static async Task<string> ToBase64String(this Stream input)
+        public static async Task<string> ToBase64StringAsync(this Stream input)
         {
             if (input == null)
             {
@@ -24,6 +24,25 @@ namespace NullDesk.Extensions.Mailer.Core.Extensions
             {
                 input.Position = 0; //put stream back to start
                 await input.CopyToAsync(ms);
+                return Convert.ToBase64String(ms.ToArray());
+            }
+        }
+
+        /// <summary>
+        ///     Gets a base64 encoded string from the stream.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns>Task&lt;System.String&gt;.</returns>
+        public static string ToBase64String(this Stream input)
+        {
+            if (input == null)
+            {
+                return null;
+            }
+            using (var ms = new MemoryStream())
+            {
+                input.Position = 0; //put stream back to start
+                input.CopyTo(ms);
                 return Convert.ToBase64String(ms.ToArray());
             }
         }

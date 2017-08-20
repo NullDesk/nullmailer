@@ -165,8 +165,10 @@ namespace NullDesk.Extensions.Mailer.Core
             }
             for (var i = 0; i < sendIds.Count; i++)
             {
+                
                 sentItems.Add(await SendAsync(sendIds[i], !(i < sendIds.Count - 1), token));
             }
+            
             return sentItems;
         }
 
@@ -201,6 +203,8 @@ namespace NullDesk.Extensions.Mailer.Core
                         deliveryItem.ToEmailAddress,
                         deliveryItem.Subject
                     );
+
+                    
                 }
                 catch (Exception ex)
                 {

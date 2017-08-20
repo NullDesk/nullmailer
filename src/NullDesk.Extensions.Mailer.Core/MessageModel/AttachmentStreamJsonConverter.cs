@@ -45,6 +45,7 @@ namespace NullDesk.Extensions.Mailer.Core
                 .ToDictionary(k => k.Key, k => k.Value);
         }
 
+
         /// <summary>
         ///     Writes the JSON representation of the object.
         /// </summary>
@@ -55,7 +56,7 @@ namespace NullDesk.Extensions.Mailer.Core
         {
             var dict = (IDictionary<string, Stream>) value;
 
-            var converted = dict.Select(i => new KeyValuePair<string, string>(i.Key, i.Value.ToBase64String().Result))
+            var converted = dict.Select(i => new KeyValuePair<string, string>(i.Key, i.Value.ToBase64String()))
                 .ToDictionary(k => k.Key, k => k.Value);
 
             serializer.Serialize(writer, converted);
