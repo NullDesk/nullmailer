@@ -26,8 +26,8 @@ namespace NullDesk.Extensions.Mailer.Core
         {
             factory.Register(() => new SendGridMailer(
                 settings,
-                logger,
-                store));
+                logger ?? factory.DefaultLoggerFactory?.CreateLogger<SendGridMailer>(),
+                store ?? factory.DefaultHistoryStore));
         }
 
         /// <summary>
@@ -48,8 +48,8 @@ namespace NullDesk.Extensions.Mailer.Core
             factory.Register(() => new SendGridMailer(
                 clientFunc(),
                 settings,
-                logger,
-                store));
+                logger ?? factory.DefaultLoggerFactory?.CreateLogger<SendGridMailer>(),
+                store ?? factory.DefaultHistoryStore));
         }
     }
 }

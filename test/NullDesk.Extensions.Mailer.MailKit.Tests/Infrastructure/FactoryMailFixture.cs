@@ -16,14 +16,15 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
             var loggerFactory = new LoggerFactory();
             loggerFactory.AddDebug(LogLevel.Debug);
 
-            var logger = loggerFactory.CreateLogger<MkSmtpMailer>();
-
+            //var logger = loggerFactory.CreateLogger<MkSmtpMailer>();
+            Mail.DefaultLoggerFactory = loggerFactory;
+            Mail.DefaultHistoryStore = Store;
             var mkSettings = SetupMailerOptions(out bool isMailServerAlive).Value;
 
 
             if (isMailServerAlive)
             {
-                Mail.AddMkSmtpMailer(mkSettings, logger, Store);
+                Mail.AddMkSmtpMailer(mkSettings);
             }
             else
             {
@@ -35,7 +36,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                         .Returns(Task.CompletedTask);
                     return c;
                 };
-                Mail.AddMkSmtpMailer(getClientFunc, mkSettings, logger, Store);
+                Mail.AddMkSmtpMailer(getClientFunc, mkSettings);
             }
         }
 
