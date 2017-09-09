@@ -99,5 +99,15 @@ namespace NullDesk.Extensions.Mailer.Core
         {
             return services.AddMailer<NullMailer, NullMailerSettings>(settingsFactory);
         }
+
+        /// <summary>
+        ///     Adds the NullHistoryStore to dependency injection.
+        /// </summary>
+        /// <param name="services">The services.</param>
+        /// <returns>IServiceCollection.</returns>
+        public static IServiceCollection AddMailerNullHistory(this IServiceCollection services)
+        {
+            return services.AddSingleton<IHistoryStore>(s => NullHistoryStore.Instance);
+        }
     }
 }

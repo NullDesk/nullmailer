@@ -14,6 +14,24 @@ namespace NullDesk.Extensions.Mailer.Core
     public class MailerFactory : IMailerFactory
     {
         /// <summary>
+        ///     Initializes a new instance of the <see cref="MailerFactory" /> class.
+        /// </summary>
+        public MailerFactory()
+        {
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="MailerFactory" /> class.
+        /// </summary>
+        /// <param name="defaultLoggerFactory">The default logger factory.</param>
+        /// <param name="defaultHistoryStore">The default history store.</param>
+        public MailerFactory(ILoggerFactory defaultLoggerFactory, IHistoryStore defaultHistoryStore)
+        {
+            DefaultLoggerFactory = defaultLoggerFactory;
+            DefaultHistoryStore = defaultHistoryStore;
+        }
+
+        /// <summary>
         ///     The default history store to use when no history store is supplied for registrations.
         /// </summary>
         /// <value>The default history store.</value>

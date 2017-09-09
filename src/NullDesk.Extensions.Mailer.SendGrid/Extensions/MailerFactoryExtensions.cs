@@ -12,7 +12,7 @@ namespace NullDesk.Extensions.Mailer.Core
     public static class MailerFactoryExtensions
     {
         /// <summary>
-        ///     Adds a SendGrid mailer with the factory.
+        ///     Register a SendGrid mailer with the factory.
         /// </summary>
         /// <param name="factory">The factory.</param>
         /// <param name="settings">The mailer settings.</param>
@@ -31,7 +31,7 @@ namespace NullDesk.Extensions.Mailer.Core
         }
 
         /// <summary>
-        ///     Adds a SendGrid mailer with the factory.
+        ///     Register a SendGrid mailer with the factory.
         /// </summary>
         /// <param name="factory">The factory.</param>
         /// <param name="clientFunc">The client function.</param>
