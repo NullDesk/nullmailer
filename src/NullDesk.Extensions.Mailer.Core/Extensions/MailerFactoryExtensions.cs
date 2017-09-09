@@ -25,13 +25,6 @@ namespace NullDesk.Extensions.Mailer.Core.Extensions
                 store ?? factory.DefaultHistoryStore);
         }
 
-        /// <summary>
-        ///     Registers the default history store as a NullHistory store.
-        /// </summary>
-        /// <param name="factory">The factory.</param>
-        public static void RegisterDefaultNullHistory(this MailerFactory factory)
-        {
-            factory.DefaultHistoryStore = NullHistoryStore.Instance;
-        }
+
     }
 }

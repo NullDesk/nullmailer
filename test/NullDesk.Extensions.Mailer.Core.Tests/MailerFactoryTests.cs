@@ -40,10 +40,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [Fact]
         public void Factory_Registrations_WithDefaultHistoryStore()
         {
-            var factory = new MailerFactory
-            {
-                DefaultHistoryStore = new InMemoryHistoryStore()
-            };
+            var factory = new MailerFactory(null, new InMemoryHistoryStore());
             factory.Register<NullMailer, NullMailerSettings>(
                 new NullMailerSettings {ReplyToEmailAddress = "junk@toast.com"}
             );
@@ -57,10 +54,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         [Fact]
         public void Factory_Registrations_WithDefaultLoggerFactory()
         {
-            var factory = new MailerFactory
-            {
-                DefaultLoggerFactory = new LoggerFactory()
-            };
+            var factory = new MailerFactory(new LoggerFactory());
             factory.Register<NullMailer, NullMailerSettings>(
                 new NullMailerSettings {ReplyToEmailAddress = "junk@toast.com"}
             );

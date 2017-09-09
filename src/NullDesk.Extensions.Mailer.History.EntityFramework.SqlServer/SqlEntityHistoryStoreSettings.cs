@@ -16,9 +16,9 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer
         public string ConnectionString { get; set; }
 
         /// <summary>
-        ///     Indicates whether to automaticly initialize the database on startup.
+        ///     Indicates whether to automatically initialize the database on startup.
         /// </summary>
-        /// <value><c>true</c> to automaticly initialize database; otherwise, <c>false</c>.</value>
+        /// <value><c>true</c> to automatically initialize database; otherwise, <c>false</c>.</value>
         public bool AutoInitializeDatabase { get; } = true;
 
         /// <summary>

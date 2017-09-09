@@ -16,32 +16,25 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <summary>
         ///     Initializes a new instance of the <see cref="MailerFactory" /> class.
         /// </summary>
-        public MailerFactory()
-        {
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="MailerFactory" /> class.
-        /// </summary>
         /// <param name="defaultLoggerFactory">The default logger factory.</param>
         /// <param name="defaultHistoryStore">The default history store.</param>
-        public MailerFactory(ILoggerFactory defaultLoggerFactory, IHistoryStore defaultHistoryStore)
+        public MailerFactory(ILoggerFactory defaultLoggerFactory = null, IHistoryStore defaultHistoryStore = null)
         {
             DefaultLoggerFactory = defaultLoggerFactory;
-            DefaultHistoryStore = defaultHistoryStore;
+            DefaultHistoryStore = defaultHistoryStore ?? NullHistoryStore.Instance;
         }
 
         /// <summary>
         ///     The default history store to use when no history store is supplied for registrations.
         /// </summary>
         /// <value>The default history store.</value>
-        public IHistoryStore DefaultHistoryStore { get; set; } = NullHistoryStore.Instance;
+        public IHistoryStore DefaultHistoryStore { get; }
 
         /// <summary>
         ///     The default logger factory to use when no loggers are supplied for registrations.
         /// </summary>
         /// <value>The default logger factory.</value>
-        public ILoggerFactory DefaultLoggerFactory { get; set; }
+        public ILoggerFactory DefaultLoggerFactory { get; }
 
         /// <summary>
         ///     Gets a collection of registered mailer functions.
@@ -77,7 +70,6 @@ namespace NullDesk.Extensions.Mailer.Core
             MailerRegistrations.Add(mailerFunc);
         }
 
-
         /// <summary>
         ///     Gets an instance of a registered mailer for the specified type.
         /// </summary>
@@ -111,8 +103,8 @@ namespace NullDesk.Extensions.Mailer.Core
         {
             Register(() =>
             {
-                var ctor = typeof(T).GetConstructor(new[] {typeof(TSettings), typeof(ILogger), typeof(IHistoryStore)});
-                return (T) ctor.Invoke(
+                var ctor = typeof(T).GetConstructor(new[] { typeof(TSettings), typeof(ILogger), typeof(IHistoryStore) });
+                return (T)ctor.Invoke(
                     new object[]
                     {
                         settings,

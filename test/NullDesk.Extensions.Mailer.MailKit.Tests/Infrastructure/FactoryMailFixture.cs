@@ -16,9 +16,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
             var loggerFactory = new LoggerFactory();
             loggerFactory.AddDebug(LogLevel.Debug);
 
-            //var logger = loggerFactory.CreateLogger<MkSmtpMailer>();
-            Mail.DefaultLoggerFactory = loggerFactory;
-            Mail.DefaultHistoryStore = Store;
+            Mail =  new MailerFactory(loggerFactory, Store);
             var mkSettings = SetupMailerOptions(out bool isMailServerAlive).Value;
 
 
@@ -40,7 +38,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
             }
         }
 
-        public MailerFactory Mail { get; set; } = new MailerFactory();
+        public MailerFactory Mail { get; set; }
 
         public IHistoryStore Store { get; set; } = new InMemoryHistoryStore();
 
