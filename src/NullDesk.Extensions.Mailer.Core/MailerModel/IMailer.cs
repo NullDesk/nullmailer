@@ -43,7 +43,7 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Optional logger
         /// </summary>
         /// <returns></returns>
-        ILogger Logger { get; }
+        ILogger Logger { get; set; }
 
         /// <summary>
         ///     Gets the default message sender, usually specified by settings during mailer constructions.

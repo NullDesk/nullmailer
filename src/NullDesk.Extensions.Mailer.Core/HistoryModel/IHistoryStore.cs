@@ -30,7 +30,7 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Optional logger
         /// </summary>
         /// <returns></returns>
-        ILogger Logger { get; }
+        ILogger Logger { get; set; }
 
 
         /// <summary>

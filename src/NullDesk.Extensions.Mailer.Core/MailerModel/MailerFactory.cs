@@ -21,6 +21,7 @@ namespace NullDesk.Extensions.Mailer.Core
         public MailerFactory(ILoggerFactory defaultLoggerFactory = null, IHistoryStore defaultHistoryStore = null)
         {
             DefaultLoggerFactory = defaultLoggerFactory;
+
             DefaultHistoryStore = defaultHistoryStore ?? NullHistoryStore.Instance;
         }
 
@@ -103,15 +104,30 @@ namespace NullDesk.Extensions.Mailer.Core
         {
             Register(() =>
             {
-                var ctor = typeof(T).GetConstructor(new[] { typeof(TSettings), typeof(ILogger), typeof(IHistoryStore) });
-                return (T)ctor.Invoke(
+                var ctor = typeof(T).GetConstructor(new[] {typeof(TSettings), typeof(ILogger), typeof(IHistoryStore)});
+                return (T) ctor.Invoke(
                     new object[]
                     {
                         settings,
                         logger ?? DefaultLoggerFactory?.CreateLogger(typeof(T)) ?? NullLogger.Instance,
-                        store ?? DefaultHistoryStore
+                        ConfigureHistoryStoreLogger(store)
                     });
             });
+        }
+
+        /// <summary>
+        ///     Configures the history store logger.
+        /// </summary>
+        /// <param name="historyStore">The history store.</param>
+        /// <returns>IHistoryStore.</returns>
+        public IHistoryStore ConfigureHistoryStoreLogger(IHistoryStore historyStore)
+        {
+            historyStore = historyStore ?? DefaultHistoryStore;
+            if (DefaultLoggerFactory != null && historyStore?.Logger is NullLogger)
+            {
+                historyStore.Logger = DefaultLoggerFactory.CreateLogger(historyStore.GetType());
+            }
+            return historyStore;
         }
     }
 }

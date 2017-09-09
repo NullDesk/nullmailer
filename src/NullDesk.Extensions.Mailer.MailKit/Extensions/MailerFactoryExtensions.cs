@@ -1,6 +1,7 @@
 ﻿using System;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using NullDesk.Extensions.Mailer.MailKit;
 
 // ReSharper disable once CheckNamespace
@@ -24,11 +25,12 @@ namespace NullDesk.Extensions.Mailer.Core
             ILogger<MkSmtpMailer> logger = null,
             IHistoryStore store = null)
         {
+
             factory.Register(() =>
                 new MkSmtpMailer(
                     mailerSettings,
                     logger ?? factory.DefaultLoggerFactory?.CreateLogger<MkSmtpMailer>(),
-                    store ?? factory.DefaultHistoryStore));
+                    factory.ConfigureHistoryStoreLogger(store)));
         }
 
         /// <summary>
@@ -46,12 +48,13 @@ namespace NullDesk.Extensions.Mailer.Core
             ILogger<MkSmtpMailer> logger = null,
             IHistoryStore store = null)
         {
+
             factory.Register(() =>
                 new MkSmtpMailer(
                     clientFunc(),
                     mailerSettings,
                     logger ?? factory.DefaultLoggerFactory?.CreateLogger<MkSmtpMailer>(),
-                    store ?? factory.DefaultHistoryStore));
+                    factory.ConfigureHistoryStoreLogger(store)));
         }
     }
 }

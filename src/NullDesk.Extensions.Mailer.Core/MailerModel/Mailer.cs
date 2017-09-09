@@ -58,7 +58,7 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Optional logger
         /// </summary>
         /// <value>The logger.</value>
-        public ILogger Logger { get; }
+        public ILogger Logger { get; set; }
 
         /// <summary>
         ///     Gets the default message sender, usually specified by settings during mailer constructions.

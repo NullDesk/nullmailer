@@ -131,7 +131,7 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Optional logger
         /// </summary>
         /// <value>The logger.</value>
-        public ILogger Logger { get; }
+        public ILogger Logger { get; set; }
 
 
         /// <summary>

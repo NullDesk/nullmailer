@@ -162,7 +162,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
         ///     Optional logger
         /// </summary>
         /// <value>The logger.</value>
-        public ILogger Logger { get; }
+        public ILogger Logger { get; set; }
 
 
         /// <summary>

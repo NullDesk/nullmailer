@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace NullDesk.Extensions.Mailer.Core.Extensions
 {
@@ -20,9 +21,10 @@ namespace NullDesk.Extensions.Mailer.Core.Extensions
             ILogger<NullMailer> logger = null,
             IHistoryStore store = null)
         {
+
             factory.Register<NullMailer, NullMailerSettings>(mailerSettings,
                 logger ?? factory.DefaultLoggerFactory?.CreateLogger<NullMailer>(),
-                store ?? factory.DefaultHistoryStore);
+                factory.ConfigureHistoryStoreLogger(store));
         }
 
 
