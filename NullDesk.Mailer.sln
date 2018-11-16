@@ -35,15 +35,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NullDesk.Extensions.Mailer.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mailer", "samples\mailer-cli\mailer\mailer.csproj", "{ECDB4144-AD8F-48A2-B674-6F358D8A3047}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NullDesk.Extensions.Mailer.History.EntityFramework", "src\NullDesk.Extensions.Mailer.History.EntityFramework\NullDesk.Extensions.Mailer.History.EntityFramework.csproj", "{91BC9376-2FF0-4F63-BD7B-88B8DC684B53}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer", "src\NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer\NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.csproj", "{237D2587-C8FF-43CC-AD59-8507C01658FA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests", "test\NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests\NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.csproj", "{50EC513A-2AD6-4163-B464-4709F7C822F3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NullDesk.Extensions.Mailer.History.EntityFramework.Tests", "test\NullDesk.Extensions.Mailer.History.EntityFramework.Tests\NullDesk.Extensions.Mailer.History.EntityFramework.Tests.csproj", "{C32FDEEE-D75A-40D5-A0F3-1656B95CDFC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NullDesk.Extensions.Mailer.Core.Tests", "test\NullDesk.Extensions.Mailer.Core.Tests\NullDesk.Extensions.Mailer.Core.Tests.csproj", "{38027122-6654-4A50-B2E4-A20287692EEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NullDesk.Extensions.Mailer.Core.Tests", "test\NullDesk.Extensions.Mailer.Core.Tests\NullDesk.Extensions.Mailer.Core.Tests.csproj", "{38027122-6654-4A50-B2E4-A20287692EEE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NullDesk.Extensions.Mailer.History.EntityFramework", "src\NullDesk.Extensions.Mailer.History.EntityFramework\NullDesk.Extensions.Mailer.History.EntityFramework.csproj", "{0429EC72-6ADE-4E3A-A927-B25534F5B3A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -139,18 +139,6 @@ Global
 		{ECDB4144-AD8F-48A2-B674-6F358D8A3047}.Release|x64.Build.0 = Release|Any CPU
 		{ECDB4144-AD8F-48A2-B674-6F358D8A3047}.Release|x86.ActiveCfg = Release|Any CPU
 		{ECDB4144-AD8F-48A2-B674-6F358D8A3047}.Release|x86.Build.0 = Release|Any CPU
-		{91BC9376-2FF0-4F63-BD7B-88B8DC684B53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{91BC9376-2FF0-4F63-BD7B-88B8DC684B53}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{91BC9376-2FF0-4F63-BD7B-88B8DC684B53}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{91BC9376-2FF0-4F63-BD7B-88B8DC684B53}.Debug|x64.Build.0 = Debug|Any CPU
-		{91BC9376-2FF0-4F63-BD7B-88B8DC684B53}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{91BC9376-2FF0-4F63-BD7B-88B8DC684B53}.Debug|x86.Build.0 = Debug|Any CPU
-		{91BC9376-2FF0-4F63-BD7B-88B8DC684B53}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{91BC9376-2FF0-4F63-BD7B-88B8DC684B53}.Release|Any CPU.Build.0 = Release|Any CPU
-		{91BC9376-2FF0-4F63-BD7B-88B8DC684B53}.Release|x64.ActiveCfg = Release|Any CPU
-		{91BC9376-2FF0-4F63-BD7B-88B8DC684B53}.Release|x64.Build.0 = Release|Any CPU
-		{91BC9376-2FF0-4F63-BD7B-88B8DC684B53}.Release|x86.ActiveCfg = Release|Any CPU
-		{91BC9376-2FF0-4F63-BD7B-88B8DC684B53}.Release|x86.Build.0 = Release|Any CPU
 		{237D2587-C8FF-43CC-AD59-8507C01658FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{237D2587-C8FF-43CC-AD59-8507C01658FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{237D2587-C8FF-43CC-AD59-8507C01658FA}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -199,6 +187,18 @@ Global
 		{38027122-6654-4A50-B2E4-A20287692EEE}.Release|x64.Build.0 = Release|Any CPU
 		{38027122-6654-4A50-B2E4-A20287692EEE}.Release|x86.ActiveCfg = Release|Any CPU
 		{38027122-6654-4A50-B2E4-A20287692EEE}.Release|x86.Build.0 = Release|Any CPU
+		{0429EC72-6ADE-4E3A-A927-B25534F5B3A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0429EC72-6ADE-4E3A-A927-B25534F5B3A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0429EC72-6ADE-4E3A-A927-B25534F5B3A6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0429EC72-6ADE-4E3A-A927-B25534F5B3A6}.Debug|x64.Build.0 = Debug|Any CPU
+		{0429EC72-6ADE-4E3A-A927-B25534F5B3A6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0429EC72-6ADE-4E3A-A927-B25534F5B3A6}.Debug|x86.Build.0 = Debug|Any CPU
+		{0429EC72-6ADE-4E3A-A927-B25534F5B3A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0429EC72-6ADE-4E3A-A927-B25534F5B3A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0429EC72-6ADE-4E3A-A927-B25534F5B3A6}.Release|x64.ActiveCfg = Release|Any CPU
+		{0429EC72-6ADE-4E3A-A927-B25534F5B3A6}.Release|x64.Build.0 = Release|Any CPU
+		{0429EC72-6ADE-4E3A-A927-B25534F5B3A6}.Release|x86.ActiveCfg = Release|Any CPU
+		{0429EC72-6ADE-4E3A-A927-B25534F5B3A6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -212,10 +212,13 @@ Global
 		{62DCBBD1-9178-4375-9540-021300FA09BD} = {18D6B9AA-C6A4-43C3-B530-CD5839147452}
 		{FB824A9F-2BAA-49CB-9114-5F3CE639CC25} = {18D6B9AA-C6A4-43C3-B530-CD5839147452}
 		{ECDB4144-AD8F-48A2-B674-6F358D8A3047} = {FB0C79F6-C14B-44A5-8A5D-5C76C9998992}
-		{91BC9376-2FF0-4F63-BD7B-88B8DC684B53} = {A7F6046E-2F93-4D8E-94A3-56D0027C0D8F}
 		{237D2587-C8FF-43CC-AD59-8507C01658FA} = {A7F6046E-2F93-4D8E-94A3-56D0027C0D8F}
 		{50EC513A-2AD6-4163-B464-4709F7C822F3} = {18D6B9AA-C6A4-43C3-B530-CD5839147452}
 		{C32FDEEE-D75A-40D5-A0F3-1656B95CDFC4} = {18D6B9AA-C6A4-43C3-B530-CD5839147452}
 		{38027122-6654-4A50-B2E4-A20287692EEE} = {18D6B9AA-C6A4-43C3-B530-CD5839147452}
+		{0429EC72-6ADE-4E3A-A927-B25534F5B3A6} = {A7F6046E-2F93-4D8E-94A3-56D0027C0D8F}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AFF83D95-A6F6-4886-B8FD-E1AAF58CA299}
 	EndGlobalSection
 EndGlobal
