@@ -19,7 +19,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var contentStep = new MessageBuilder.BuildPostContentStep(MailerMessage.Create());
             if (string.IsNullOrEmpty(fileName))
             {
-                contentStep.Invoking(s => s.WithAttachment(fileName)).ShouldThrow<FileNotFoundException>();
+                contentStep.Invoking(s => s.WithAttachment(fileName)).Should().Throw<FileNotFoundException>();
             }
             else
             {
@@ -53,7 +53,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var contentStep = new MessageBuilder.BuildPostContentStep(MailerMessage.Create());
             if (token == null)
             {
-                contentStep.Invoking(c => c.WithSubstitution(null, value)).ShouldThrow<ArgumentNullException>();
+                contentStep.Invoking(c => c.WithSubstitution(null, value)).Should().Throw<ArgumentNullException>();
             }
             else
             {

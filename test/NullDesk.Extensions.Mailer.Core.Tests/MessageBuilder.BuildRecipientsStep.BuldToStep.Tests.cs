@@ -41,7 +41,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             var toStep = new MessageBuilder.BuildRecipientsStep.BuildToStep(new MailerMessage(), address);
             if (token == null)
             {
-                toStep.Invoking(c => c.WithPersonalizedSubstitution(null, value)).ShouldThrow<ArgumentNullException>();
+                toStep.Invoking(c => c.WithPersonalizedSubstitution(null, value)).Should().Throw<ArgumentNullException>();
             }
             else
             {

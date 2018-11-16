@@ -3,7 +3,7 @@
     <Description>NullDesk Mailer Extensions for Email messaging using SendGrid API services</Description>
     <VersionPrefix>4.2.5</VersionPrefix>
     <Authors>Stephen M. Redd</Authors>
-    <TargetFrameworks>netstandard1.3;net46;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <DebugType>portable</DebugType>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>NullDesk.Extensions.Mailer.SendGrid</AssemblyName>
@@ -22,7 +22,7 @@
     <ProjectReference Include="..\NullDesk.Extensions.Mailer.Core\NullDesk.Extensions.Mailer.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.2" />
-    <PackageReference Include="SendGrid" Version="9.7.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.1" />
+    <PackageReference Include="SendGrid" Version="9.10.0" />
   </ItemGroup>
 </Project>

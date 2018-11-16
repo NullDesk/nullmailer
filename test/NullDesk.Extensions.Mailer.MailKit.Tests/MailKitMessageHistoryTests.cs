@@ -109,7 +109,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
                 Func<Task> asyncFunction = () => mailer.ReSendAsync(m.Id, CancellationToken.None);
 
                 asyncFunction
-                    .ShouldThrow<InvalidOperationException>();
+                    .Should().Throw<InvalidOperationException>();
             }
             else
             {

@@ -42,8 +42,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                                 }
                             },
                         Body = string.IsNullOrEmpty(textBody) ? null : new ContentBody().WithPlainText(textBody)
-                    }))
-                .ShouldThrow<ArgumentException>();
+                    })).Should().Throw<ArgumentException>();
         }
 
         [Fact]

@@ -26,7 +26,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 .Which.As<IBuilderContext>()
                 .Message.Body
                 .As<ContentBody>()
-                .ShouldBeEquivalentTo
+                .Should().BeEquivalentTo
                 (
                     new ContentBody
                     {
