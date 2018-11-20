@@ -107,6 +107,10 @@ namespace NullDesk.Extensions.Mailer.SendGrid
                 sgMessage.SetTemplateId(((TemplateBody) deliveryItem.Body).TemplateName);
             }
 
+            
+            sgMessage.SetSandBoxMode(Settings.IsSandboxMode);
+            
+
             await AddAttachmentStreamsAsync(sgMessage, deliveryItem.Attachments, token);
 
             var sgResponse = await SendToApiAsync(sgMessage, token);
