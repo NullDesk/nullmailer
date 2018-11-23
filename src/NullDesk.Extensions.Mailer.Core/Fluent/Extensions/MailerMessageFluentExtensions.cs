@@ -144,6 +144,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
             {
                 message.Recipients.Add(recipient);
             }
+
             return message;
         }
 
@@ -188,6 +189,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
                     message.Attachments.Add(attachment);
                 }
             }
+
             return message;
         }
 
@@ -233,6 +235,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
             {
                 message.Substitutions.Add(substitution);
             }
+
             return message;
         }
 

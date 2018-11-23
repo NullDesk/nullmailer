@@ -20,6 +20,7 @@ namespace NullDesk.Extensions.Mailer.Core.Extensions
             {
                 return null;
             }
+
             using (var ms = new MemoryStream())
             {
                 input.Position = 0; //put stream back to start
@@ -39,6 +40,7 @@ namespace NullDesk.Extensions.Mailer.Core.Extensions
             {
                 return null;
             }
+
             using (var ms = new MemoryStream())
             {
                 input.Position = 0; //put stream back to start

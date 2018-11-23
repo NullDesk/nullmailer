@@ -10,6 +10,7 @@ using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure;
 using NullDesk.Extensions.Mailer.Tests.Common;
 using Xunit;
+#pragma warning disable xUnit1026 // Theory methods should use all of their parameters
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests
 {
@@ -145,3 +146,4 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
         }
     }
 }
+#pragma warning restore xUnit1026 // Theory methods should use all of their parameters

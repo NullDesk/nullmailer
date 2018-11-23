@@ -13,6 +13,7 @@ using Xunit;
 using NullDesk.Extensions.Mailer.Core.Fluent;
 
 // ReSharper disable PossibleMultipleEnumeration
+#pragma warning disable xUnit1026 // Theory methods should use all of their parameters
 
 namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
 {
@@ -248,3 +249,4 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
         }
     }
 }
+#pragma warning restore xUnit1026 // Theory methods should use all of their parameters

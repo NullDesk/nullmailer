@@ -26,6 +26,7 @@ namespace NullDesk.Extensions.Mailer.Core
                     attachments.Add(attachmentFile.GetAttachmentStreamForFile());
                 }
             }
+
             return attachments;
         }
 
@@ -46,6 +47,7 @@ namespace NullDesk.Extensions.Mailer.Core
                     attachments.Add(attachmentFile.GetAttachmentStreamForFile());
                 }
             }
+
             return attachments;
         }
 
@@ -61,6 +63,7 @@ namespace NullDesk.Extensions.Mailer.Core
             {
                 throw new FileNotFoundException($"Unable to find email attachment with file name: {attachmentFile}");
             }
+
             var f = new FileInfo(attachmentFile);
             return f.GetAttachmentStreamForFile();
         }

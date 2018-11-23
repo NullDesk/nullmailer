@@ -30,6 +30,7 @@ namespace NullDesk.Extensions.Mailer.Core
             {
                 throw new ArgumentOutOfRangeException(nameof(initialCount));
             }
+
             _mCurrentCount = initialCount;
         }
 
@@ -46,6 +47,7 @@ namespace NullDesk.Extensions.Mailer.Core
                     --_mCurrentCount;
                     return SCompleted;
                 }
+
                 var waiter = new TaskCompletionSource<bool>();
                 _mWaiters.Enqueue(waiter);
                 return waiter.Task;
@@ -69,6 +71,7 @@ namespace NullDesk.Extensions.Mailer.Core
                     ++_mCurrentCount;
                 }
             }
+
             toRelease?.SetResult(true);
         }
     }

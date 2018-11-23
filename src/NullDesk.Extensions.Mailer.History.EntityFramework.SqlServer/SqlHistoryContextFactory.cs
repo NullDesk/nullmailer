@@ -12,7 +12,6 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer
         ///     Creates a new instance of the  context.
         /// </summary>
         /// <param name="args">Arguments provided by the design-time service.</param>
-        /// <returns>An instance of <typeparamref name="TContext" />.</returns>
         /// <remarks>Used by EF CLI tooling</remarks>
         public SqlHistoryContext CreateDbContext(string[] args)
         {

@@ -39,7 +39,7 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     A collection of all pending delivery items tracked by this mailer instance.
         /// </summary>
         /// <value>The messages.</value>
-        protected ICollection<DeliveryItem> PendingDeliveryItems => ((IMailer)this).PendingDeliverables;
+        protected ICollection<DeliveryItem> PendingDeliveryItems => ((IMailer) this).PendingDeliverables;
 
 
         /// <summary>
@@ -112,6 +112,7 @@ namespace NullDesk.Extensions.Mailer.Core
             {
                 ids.AddRange(AddMessage(m));
             }
+
             return ids;
         }
 
@@ -137,7 +138,7 @@ namespace NullDesk.Extensions.Mailer.Core
                         i.ToEmailAddress,
                         i.Subject);
                     i.DeliveryProvider = GetType().Name;
-                    ((IMailer)this).PendingDeliverables.Add(i);
+                    ((IMailer) this).PendingDeliverables.Add(i);
                 }
             }
 
@@ -157,15 +158,15 @@ namespace NullDesk.Extensions.Mailer.Core
             using (await _deliverablesLock.LockAsync())
             {
                 foreach (var message in
-                    ((IMailer)this).PendingDeliverables.Where(
+                    ((IMailer) this).PendingDeliverables.Where(
                         m => !m.IsSuccess && string.IsNullOrEmpty(m.ExceptionMessage)))
                 {
                     sendIds.Add(message.Id);
                 }
             }
+
             for (var i = 0; i < sendIds.Count; i++)
             {
-
                 sentItems.Add(await SendAsync(sendIds[i], !(i < sendIds.Count - 1), token));
             }
 
@@ -189,45 +190,49 @@ namespace NullDesk.Extensions.Mailer.Core
         {
             using (await _deliverablesLock.LockAsync())
             {
-                var deliveryItem = ((IMailer)this).PendingDeliverables.FirstOrDefault(d => d.Id == id);
-                try
-                {
-                    deliveryItem.ProviderMessageId =
-                        await DeliverMessageAsync(deliveryItem, autoCloseConnection, token);
-                    deliveryItem.IsSuccess = true;
-
-                    Logger.LogInformation(
-                        "Mailer delivery {result} for delivery item '{deliveryItemId}' sent to '{to}' with subject '{subject}'",
-                        deliveryItem.IsSuccess ? "success" : "failure",
-                        deliveryItem.Id,
-                        deliveryItem.ToEmailAddress,
-                        deliveryItem.Subject
-                    );
-
-
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(1, ex,
-                        "Mailer delivery {result} for delivery item '{deliveryItemId}' with exception '{exceptionMessage}'",
-                        "error", id, ex.Message);
-                    deliveryItem.ExceptionMessage = $"{ex.Message}\n\n{ex.StackTrace}";
-                }
-                finally
+                var deliveryItem = ((IMailer) this).PendingDeliverables.FirstOrDefault(d => d.Id == id);
+                if (deliveryItem != null)
                 {
                     try
                     {
-                        await HistoryStore.AddAsync(deliveryItem, token);
+                        deliveryItem.ProviderMessageId =
+                            await DeliverMessageAsync(deliveryItem, autoCloseConnection, token);
+                        deliveryItem.IsSuccess = true;
+
+                        Logger.LogInformation(
+                            "Mailer delivery {result} for delivery item '{deliveryItemId}' sent to '{to}' with subject '{subject}'",
+                            deliveryItem.IsSuccess ? "success" : "failure",
+                            deliveryItem.Id,
+                            deliveryItem.ToEmailAddress,
+                            deliveryItem.Subject
+                        );
                     }
                     catch (Exception ex)
                     {
-                        //do not re-throw, record that history fail and allow sendAll to continue delivering other items.
-
-                        Logger.LogError(1, ex, "History store add {result} for delivery item '{deliveryItemId}' with exception '{exceptionMessage}'",
+                        Logger.LogError(1, ex,
+                            "Mailer delivery {result} for delivery item '{deliveryItemId}' with exception '{exceptionMessage}'",
                             "error", id, ex.Message);
+                        deliveryItem.ExceptionMessage = $"{ex.Message}\n\n{ex.StackTrace}";
                     }
-                    PendingDeliveryItems.Remove(deliveryItem);
+                    finally
+                    {
+                        try
+                        {
+                            await HistoryStore.AddAsync(deliveryItem, token);
+                        }
+                        catch (Exception ex)
+                        {
+                            //do not re-throw, record that history fail and allow sendAll to continue delivering other items.
+
+                            Logger.LogError(1, ex,
+                                "History store add {result} for delivery item '{deliveryItemId}' with exception '{exceptionMessage}'",
+                                "error", id, ex.Message);
+                        }
+
+                        PendingDeliveryItems.Remove(deliveryItem);
+                    }
                 }
+
                 return deliveryItem;
             }
         }
@@ -255,6 +260,7 @@ namespace NullDesk.Extensions.Mailer.Core
                 throw new ArgumentException(
                     $"Mailer re-send error for delivery item ID '{id}'. Delivery item not found in the history store, unable to resend message");
             }
+
             if (!di.IsResendable)
             {
                 throw new InvalidOperationException(
@@ -273,7 +279,7 @@ namespace NullDesk.Extensions.Mailer.Core
                 di.Id,
                 di.ToEmailAddress,
                 di.Subject);
-            ((IMailer)this).PendingDeliverables.Add(di);
+            ((IMailer) this).PendingDeliverables.Add(di);
             return await SendAsync(di.Id, true, token);
         }
 
@@ -297,9 +303,11 @@ namespace NullDesk.Extensions.Mailer.Core
                 {
                     b.AppendLine($"    Delivery item ID '{u.Id}' to '{u.ToEmailAddress}' with subject '{u.Subject}'");
                 }
+
                 Logger.LogWarning(b.ToString(), unsent.Count(), GetType().Name);
             }
-            ((IMailer)this).PendingDeliverables = null;
+
+            ((IMailer) this).PendingDeliverables = null;
         }
 
         /// <summary>

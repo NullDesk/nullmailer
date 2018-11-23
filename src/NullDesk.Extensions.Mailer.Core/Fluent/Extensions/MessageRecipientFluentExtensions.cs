@@ -45,6 +45,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent.Extensions
             {
                 recipient.PersonalizedSubstitutions.Add(substitution);
             }
+
             return recipient;
         }
 

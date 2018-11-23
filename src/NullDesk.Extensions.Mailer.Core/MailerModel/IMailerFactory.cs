@@ -17,9 +17,9 @@ namespace NullDesk.Extensions.Mailer.Core
         List<Func<IMailer>> MailerRegistrations { get; }
 
         /// <summary>
-        ///     Gets an instance of the first registered standard mailer.
+        /// Gets an instance of the first registered standard mailer.
         /// </summary>
-        /// <value>The mailer.</value>
+        /// <returns>IMailer.</returns>
         IMailer GetMailer();
 
 
@@ -31,13 +31,11 @@ namespace NullDesk.Extensions.Mailer.Core
         void Register<T>(Func<T> mailerFunc) where T : class, IMailer;
 
         /// <summary>
-        ///     Gets an instance of a registered mailer for the specified type.
+        /// Gets an instance of a registered mailer for the specified type.
         /// </summary>
-        /// <remarks>
-        ///     If more than one function for the mailer type exists, will use the first matching function.
-        /// </remarks>
         /// <typeparam name="T">The type of mailer instance you wish to create</typeparam>
-        /// <returns>T.</returns>
-        T GetMailer<T>() where T : class, IMailer;
+        /// <returns>IMailer.</returns>
+        /// <remarks>If more than one function for the mailer type exists, will use the first matching function.</remarks>
+        IMailer GetMailer<T>() where T : class, IMailer;
     }
 }

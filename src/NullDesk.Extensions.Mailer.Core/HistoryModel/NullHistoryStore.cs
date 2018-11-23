@@ -49,6 +49,7 @@ namespace NullDesk.Extensions.Mailer.Core
             {
                 item.Id = new Guid();
             }
+
             return Task.FromResult(item.Id);
         }
 

@@ -44,9 +44,9 @@ namespace NullDesk.Extensions.Mailer.Core
         public List<Func<IMailer>> MailerRegistrations { get; } = new List<Func<IMailer>>();
 
         /// <summary>
-        ///     Gets an instance of the first registered standard mailer.
+        /// Gets an instance of the first registered mailer or proxy.
         /// </summary>
-        /// <value>The mailer.</value>
+        /// <returns>IMailer.</returns>
         public virtual IMailer GetMailer()
         {
             var func = MailerRegistrations.FirstOrDefault(m => m
@@ -64,9 +64,9 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <summary>
         ///     Registers a function that can be use to create a configured mailer instance.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TMailer"></typeparam>
         /// <param name="mailerFunc">The mailer function.</param>
-        public virtual void Register<T>(Func<T> mailerFunc) where T : class, IMailer
+        public virtual void Register<TMailer>(Func<TMailer> mailerFunc) where TMailer : class, IMailer
         {
             MailerRegistrations.Add(mailerFunc);
         }
@@ -76,41 +76,93 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         /// <remarks>
         ///     If more than one function for the mailer type exists, will use the first matching function.
+        ///     Will return the first function for either the specified type, or a proxy of the specified type.
         /// </remarks>
-        /// <typeparam name="T">The type of mailer instance you wish to create</typeparam>
-        /// <returns>T.</returns>
-        public virtual T GetMailer<T>() where T : class, IMailer
+        /// <typeparam name="TMailer">The type of mailer instance you wish to create</typeparam>
+        /// <returns>IMailer</returns>
+        public virtual IMailer GetMailer<TMailer>() where TMailer : class, IMailer
         {
             var mailer =
                 MailerRegistrations.FirstOrDefault(
                     m =>
                         m.GetType().GenericTypeArguments.FirstOrDefault()?.AssemblyQualifiedName ==
-                        typeof(T).AssemblyQualifiedName);
-            return mailer?.Invoke() as T;
+                        typeof(TMailer).AssemblyQualifiedName ||
+                        m.GetType().GenericTypeArguments.FirstOrDefault()?.GenericTypeArguments.FirstOrDefault()
+                            ?.AssemblyQualifiedName == typeof(TMailer).AssemblyQualifiedName);
+            return mailer?.Invoke();
         }
 
         /// <summary>
         ///     Registers the specified mailer type.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TSettings">The type of the t settings.</typeparam>
+        /// <typeparam name="TMailer"></typeparam>
+        /// <typeparam name="TMailerSettings">The type of the t settings.</typeparam>
         /// <param name="settings">The settings.</param>
         /// <param name="logger">The logger.</param>
         /// <param name="store">The store.</param>
-        public virtual void Register<T, TSettings>(TSettings settings, ILogger logger = null,
+        public virtual void Register<TMailer, TMailerSettings>(TMailerSettings settings, ILogger logger = null,
             IHistoryStore store = null)
-            where TSettings : class, IMailerSettings
-            where T : Mailer<TSettings>
+            where TMailer : class, IMailer<TMailerSettings>
+            where TMailerSettings : class, IMailerSettings
         {
             Register(() =>
             {
-                var ctor = typeof(T).GetConstructor(new[] {typeof(TSettings), typeof(ILogger), typeof(IHistoryStore)});
-                return (T) ctor.Invoke(
+                var ctor = typeof(TMailer).GetConstructor(new[] {typeof(TMailerSettings), typeof(ILogger), typeof(IHistoryStore)});
+                return (TMailer) ctor?.Invoke(
                     new object[]
                     {
                         settings,
-                        logger ?? DefaultLoggerFactory?.CreateLogger(typeof(T)) ?? NullLogger.Instance,
+                        logger ?? DefaultLoggerFactory?.CreateLogger(typeof(TMailer)) ?? NullLogger.Instance,
                         ConfigureHistoryStoreLogger(store)
+                    });
+            });
+        }
+
+        /// <summary>
+        /// Registers the specified mailer type using a safety mailer proxy.
+        /// </summary>
+        /// <typeparam name="TProxy">The type of the t proxy.</typeparam>
+        /// <typeparam name="TProxySettings">The type of the t proxy settings.</typeparam>
+        /// <typeparam name="TMailer">The type of the t mailer.</typeparam>
+        /// <typeparam name="TMailerSettings">The type of the t settings.</typeparam>
+        /// <param name="settings">The settings.</param>
+        /// <param name="proxySettings">The proxy settings.</param>
+        /// <param name="logger">The logger.</param>
+        /// <param name="store">The store.</param>
+        public virtual void RegisterProxy<TProxy, TProxySettings, TMailer, TMailerSettings>(
+            IProxyMailerSettings proxySettings,
+            TMailerSettings settings,
+            ILogger logger = null,
+            IHistoryStore store = null)
+            where TProxy : class, IProxyMailer<TProxySettings, TMailer>, IMailer
+            where TProxySettings : class, IProxyMailerSettings
+            where TMailer : class, IMailer<TMailerSettings>
+            where TMailerSettings : class, IMailerSettings
+        {
+            Register(() =>
+            {
+                var mailerCtor = typeof(TMailer).GetConstructor(new[]
+                {
+                    typeof(TMailerSettings),
+                    typeof(ILogger), typeof(IHistoryStore)
+                });
+                var realMailer = (TMailer)mailerCtor?.Invoke(
+                    new object[]
+                    {
+                        settings,
+                        logger ?? DefaultLoggerFactory?.CreateLogger(typeof(TMailer)) ?? NullLogger.Instance,
+                        ConfigureHistoryStoreLogger(store)
+                    });
+                var proxyCtor = typeof(TProxy).GetConstructor(new[]
+                {
+                    typeof(TMailer),
+                    typeof(TProxySettings)
+                });
+                return (TProxy) proxyCtor?.Invoke(
+                    new object[]
+                    {
+                        realMailer,
+                        proxySettings
                     });
             });
         }
@@ -127,6 +179,7 @@ namespace NullDesk.Extensions.Mailer.Core
             {
                 historyStore.Logger = DefaultLoggerFactory.CreateLogger(historyStore.GetType());
             }
+
             return historyStore;
         }
     }

@@ -64,5 +64,35 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             nm.Logger.Should().BeAssignableTo<ILogger>().And.NotBeOfType<NullLogger>();
             nm.HistoryStore.Should().BeOfType<NullHistoryStore>();
         }
+
+        [Fact]
+        public void Factory_Registrations_WithSafetyMailerSettings()
+        {
+            var factory = new MailerFactory(new LoggerFactory());
+            factory.RegisterProxy<SafetyMailer<NullMailer>, SafetyMailerSettings, NullMailer, NullMailerSettings>(
+                new SafetyMailerSettings() { SafeRecipientEmailAddress = "safe@toast.com"},
+                new NullMailerSettings { ReplyToEmailAddress = "junk@toast.com" }
+            );
+
+            var nm = factory.GetMailer().Should().BeOfType<SafetyMailer<NullMailer>>().Which;
+            nm.Mailer.Settings.ReplyToEmailAddress.Should().Be("junk@toast.com");
+            nm.Mailer.Logger.Should().BeAssignableTo<ILogger>().And.NotBeOfType<NullLogger>();
+            nm.Mailer.HistoryStore.Should().BeOfType<NullHistoryStore>();
+        }
+
+        [Fact]
+        public void Factory_Registrations_GetMailerFromSafetyMailer()
+        {
+            var factory = new MailerFactory(new LoggerFactory());
+            factory.RegisterProxy<SafetyMailer<NullMailer>, SafetyMailerSettings, NullMailer, NullMailerSettings>(
+                new SafetyMailerSettings() { SafeRecipientEmailAddress = "safe@toast.com" },
+                new NullMailerSettings { ReplyToEmailAddress = "junk@toast.com" }
+            );
+
+            var nmSpecific = factory.GetMailer<NullMailer>().Should().BeOfType<SafetyMailer<NullMailer>>().Which;
+            nmSpecific.Mailer.Settings.ReplyToEmailAddress.Should().Be("junk@toast.com");
+            nmSpecific.Mailer.Logger.Should().BeAssignableTo<ILogger>().And.NotBeOfType<NullLogger>();
+            nmSpecific.Mailer.HistoryStore.Should().BeOfType<NullHistoryStore>();
+        }
     }
 }

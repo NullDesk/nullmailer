@@ -47,11 +47,13 @@ namespace NullDesk.Extensions.Mailer.Core
                 {
                     item.Id = new Guid();
                 }
+
                 if (!Settings.StoreAttachmentContents)
                 {
                     item.Attachments = item.Attachments.Select(i => new KeyValuePair<string, Stream>(i.Key, null))
                         .ToDictionary(k => k.Key, k => k.Value);
                 }
+
                 if (string.IsNullOrEmpty(item.SourceApplicationName) &&
                     !string.IsNullOrEmpty(Settings.SourceApplicationName))
                 {
@@ -61,6 +63,7 @@ namespace NullDesk.Extensions.Mailer.Core
                 Items.Add(JsonConvert.SerializeObject(item));
                 id = item.Id;
             }
+
             return Task.FromResult(id);
         }
 
@@ -165,14 +168,17 @@ namespace NullDesk.Extensions.Mailer.Core
                 results = results.Where(
                     i => i.SourceApplicationName.Equals(sourceApplicationName, StringComparison.OrdinalIgnoreCase));
             }
+
             if (startDate.HasValue)
             {
                 results = results.Where(i => i.CreatedDate >= startDate);
             }
+
             if (endDate.HasValue)
             {
                 results = results.Where(i => i.CreatedDate <= endDate);
             }
+
             return results;
         }
     }

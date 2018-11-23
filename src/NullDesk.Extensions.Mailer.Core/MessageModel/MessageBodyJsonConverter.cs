@@ -52,6 +52,7 @@ namespace NullDesk.Extensions.Mailer.Core
                     body = jbody.ToObject<ContentBody>();
                 }
             }
+
             return body;
         }
 

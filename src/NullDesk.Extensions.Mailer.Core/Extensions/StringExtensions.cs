@@ -24,6 +24,7 @@ namespace NullDesk.Extensions.Mailer.Core
             {
                 result.Replace(item.Key, item.Value);
             }
+
             return result.ToString();
         }
     }

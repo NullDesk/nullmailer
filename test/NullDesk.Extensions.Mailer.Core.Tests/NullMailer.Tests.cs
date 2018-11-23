@@ -1,7 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NullDesk.Extensions.Mailer.Core.Fluent.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace NullDesk.Extensions.Mailer.Core.Tests
@@ -31,7 +33,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
             mailer.Invoking(m => m.AddMessage(
                     new MailerMessage
                     {
-                        From = string.IsNullOrEmpty(from) ? null : new MessageSender {EmailAddress = from},
+                        From = string.IsNullOrEmpty(from) ? null : new MessageSender { EmailAddress = from },
                         Recipients = string.IsNullOrEmpty(to)
                             ? new List<MessageRecipient>()
                             : new List<MessageRecipient>
@@ -56,7 +58,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 .WithSubject("Some Topic")
                 .WithBody<ContentBody>(b => b.PlainTextContent = "something"));
 
-            ((IMailer) mailer).PendingDeliverables
+            ((IMailer)mailer).PendingDeliverables
                 .Should()
                 .NotBeEmpty()
                 .And.Contain(m => m.Subject == "Some Topic");
@@ -67,7 +69,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         public void NullMailer_AddMessages()
         {
             var mailer = GetMailer();
-            var ids = mailer.AddMessages(new List<MailerMessage>
+            mailer.AddMessages(new List<MailerMessage>
             {
                 new MailerMessage()
                     .To("noone@nowhere.com")
@@ -81,7 +83,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                     .WithBody<ContentBody>(b => b.PlainTextContent = "something")
             });
 
-            ((IMailer) mailer).PendingDeliverables
+            ((IMailer)mailer).PendingDeliverables
                 .Should()
                 .HaveCount(2)
                 .And.Contain(m => m.Subject == "Some Topic")
@@ -100,7 +102,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 .And.ForBody()
                 .WithPlainText("body text"));
 
-            ((IMailer) mailer).PendingDeliverables.Should().Contain(m => m.Subject == "Some Topic");
+            ((IMailer)mailer).PendingDeliverables.Should().Contain(m => m.Subject == "Some Topic");
         }
 
         [Fact]
@@ -115,10 +117,106 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 .WithPlainText("body text")
                 .Build());
 
-            ((IMailer) mailer).PendingDeliverables
+            ((IMailer)mailer).PendingDeliverables
                 .Should()
                 .NotBeEmpty()
                 .And.Contain(m => m.Subject == "Some Topic");
+        }
+
+        [Fact]
+        [Trait("TestType", "Unit")]
+        public async Task NullMailer_SafetyMailerReplacesAddress()
+        {
+            var mailer = new SafetyMailer<NullMailer>(GetMailer(), new SafetyMailerSettings()
+            {
+                SafeRecipientEmailAddress = "safe@nowhere.com"
+            });
+            mailer.AddMessage(new MailerMessage()
+                .To("noone@nowhere.com")
+                .From(_mailerSettings.FromEmailAddress, _mailerSettings.FromDisplayName)
+                .WithSubject("Some Topic")
+                .WithBody<ContentBody>(b => b.PlainTextContent = "something"));
+            var results = await mailer.SendAllAsync();
+            var recipient = results
+                .Should()
+                .HaveCount(1)
+                .And.Subject.First();
+            recipient.ToDisplayName
+                .Should().NotBeNullOrWhiteSpace()
+                .And.Be("(safe) noone@nowhere.com <'noone@nowhere.com'>");
+            recipient.ToEmailAddress
+                .Should().NotBeNullOrWhiteSpace()
+                .And.Be("safe@nowhere.com");
+        }
+
+        [Fact]
+        [Trait("TestType", "Unit")]
+        public async Task NullMailer_SafetyMailerReplacesDisplayName()
+        {
+            var mailer = new SafetyMailer<NullMailer>(GetMailer(), new SafetyMailerSettings()
+            {
+                SafeRecipientEmailAddress = "safe@nowhere.com"
+            });
+            mailer.AddMessage(new MailerMessage()
+                .To("noone@nowhere.com", "Friendly Name")
+                .From(_mailerSettings.FromEmailAddress, _mailerSettings.FromDisplayName)
+                .WithSubject("Some Topic")
+                .WithBody<ContentBody>(b => b.PlainTextContent = "something"));
+            var results = await mailer.SendAllAsync();
+            var recipient = results
+                .Should()
+                .HaveCount(1)
+                .And.Subject.First();
+            recipient.ToDisplayName
+                .Should().NotBeNullOrWhiteSpace()
+                .And.Be("(safe) Friendly Name <'noone@nowhere.com'>");
+            recipient.ToEmailAddress
+                .Should().NotBeNullOrWhiteSpace()
+                .And.Be("safe@nowhere.com");
+        }
+
+        [Fact]
+        [Trait("TestType", "Unit")]
+        public async Task NullMailer_SafetyMailerReplacesDisplayNameWhenPrependEmpty()
+        {
+            var mailer = new SafetyMailer<NullMailer>(GetMailer(), new SafetyMailerSettings()
+            {
+                PrependDisplayNameWithText = string.Empty,
+                SafeRecipientEmailAddress = "safe@nowhere.com"
+            });
+            mailer.AddMessage(new MailerMessage()
+                .To("noone@nowhere.com", "Friendly Name")
+                .From(_mailerSettings.FromEmailAddress, _mailerSettings.FromDisplayName)
+                .WithSubject("Some Topic")
+                .WithBody<ContentBody>(b => b.PlainTextContent = "something"));
+            var results = await mailer.SendAllAsync();
+            var recipient = results
+                .Should()
+                .HaveCount(1)
+                .And.Subject.First();
+            recipient.ToDisplayName
+                .Should().NotBeNullOrWhiteSpace()
+                .And.Be("Friendly Name <'noone@nowhere.com'>");
+            recipient.ToEmailAddress
+                .Should().NotBeNullOrWhiteSpace()
+                .And.Be("safe@nowhere.com");
+        }
+
+        [Fact]
+        [Trait("TestType", "Unit")]
+        public void NullMailer_SafetyMailerEmptySafeRecipientThrows()
+        {
+            Action act = () =>
+            {
+                // ReSharper disable once ObjectCreationAsStatement
+                new SafetyMailer<NullMailer>(GetMailer(), new SafetyMailerSettings()
+                {
+                    SafeRecipientEmailAddress = string.Empty
+                });
+            };
+            act.Should().Throw<ArgumentException>().Which.Message.Should().Be(
+                "Safety mailer cannot enable safe recipients when SafeRecipientEmailAddress is not specified");
+
         }
     }
 }
