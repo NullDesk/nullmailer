@@ -17,6 +17,17 @@ Easily configure your application for different email services at startup based 
 |NullDesk.Extensions.Mailer.History.EntityFramework                                         |[![MyGet](https://img.shields.io/myget/nulldesk-ci/vpre/NullDesk.Extensions.Mailer.History.EntityFramework.svg)](https://www.myget.org/feed/nulldesk-ci/package/nuget/NullDesk.Extensions.Mailer.History.EntityFramework)|[![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.History.EntityFramework.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.History.EntityFramework/)|
 |NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer                               |[![MyGet](https://img.shields.io/myget/nulldesk-ci/vpre/NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.svg)](https://www.myget.org/feed/nulldesk-ci/package/nuget/NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer)|[![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer/)|
 
+## What's New
+
+### 5.0 Features
+
+- [Safety Mailer](#safetymailer)  is a generic proxy for 'IMailer' that will override the recipient email address for all messages delivered by that mailer, and replace it with a configured substitute. This is useful for dev/test deployments.
+- Proxy mailer framework support allows easy creation of wrappers for mailers. Support for proxy instances and settings unique to the proxy are supported by both DI and Factory frameworks.
+
+### 5.0 Potentially Breaking Changes
+
+- Dependency injection allows registering of more than one IMailer; however, if your application uses multiple registrations please ensure you [understand the behavior](https://www.stevejgordon.co.uk/asp-net-core-dependency-injection-registering-multiple-implementations-interface).
+
 ## Contents
 
 - [Features](#features)
@@ -34,6 +45,7 @@ Easily configure your application for different email services at startup based 
   - [Templates](#templates)
   - [Attachments](#attachments)
 - [Advanced Topics](#advanced)
+  - [Safety Mailer](#safetymailer) 
   - [Logging with ILogger](#ilogger)
   - [History Stores](#history)
   - [History with EntityFramework and SQL Server](#sqlhistory)
@@ -347,6 +359,60 @@ The `SendGridMailer` uses SendGrid's server-side transactional templates. Here t
 Attachments can added to a `MailMessage` as either a collection of file paths, or a Dictionary of file names and Streams.
 
 ## <a name="advanced"></a>Advanced Topics
+
+### <a name="safetymailer"></a>Safety Mailer
+
+A safety mailer is a proxy for another `IMailer` type. It replaces the recipient email address for all messages being delivered to a pre-configured setting supplied to the proxy. 
+
+This is intended for DEV/TEST deployements where you want to enable real email, but want to ensure that all messages are delivered to a fake recipient address instead of a real user. 
+
+Since this is a proxy mailer, it can be used to wrap any kine of `IMailer`. 
+
+Example: Simple instantiation
+
+         var mailerSettings = new SendGridMailerSettings
+         {
+             ApiKey = "123",
+             FromDisplayName = "Person Name",
+             FromEmailAddress = "someone@toast.com",
+             IsSandboxMode = false
+         }; 
+         var safetySettings = new SafetyMailerSettings()
+         {
+             SafeRecipientEmailAddress = "safe@nowhere.com"
+         };
+         using (var mailer = new SafetyMailer<SendGridMailer>(new SendGridMailer(mailerSettings), safetySettings))
+         {
+             mailer.CreateMessage(b => b
+                .Subject("Message for %name%")
+                .And.To("recipient@toast.com").WithDisplayName("Recipient Name")
+                .And.ForBody()
+                    .WithHtml(htmlContentString)
+                    .AndPlainText(textContentString)
+                .And.WithSubstitutions(replacementVariablesDictionary)
+                .And.WithAttachments(attachmentFileNamesList)
+                .Build());
+
+             await mailer.SendAllAsync(CancellationToken.None);
+         }
+
+There are overloads for both mailer factory and dependency injection extensions for safety mailer.
+
+Example: DI Safety Mailer with SendGrid
+
+    services.AddSafetyMailer(safetyMailerSettings, mailerSettings);
+
+Example: Factory Safety Mailer with MailKit
+
+    Mail.AddSafetyMailer(safetyMailerSettings, mkSmtpMailerSettings);
+
+Example: DI Safety Mailer with a custom mailer
+
+    services.AddSafetyMailer<MyMailer, MyMailerSettings>(safetyMailerSettings, myMailerSettings);
+
+Example: Factory Safety Mailer with a custom mailer
+
+    Mail.Register<SafetyMailer<MyMailer>, SafetyMailerSettings, MyMailer, MyMailerSettings>(safetyMailerSettings, myMailerSettings);
 
 ### <a name="ilogger"></a>Logging with ILogger
 

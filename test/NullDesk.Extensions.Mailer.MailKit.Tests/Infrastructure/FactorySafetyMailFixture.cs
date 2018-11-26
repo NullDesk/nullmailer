@@ -9,16 +9,15 @@ using NullDesk.Extensions.Mailer.Core;
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 {
-    public class FactoryMailFixture : MailFixture, IDisposable
+    public class FactorySafetyMailFixture : MailFixture, IDisposable
     {
-        public FactoryMailFixture()
+        public FactorySafetyMailFixture()
         {
             var loggerFactory = new LoggerFactory();
             loggerFactory.AddDebug(LogLevel.Debug);
 
-            Mail =  new MailerFactory(loggerFactory, Store);
-            var mkSettings = SetupMailerOptions(out bool isMailServerAlive).Value;
-
+            Mail = new MailerFactory(loggerFactory, Store);
+            var mkSettings = SetupMailerOptions(out var isMailServerAlive).Value;
 
             if (isMailServerAlive)
             {
@@ -34,7 +33,12 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                     return c;
                 }
 
-                Mail.AddMkSmtpMailer(GetClientFunc, mkSettings);
+                Mail.AddSafetyMailer(new SafetyMailerSettings
+                    {
+                        SafeRecipientEmailAddress = "safe@nowhere.com"
+                    },
+                    GetClientFunc,
+                    mkSettings);
             }
         }
 

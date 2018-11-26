@@ -19,22 +19,21 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
             // ReSharper disable once UnusedVariable
             var mkSettings = SetupMailerOptions(out bool isMailServerAlive).Value;
 
-            Func<SmtpClient> getClientFunc = () =>
+            SmtpClient GetClientFunc()
             {
                 var c = Substitute.For<SmtpClient>();
-                c
-                    .SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>())
+                c.SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>())
                     .Returns(Task.CompletedTask);
                 return c;
-            };
+            }
 
             var logger = loggerFactory.CreateLogger<MkSmtpMailer>();
 
 
-            MailerFactoryForHistoryWithSerializableAttachments.AddMkSmtpMailer(getClientFunc, mkSettings, logger,
+            MailerFactoryForHistoryWithSerializableAttachments.AddMkSmtpMailer(GetClientFunc, mkSettings, logger,
                 StoreWithSerializableAttachments);
 
-            MailerFactoryForHistoryWithoutSerializableAttachments.AddMkSmtpMailer(getClientFunc, mkSettings, logger,
+            MailerFactoryForHistoryWithoutSerializableAttachments.AddMkSmtpMailer(GetClientFunc, mkSettings, logger,
                 StoreWithoutSerializableAttachments);
         }
 

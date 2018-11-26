@@ -17,18 +17,18 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <typeparam name="TMailer"></typeparam>
         /// <typeparam name="TMailerSettings">The type of settings.</typeparam>
         /// <param name="services">The services.</param>
-        /// <param name="settings">The settings.</param>
+        /// <param name="mailerSettings">The settings.</param>
         /// <returns>IServiceCollection.</returns>
         /// <remarks>Will setup the mailer as the default</remarks>
         public static IServiceCollection AddMailer<TMailer, TMailerSettings>
         (
             this IServiceCollection services,
-            TMailerSettings settings
+            TMailerSettings mailerSettings
         )
             where TMailer : class, IMailer<TMailerSettings>
             where TMailerSettings : class, IMailerSettings
         {
-            services.Add(ServiceDescriptor.Singleton(settings));
+            services.Add(ServiceDescriptor.Singleton(mailerSettings));
 
             return services.TrySetupMailer<TMailer>();
         }
@@ -41,14 +41,14 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <typeparam name="TMailer">The type of the t mailer.</typeparam>
         /// <typeparam name="TMailerSettings">The type of settings.</typeparam>
         /// <param name="services">The services.</param>
-        /// <param name="settings">The settings.</param>
+        /// <param name="mailerSettings">The settings.</param>
         /// <param name="proxyMailerSettings">The proxy mailer settings.</param>
         /// <returns>IServiceCollection.</returns>
         /// <remarks>Will setup the Proxy as the default IMailer</remarks>
         public static IServiceCollection AddMailer<TProxy, TProxySettings, TMailer, TMailerSettings>
         (
             this IServiceCollection services,
-            TMailerSettings settings,
+            TMailerSettings mailerSettings,
             TProxySettings proxyMailerSettings
         )
             where TProxy : class, IProxyMailer<TProxySettings, TMailer>, IMailer
@@ -56,7 +56,7 @@ namespace NullDesk.Extensions.Mailer.Core
             where TMailer : class, IMailer<TMailerSettings>
             where TMailerSettings : class, IMailerSettings
         {
-            services.Add(ServiceDescriptor.Singleton(settings));
+            services.Add(ServiceDescriptor.Singleton(mailerSettings));
             services.Add(ServiceDescriptor.Singleton(proxyMailerSettings));
             return services.TrySetupProxyMailer<TProxy, TProxySettings, TMailer>();
         }
@@ -67,18 +67,18 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <typeparam name="TMailer"></typeparam>
         /// <typeparam name="TMailerSettings">The type of settings.</typeparam>
         /// <param name="services">The services.</param>
-        /// <param name="settingsFactory">A func that returns the settings.</param>
+        /// <param name="mailerSettingsFactory">A func that returns the settings.</param>
         /// <returns>IServiceCollection.</returns>
         /// <remarks>Will setup the mailer as the default</remarks>
         public static IServiceCollection AddMailer<TMailer, TMailerSettings>
         (
             this IServiceCollection services,
-            Func<IServiceProvider, TMailerSettings> settingsFactory
+            Func<IServiceProvider, TMailerSettings> mailerSettingsFactory
         )
             where TMailer : class, IMailer<TMailerSettings>
             where TMailerSettings : class, IMailerSettings
         {
-            services.Add(ServiceDescriptor.Singleton(settingsFactory));
+            services.Add(ServiceDescriptor.Singleton(mailerSettingsFactory));
 
             return services.TrySetupMailer<TMailer>();
         }
@@ -91,24 +91,23 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <typeparam name="TMailer">The type of the t mailer.</typeparam>
         /// <typeparam name="TMailerSettings">The type of settings.</typeparam>
         /// <param name="services">The services.</param>
-        /// <param name="settingsFactory">A func that returns the settings.</param>
-        /// <param name="proxyMailerSettings">The proxy mailer settings.</param>
+        /// <param name="mailerSettingsFactory">A func that returns the settings.</param>
+        /// <param name="proxyMailerSettingsFactory">A func that returns the proxy mailer settings.</param>
         /// <returns>IServiceCollection.</returns>
         /// <remarks>Will setup the mailer as the default</remarks>
         public static IServiceCollection AddMailer<TProxy, TProxySettings, TMailer, TMailerSettings>
         (
             this IServiceCollection services,
-            Func<IServiceProvider, TMailerSettings> settingsFactory,
-            TProxySettings proxyMailerSettings
+            Func<IServiceProvider, TMailerSettings> mailerSettingsFactory,
+            Func<IServiceProvider, TProxySettings>  proxyMailerSettingsFactory
         )
             where TProxy : class, IProxyMailer<TProxySettings, TMailer>, IMailer
             where TProxySettings : class, IProxyMailerSettings
             where TMailer : class, IMailer<TMailerSettings>
             where TMailerSettings : class, IMailerSettings
         {
-            services.Add(ServiceDescriptor.Singleton(settingsFactory));
-            services.Add(ServiceDescriptor.Singleton(proxyMailerSettings));
-
+            services.Add(ServiceDescriptor.Singleton(mailerSettingsFactory));
+            services.Add(ServiceDescriptor.Singleton(proxyMailerSettingsFactory));
             return services.TrySetupProxyMailer<TProxy, TProxySettings, TMailer>();
         }
 
@@ -118,12 +117,8 @@ namespace NullDesk.Extensions.Mailer.Core
             where TMailer : class, IMailer
         {
             services.Add(ServiceDescriptor.Transient<TProxy, TProxy>());
-
-            if (services.All(d => d.ServiceType != typeof(IMailer)))
-            {
-                services.Add(ServiceDescriptor.Transient(typeof(IMailer), typeof(TProxy)));
-            }
-
+            services.Add(ServiceDescriptor.Transient<TMailer, TMailer>());
+            services.Add(ServiceDescriptor.Transient(typeof(IMailer), typeof(TProxy)));
             return services;
         }
 
@@ -131,12 +126,7 @@ namespace NullDesk.Extensions.Mailer.Core
             where TMailer : class, IMailer
         {
             services.Add(ServiceDescriptor.Transient<TMailer, TMailer>());
-
-            if (services.All(d => d.ServiceType != typeof(IMailer)))
-            {
-                services.Add(ServiceDescriptor.Transient(typeof(IMailer), typeof(TMailer)));
-            }
-
+            services.Add(ServiceDescriptor.Transient(typeof(IMailer), typeof(TMailer)));
             return services;
         }
 
@@ -144,68 +134,32 @@ namespace NullDesk.Extensions.Mailer.Core
         ///     Adds the NullMailer to dependency injection.
         /// </summary>
         /// <param name="services">The services.</param>
-        /// <param name="settings">The settings.</param>
+        /// <param name="mailerSettings">The settings.</param>
         /// <returns>IServiceCollection.</returns>
         /// <remarks>Will setup the mailer as the default</remarks>
         public static IServiceCollection AddNullMailer
         (
             this IServiceCollection services,
-            NullMailerSettings settings
+            NullMailerSettings mailerSettings
         )
         {
-            return services.AddMailer<NullMailer, NullMailerSettings>(settings);
+            return services.AddMailer<NullMailer, NullMailerSettings>(mailerSettings);
         }
 
         /// <summary>
         ///     Adds the NullMailer to dependency injection.
         /// </summary>
         /// <param name="services">The services.</param>
-        /// <param name="settingsFactory">A func that returns the mailer settings.</param>
+        /// <param name="mailerSettingsFactory">A func that returns the mailer settings.</param>
         /// <returns>IServiceCollection.</returns>
         /// <remarks>Will setup the mailer as the default</remarks>
         public static IServiceCollection AddNullMailer
         (
             this IServiceCollection services,
-            Func<IServiceProvider, NullMailerSettings> settingsFactory
+            Func<IServiceProvider, NullMailerSettings> mailerSettingsFactory
         )
         {
-            return services.AddMailer<NullMailer, NullMailerSettings>(settingsFactory);
-        }
-
-        /// <summary>
-        ///     Adds the SafetyMailer Proxy for NullMailer to dependency injection; uses the safety mailer proxy.
-        /// </summary>
-        /// <param name="services">The services.</param>
-        /// <param name="settings">The settings.</param>
-        /// <param name="safetyMailerSettings">The safety mailer settings.</param>
-        /// <returns>IServiceCollection.</returns>
-        /// <remarks>Will setup the mailer as the default</remarks>
-        public static IServiceCollection AddNullMailer
-        (
-            this IServiceCollection services,
-            NullMailerSettings settings,
-            SafetyMailerSettings safetyMailerSettings
-        )
-        {
-            return services.AddMailer<SafetyMailer<NullMailer>, SafetyMailerSettings, NullMailer, NullMailerSettings>(settings, safetyMailerSettings);
-        }
-
-        /// <summary>
-        ///     Adds the SafetyMailer Proxy for NullMailer to dependency injection.
-        /// </summary>
-        /// <param name="services">The services.</param>
-        /// <param name="settingsFactory">A func that returns the mailer settings.</param>
-        /// <param name="safetyMailerSettings">The safety mailer settings.</param>
-        /// <returns>IServiceCollection.</returns>
-        /// <remarks>Will setup the mailer as the default</remarks>
-        public static IServiceCollection AddNullMailer
-        (
-            this IServiceCollection services,
-            Func<IServiceProvider, NullMailerSettings> settingsFactory,
-            SafetyMailerSettings safetyMailerSettings
-        )
-        {
-            return services.AddMailer<SafetyMailer<NullMailer>, SafetyMailerSettings, NullMailer, NullMailerSettings>(settingsFactory, safetyMailerSettings);
+            return services.AddMailer<NullMailer, NullMailerSettings>(mailerSettingsFactory);
         }
 
         /// <summary>
@@ -216,6 +170,95 @@ namespace NullDesk.Extensions.Mailer.Core
         public static IServiceCollection AddMailerNullHistory(this IServiceCollection services)
         {
             return services.AddSingleton<IHistoryStore>(s => NullHistoryStore.Instance);
+        }
+
+        /// <summary>
+        /// Adds the safety mailer proxy for an IMailer to dependency injection.
+        /// </summary>
+        /// <typeparam name="TMailer">The type of the t mailer.</typeparam>
+        /// <typeparam name="TMailerSettings">The type of the t mailer settings.</typeparam>
+        /// <param name="services">The services.</param>
+        /// <param name="safetyMailerSettings">The safety mailer settings.</param>
+        /// <param name="mailerSettings">The mailer settings.</param>
+        /// <returns>IServiceCollection.</returns>
+        public static IServiceCollection AddSafetyMailer<TMailer, TMailerSettings>
+        (
+            this IServiceCollection services,
+            SafetyMailerSettings safetyMailerSettings,
+            TMailerSettings mailerSettings
+        )
+            where TMailer : class, IMailer<TMailerSettings>
+            where TMailerSettings : class, IMailerSettings
+        {
+            return AddMailer<SafetyMailer<TMailer>, SafetyMailerSettings, TMailer, TMailerSettings>(
+                services,
+                mailerSettings,
+                safetyMailerSettings);
+        }
+
+
+        /// <summary>
+        /// Adds the safety mailer proxy for an IMailer to dependency injection.
+        /// </summary>
+        /// <typeparam name="TMailer">The type of the t mailer.</typeparam>
+        /// <typeparam name="TMailerSettings">The type of the t mailer settings.</typeparam>
+        /// <param name="services">The services.</param>
+        /// <param name="safetyMailerSettingsFactory">The safety mailer settings function.</param>
+        /// <param name="mailerSettingsFactory">The mailer settings function.</param>
+        /// <returns>IServiceCollection.</returns>
+        public static IServiceCollection AddSafetyMailer<TMailer, TMailerSettings>
+        (
+            this IServiceCollection services,
+            Func<IServiceProvider, SafetyMailerSettings> safetyMailerSettingsFactory,
+            Func<IServiceProvider, TMailerSettings> mailerSettingsFactory
+        )
+            where TMailer : class, IMailer<TMailerSettings>
+            where TMailerSettings : class, IMailerSettings
+        {
+            return AddMailer<SafetyMailer<TMailer>, SafetyMailerSettings, TMailer, TMailerSettings>(
+                services,
+                mailerSettingsFactory,
+                safetyMailerSettingsFactory);
+        }
+
+        /// <summary>
+        /// Adds the safety mailer proxy for a NullMailer to dependency injection.
+        /// </summary>
+        /// <param name="services">The services.</param>
+        /// <param name="safetyMailerSettings">The safety mailer settings.</param>
+        /// <param name="mailerSettings">The mailer settings.</param>
+        /// <returns>IServiceCollection.</returns>
+        public static IServiceCollection AddSafetyMailer
+        (
+            this IServiceCollection services,
+            SafetyMailerSettings safetyMailerSettings,
+            NullMailerSettings mailerSettings
+        )
+        {
+            return AddMailer<SafetyMailer<NullMailer>, SafetyMailerSettings, NullMailer, NullMailerSettings>(
+                services,
+                mailerSettings,
+                safetyMailerSettings);
+        }
+
+        /// <summary>
+        /// Adds the safety mailer proxy for a NullMailer to dependency injection.
+        /// </summary>
+        /// <param name="services">The services.</param>
+        /// <param name="safetyMailerSettingsFactory">The safety mailer settings function.</param>
+        /// <param name="mailerSettingsFactory">The mailer settings function.</param>
+        /// <returns>IServiceCollection.</returns>
+        public static IServiceCollection AddSafetyMailer
+        (
+            this IServiceCollection services,
+            Func<IServiceProvider, SafetyMailerSettings> safetyMailerSettingsFactory,
+            Func<IServiceProvider, NullMailerSettings> mailerSettingsFactory
+        )
+        {
+            return AddMailer<SafetyMailer<NullMailer>, SafetyMailerSettings, NullMailer, NullMailerSettings>(
+                services,
+                mailerSettingsFactory,
+                safetyMailerSettingsFactory);
         }
     }
 }

@@ -129,7 +129,7 @@ namespace NullDesk.Extensions.Mailer.Core
         /// <param name="proxySettings">The proxy settings.</param>
         /// <param name="logger">The logger.</param>
         /// <param name="store">The store.</param>
-        public virtual void RegisterProxy<TProxy, TProxySettings, TMailer, TMailerSettings>(
+        public virtual void Register<TProxy, TProxySettings, TMailer, TMailerSettings>(
             IProxyMailerSettings proxySettings,
             TMailerSettings settings,
             ILogger logger = null,

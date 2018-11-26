@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.History.EntityFramework;
 using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer;
 using NullDesk.Extensions.Mailer.MailKit;
@@ -71,6 +72,8 @@ namespace Sample.Mailer.Cli
 
             services.Configure<SendGridMailerSettings>(Config.GetSection("MailSettings:SendGridMailerSettings"));
 
+            services.Configure<SafetyMailerSettings>(Config.GetSection("MailSettings:SafetyMailerSettings"));
+
             services.Configure<SqlEntityHistoryStoreSettings>(Config.GetSection("MailHistoryDbSettings"));
 
             services.AddMailerSqlHistory(s => s.GetService<IOptions<SqlEntityHistoryStoreSettings>>().Value);
@@ -94,6 +97,12 @@ namespace Sample.Mailer.Cli
                     break;
                 case "mailkit":
                     services.AddMkSmtpMailer(s => s.GetService<IOptions<MkSmtpMailerSettings>>().Value);
+                    break;
+                case "safetymailkit":
+                    services.AddSafetyMailer(s => s.GetService<IOptions<SafetyMailerSettings>>().Value, s => s.GetService<IOptions<MkSmtpMailerSettings>>().Value);
+                    break;
+                case "safetysendgrid":
+                    services.AddSafetyMailer(s => s.GetService<IOptions<SafetyMailerSettings>>().Value, s => s.GetService<IOptions<SendGridMailerSettings>>().Value);
                     break;
             }
 

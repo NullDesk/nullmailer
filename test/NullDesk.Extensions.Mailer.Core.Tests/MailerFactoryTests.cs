@@ -69,7 +69,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         public void Factory_Registrations_WithSafetyMailerSettings()
         {
             var factory = new MailerFactory(new LoggerFactory());
-            factory.RegisterProxy<SafetyMailer<NullMailer>, SafetyMailerSettings, NullMailer, NullMailerSettings>(
+            factory.Register<SafetyMailer<NullMailer>, SafetyMailerSettings, NullMailer, NullMailerSettings>(
                 new SafetyMailerSettings() { SafeRecipientEmailAddress = "safe@toast.com"},
                 new NullMailerSettings { ReplyToEmailAddress = "junk@toast.com" }
             );
@@ -84,7 +84,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
         public void Factory_Registrations_GetMailerFromSafetyMailer()
         {
             var factory = new MailerFactory(new LoggerFactory());
-            factory.RegisterProxy<SafetyMailer<NullMailer>, SafetyMailerSettings, NullMailer, NullMailerSettings>(
+            factory.Register<SafetyMailer<NullMailer>, SafetyMailerSettings, NullMailer, NullMailerSettings>(
                 new SafetyMailerSettings() { SafeRecipientEmailAddress = "safe@toast.com" },
                 new NullMailerSettings { ReplyToEmailAddress = "junk@toast.com" }
             );

@@ -48,7 +48,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
             {
                 mailer.AddMessage(new MailerMessage
                 {
-                    From = new MessageSender {EmailAddress = mes.From},
+                    From = new MessageSender { EmailAddress = mes.From },
                     Recipients = new List<MessageRecipient>
                     {
                         new MessageRecipient

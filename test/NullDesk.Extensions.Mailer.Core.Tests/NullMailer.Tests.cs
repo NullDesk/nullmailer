@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using NullDesk.Extensions.Mailer.Core.Extensions;
 using NullDesk.Extensions.Mailer.Core.Fluent.Extensions;
 using System;
 using System.Collections.Generic;
@@ -125,6 +126,62 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
 
         [Fact]
         [Trait("TestType", "Unit")]
+        public async Task NullMailer_MailerFromFactory_WithEmptySafetySettings()
+        {
+            var factory = new MailerFactory(null, null);
+            factory.AddNullMailer(_mailerSettings, null, null);
+            var mailer = factory.GetMailer();
+            mailer.AddMessage(new MailerMessage()
+                .To("noone@nowhere.com", "No one important")
+
+                .From(_mailerSettings.FromEmailAddress, _mailerSettings.FromDisplayName)
+                .WithSubject("Some Topic")
+                .WithBody<ContentBody>(b => b.PlainTextContent = "something"));
+            var results = await mailer.SendAllAsync();
+            var recipient = results
+                .Should()
+                .HaveCount(1)
+                .And.Subject.First();
+            recipient.ToDisplayName
+                .Should().NotBeNullOrWhiteSpace()
+                .And.Be("No one important");
+            recipient.ToEmailAddress
+                .Should().NotBeNullOrWhiteSpace()
+                .And.Be("noone@nowhere.com");
+        }
+
+        [Fact]
+        [Trait("TestType", "Unit")]
+        public async Task NullMailer_MailerFromFactory_WithSafetySettings()
+        {
+            var factory = new MailerFactory(null, null);
+            factory.AddSafetyMailer<NullMailer, NullMailerSettings>(
+                new SafetyMailerSettings()
+                {
+                    SafeRecipientEmailAddress = "safe@nowhere.com",
+                },
+                _mailerSettings);
+            var mailer = factory.GetMailer();
+            mailer.AddMessage(new MailerMessage()
+                .To("noone@nowhere.com")
+                .From(_mailerSettings.FromEmailAddress, _mailerSettings.FromDisplayName)
+                .WithSubject("Some Topic")
+                .WithBody<ContentBody>(b => b.PlainTextContent = "something"));
+            var results = await mailer.SendAllAsync();
+            var recipient = results
+                .Should()
+                .HaveCount(1)
+                .And.Subject.First();
+            recipient.ToDisplayName
+                .Should().NotBeNullOrWhiteSpace()
+                .And.Be("(safe) noone@nowhere.com <noone@nowhere.com>");
+            recipient.ToEmailAddress
+                .Should().NotBeNullOrWhiteSpace()
+                .And.Be("safe@nowhere.com");
+        }
+
+        [Fact]
+        [Trait("TestType", "Unit")]
         public async Task NullMailer_SafetyMailerReplacesAddress()
         {
             var mailer = new SafetyMailer<NullMailer>(GetMailer(), new SafetyMailerSettings()
@@ -143,7 +200,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 .And.Subject.First();
             recipient.ToDisplayName
                 .Should().NotBeNullOrWhiteSpace()
-                .And.Be("(safe) noone@nowhere.com <'noone@nowhere.com'>");
+                .And.Be("(safe) noone@nowhere.com <noone@nowhere.com>");
             recipient.ToEmailAddress
                 .Should().NotBeNullOrWhiteSpace()
                 .And.Be("safe@nowhere.com");
@@ -169,7 +226,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 .And.Subject.First();
             recipient.ToDisplayName
                 .Should().NotBeNullOrWhiteSpace()
-                .And.Be("(safe) Friendly Name <'noone@nowhere.com'>");
+                .And.Be("(safe) Friendly Name <noone@nowhere.com>");
             recipient.ToEmailAddress
                 .Should().NotBeNullOrWhiteSpace()
                 .And.Be("safe@nowhere.com");
@@ -196,7 +253,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 .And.Subject.First();
             recipient.ToDisplayName
                 .Should().NotBeNullOrWhiteSpace()
-                .And.Be("Friendly Name <'noone@nowhere.com'>");
+                .And.Be("Friendly Name <noone@nowhere.com>");
             recipient.ToEmailAddress
                 .Should().NotBeNullOrWhiteSpace()
                 .And.Be("safe@nowhere.com");
