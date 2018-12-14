@@ -96,5 +96,40 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
                 .And.OnlyContain(i => i.ToEmailAddress == "safe@nowhere.com")
                 .And.OnlyContain(i => i.ToDisplayName == "(safe) No One Important <noone@toast.com>");
         }
+
+        [Theory]
+        [Trait("TestType", "Unit")]
+        [ClassData(typeof(StandardMailerTestData))]
+        public async Task MailKitSafety_Factory_DisposeMailer(string html, string text, string[] attachments)
+        {
+            attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
+
+            var mailer = Fixture.Mail.GetMailer();
+            mailer.Should().BeOfType<SafetyMailer<MkSmtpMailer>>();
+            var deliveryItems =
+                mailer.CreateMessage(b => b
+                    .Subject($"xunit Test run: content body")
+                    .And.To("noone@toast.com")
+                    .WithDisplayName("No One Important")
+                    .And.ForBody()
+                    .WithHtml(html)
+                    .AndPlainText(text)
+                    .And.WithSubstitutions(ReplacementVars)
+                    .And.WithAttachments(attachments)
+                    .Build());
+
+            var result = await mailer.SendAllAsync(CancellationToken.None);
+
+            result
+                .Should()
+                .NotBeNull()
+                .And.AllBeOfType<DeliveryItem>()
+                .And.HaveSameCount(deliveryItems)
+                .And.OnlyContain(i => i.IsSuccess)
+                .And.OnlyContain(i => i.ToEmailAddress == "safe@nowhere.com")
+                .And.OnlyContain(i => i.ToDisplayName == "(safe) No One Important <noone@toast.com>");
+
+            mailer.Dispose();
+        }
     }
 }

@@ -21,7 +21,11 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 
             if (isMailServerAlive)
             {
-                Mail.AddMkSmtpMailer(mkSettings);
+                Mail.AddSafetyMailer(new SafetyMailerSettings
+                    {
+                        SafeRecipientEmailAddress = "safe@nowhere.com"
+                    },
+                    mkSettings);
             }
             else
             {

@@ -242,3 +242,4 @@ ModelManifest.xml
 .fake/
 **/appsettings-user.json
 **/*.vsext.disable
+*.snupkg

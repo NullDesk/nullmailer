@@ -1,11 +1,11 @@
 
 
-<#  
+<#
 .SYNOPSIS
     You can add this to you build script to ensure that psbuild is available before calling
     Invoke-MSBuild. If psbuild is not available locally it will be downloaded automatically.
 #>
-function EnsurePsbuildInstalled{  
+function EnsurePsbuildInstalled{
     [cmdletbinding()]
     param(
         [string]$psbuildInstallUri = 'https://raw.githubusercontent.com/ligershark/psbuild/master/src/GetPSBuild.ps1'
@@ -28,7 +28,7 @@ function EnsurePsbuildInstalled{
 
 # Taken from psake https://github.com/psake/psake
 
-<#  
+<#
 .SYNOPSIS
   This is a helper function that runs a scriptblock and checks the PS variable $lastexitcode
   to see if an error occcured. If an error is detected then an exception is thrown.
@@ -52,7 +52,7 @@ function Exec {
 Write-Output ""
 Write-Output "Begin: build.ps1"
 $repoTag = @{ $true = $env:APPVEYOR_REPO_TAG_NAME; $false = $NULL }[$env:APPVEYOR_REPO_TAG_NAME -ne $NULL]
-#only care about tags that look like version numbers 
+#only care about tags that look like version numbers
 $isBeta = $repoTag -notmatch "^[V|v]?\d+\.\d+\.\d+"
 
 $revision = @{ $true = $env:APPVEYOR_BUILD_NUMBER; $false = 1 }[$env:APPVEYOR_BUILD_NUMBER -ne $NULL]
@@ -65,7 +65,7 @@ Write-Output @{$true = "Revision = $revision"; $false =""}[$isBeta]
 Write-Output "------------------------------------"
 
 if(Test-Path .\dist) {
-    Remove-Item .\dist -Force -Recurse 
+    Remove-Item .\dist -Force -Recurse
 }
 
 EnsurePsbuildInstalled
@@ -86,7 +86,7 @@ if(!$config){
 # loop through projects and collect src and test project paths
 foreach ($folder in $srcDir) {
     $p = Join-Path -Path $folder.FullName -ChildPath '*.csproj';
-    # only src project folders -> folders with a csproj file 
+    # only src project folders -> folders with a csproj file
     if (Test-Path $p -PathType Leaf) {
         $projectFolders += $folder.FullName
         # find the test project, if one exists, and run each
@@ -94,7 +94,7 @@ foreach ($folder in $srcDir) {
         if (Test-Path $testFolderPath -PathType Container){
             $x = Join-Path -Path $testFolderPath -ChildPath 'xunit.runner.json';
             if (Test-Path $x -PathType Leaf) {
-                $testFolders += $testFolderPath    
+                $testFolders += $testFolderPath
             }
         }
     }
@@ -118,10 +118,10 @@ foreach($srcFolder in $projectFolders){
     Write-Output "packing : $srcFolder"
     Write-Output "--------"
     if($isBeta){
-        exec { & dotnet pack $srcFolder -c $config -o $distDir --version-suffix=$revision --include-symbols }
+        exec { & dotnet pack $srcFolder -c $config -o $distDir --version-suffix=$revision --include-symbols -p:SymbolPackageFormat=snupkg  }
     }
     else {
-        exec { & dotnet pack $srcFolder -c $config -o $distDir --include-symbols}
+        exec { & dotnet pack $srcFolder -c $config -o $distDir --include-symbols -p:SymbolPackageFormat=snupkg}
     }
 }
 
