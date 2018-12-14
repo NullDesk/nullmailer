@@ -291,8 +291,8 @@ namespace NullDesk.Extensions.Mailer.Core
         /// </summary>
         public virtual void Dispose()
         {
-            var unsent = PendingDeliveryItems.Where(m => !m.IsSuccess && string.IsNullOrEmpty(m.ExceptionMessage))
-                .ToArray();
+            var unsent = PendingDeliveryItems?.Where(m => !m.IsSuccess && string.IsNullOrEmpty(m.ExceptionMessage))
+                .ToArray() ?? new DeliveryItem[0];
             if (unsent.Any())
             {
                 var b = new StringBuilder();
