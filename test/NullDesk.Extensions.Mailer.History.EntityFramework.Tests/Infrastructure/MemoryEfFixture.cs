@@ -13,6 +13,8 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests.Infrastructur
         {
             //setup the dependency injection service
             var services = new ServiceCollection();
+            services.AddLogging(config => config.AddDebug().SetMinimumLevel(LogLevel.Debug));
+
             services.AddLogging();
             services.AddOptions();
             services.Configure<NullMailerSettings>(s =>
@@ -30,8 +32,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.Tests.Infrastructur
 
             ServiceProvider = services.BuildServiceProvider();
 
-            var logging = ServiceProvider.GetService<ILoggerFactory>();
-            logging.AddDebug(LogLevel.Debug);
+
         }
 
         public IServiceProvider ServiceProvider { get; set; }

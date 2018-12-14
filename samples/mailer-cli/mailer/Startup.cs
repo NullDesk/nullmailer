@@ -35,8 +35,6 @@ namespace Sample.Mailer.Cli
 
         private void ConfigureLogging(ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole(Config.GetSection("Logging"));
-
             loggerFactory.CreateLogger("startup").LogInformation("Application logging configured");
         }
 
@@ -61,7 +59,7 @@ namespace Sample.Mailer.Cli
         {
             services.AddOptions();
 
-            services.AddLogging();
+            services.AddLogging(builder => builder.AddConfiguration(Config.GetSection("Logging")).AddConsole());
 
             //register config options
             services.Configure<MailHistoryDbSettings>(Config.GetSection("MailHistoryDbSettings"));

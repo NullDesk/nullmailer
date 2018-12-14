@@ -11,6 +11,8 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
         {
             //setup the dependency injection service
             var services = new ServiceCollection();
+            services.AddLogging(config => config.AddDebug().SetMinimumLevel(LogLevel.Debug));
+
             services.AddLogging();
             services.AddOptions();
             services.AddSingleton<IHistoryStore, InMemoryHistoryStore>();
@@ -28,8 +30,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
 
 
             ServiceProvider = services.BuildServiceProvider();
-            var logging = ServiceProvider.GetService<ILoggerFactory>();
-            logging.AddDebug(LogLevel.Debug);
+
         }
 
         public IServiceProvider ServiceProvider { get; set; }

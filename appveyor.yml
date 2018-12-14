@@ -1,13 +1,16 @@
 version: '{build}'
+image: Visual Studio 2017
 install:
+  # Download .NET Core 2.2 SDK and add to PATH  -- VERY slow!
+  # Comment this stuff out when the stock image is up-to-date enough to publish correctly
+  - ps: $urlCurrent = "https://download.visualstudio.microsoft.com/download/pr/607bb33c-e356-449c-a957-ef72c80eeac2/7c2dab909c9a5c6698720c9e5a145701/dotnet-sdk-2.2.200-preview-009648-win-x64.zip"
+  - ps: $env:DOTNET_INSTALL_DIR = "$pwd\.dotnetsdk"
+  - ps: mkdir $env:DOTNET_INSTALL_DIR -Force | Out-Null
+  - ps: $tempFileCurrent = [System.IO.Path]::GetTempFileName()
+  - ps: (New-Object System.Net.WebClient).DownloadFile($urlCurrent, $tempFileCurrent)
+  - ps: Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory($tempFileCurrent, $env:DOTNET_INSTALL_DIR)
+  - ps: $env:Path = "$env:DOTNET_INSTALL_DIR;$env:Path"
   - ps: '& .\prebuild.ps1'
-  # Download install script to install .NET cli in .dotnet dir
-  #- ps: mkdir -Force ".\scripts\obtain\" | Out-Null
-  #- ps: Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/cli/v1.0.0/scripts/obtain/dotnet-install.ps1" -OutFile ".\scripts\obtain\install.ps1"
-  #- ps: $env:DOTNET_INSTALL_DIR = "$pwd\.dotnetcli"
-  #- ps: '& .\scripts\obtain\install.ps1'
-  # add dotnet to PATH
-  # - ps: $env:Path = "$env:DOTNET_INSTALL_DIR;$env:Path"
 pull_requests:
   do_not_increment_build_number: true
 branches:
@@ -29,10 +32,16 @@ deploy:
   symbol_server: https://www.myget.org/F/nulldesk-ci/symbols/api/v2/package
   on:
     branch: master
-- provider: NuGet
-  name: production
-  api_key:
-    secure: beIxMmve132jxfIInvuLViCXP9VK91BPGb8+sHNzudx44xt+XqcY/6JSsdocaoWF
-  on:
-    branch: master
-    appveyor_repo_tag: true
+#- provider: NuGet
+#  name: production
+#  api_key:
+#    secure: beIxMmve132jxfIInvuLViCXP9VK91BPGb8+sHNzudx44xt+XqcY/6JSsdocaoWF
+#  on:
+#    branch: master
+#    appveyor_repo_tag: true
+# Build Notes
+# To manually push nupkg and snupkg files (if appveyor is only able to upload legacy versions with non-portable PDB files and legacy symbols)
+#    build locally with build.ps1 on SDK 2.2.200 or later (remember to set the env variable for the tag if you want release version)
+#    run nuget push manually:
+#      dotnet nuget push .\dist\*.* -s https://api.nuget.org/v3/index.json -k <key here>
+# To download an SDK, edit the install section -- get paths for SDK binaries from release notes here: https://github.com/dotnet/core/tree/master/release-notes

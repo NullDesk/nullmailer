@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Debug;
 using Microsoft.Extensions.Options;
 using NullDesk.Extensions.Mailer.Core;
 
@@ -9,8 +10,8 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure
     {
         public FactoryMailFixture()
         {
-            var loggerFactory = new LoggerFactory();
-            loggerFactory.AddDebug(LogLevel.Debug);
+            var loggerFactory = new LoggerFactory(new[] { new DebugLoggerProvider() }, new LoggerFilterOptions() { MinLevel = LogLevel.Debug });
+
 
             var sendGridSettings = new SendGridMailerSettings
             {

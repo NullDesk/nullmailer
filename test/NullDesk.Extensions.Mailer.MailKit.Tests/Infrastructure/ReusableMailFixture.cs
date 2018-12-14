@@ -16,7 +16,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
         public ReusableMailFixture()
         {
             var services = new ServiceCollection();
-            services.AddLogging();
+            services.AddLogging(config => config.AddDebug().SetMinimumLevel(LogLevel.Debug));
 
             services.AddOptions();
 
@@ -39,9 +39,6 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
             });
 
             ServiceProvider = services.BuildServiceProvider();
-
-            var logging = ServiceProvider.GetService<ILoggerFactory>();
-            logging.AddDebug(LogLevel.Debug);
         }
 
         public IServiceProvider ServiceProvider { get; set; }

@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Debug;
 using MimeKit;
 using NSubstitute;
 using NullDesk.Extensions.Mailer.Core;
@@ -13,8 +14,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
     {
         public FactoryMailFixture()
         {
-            var loggerFactory = new LoggerFactory();
-            loggerFactory.AddDebug(LogLevel.Debug);
+            var loggerFactory = new LoggerFactory(new[] { new DebugLoggerProvider() }, new LoggerFilterOptions() { MinLevel = LogLevel.Debug });
 
             Mail =  new MailerFactory(loggerFactory, Store);
             var mkSettings = SetupMailerOptions(out bool isMailServerAlive).Value;
