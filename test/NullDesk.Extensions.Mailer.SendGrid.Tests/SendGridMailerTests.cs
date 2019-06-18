@@ -4,8 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Castle.Core.Logging;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure;
 using NullDesk.Extensions.Mailer.Tests.Common;
@@ -142,6 +144,8 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
                 .And.HaveSameCount(deliveryItems)
                 .And.OnlyContain(i => i.IsSuccess);
         }
+
+
     }
 }
 #pragma warning restore xUnit1026 // Theory methods should use all of their parameters

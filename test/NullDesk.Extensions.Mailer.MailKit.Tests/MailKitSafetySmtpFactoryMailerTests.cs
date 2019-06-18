@@ -61,7 +61,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
                 .And.HaveSameCount(deliveryItems)
                 .And.OnlyContain(i => i.IsSuccess)
                 .And.OnlyContain(i => i.ToEmailAddress == "safe@nowhere.com")
-                .And.OnlyContain(i => i.ToDisplayName == "(safe) No One Important <noone@toast.com>");
+                .And.OnlyContain(i => i.ToDisplayName == "(safe) No One Important [noone@toast.com]");
         }
 
         [Theory]
@@ -94,7 +94,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
                 .And.HaveSameCount(deliveryItems)
                 .And.OnlyContain(i => i.IsSuccess)
                 .And.OnlyContain(i => i.ToEmailAddress == "safe@nowhere.com")
-                .And.OnlyContain(i => i.ToDisplayName == "(safe) No One Important <noone@toast.com>");
+                .And.OnlyContain(i => i.ToDisplayName == "(safe) No One Important [noone@toast.com]");
         }
 
         [Theory]
@@ -127,7 +127,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
                 .And.HaveSameCount(deliveryItems)
                 .And.OnlyContain(i => i.IsSuccess)
                 .And.OnlyContain(i => i.ToEmailAddress == "safe@nowhere.com")
-                .And.OnlyContain(i => i.ToDisplayName == "(safe) No One Important <noone@toast.com>");
+                .And.OnlyContain(i => i.ToDisplayName == "(safe) No One Important [noone@toast.com]");
 
             mailer.Dispose();
         }

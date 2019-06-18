@@ -174,7 +174,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 .And.Subject.First();
             recipient.ToDisplayName
                 .Should().NotBeNullOrWhiteSpace()
-                .And.Be("(safe) noone@nowhere.com <noone@nowhere.com>");
+                .And.Be("(safe) noone@nowhere.com [noone@nowhere.com]");
             recipient.ToEmailAddress
                 .Should().NotBeNullOrWhiteSpace()
                 .And.Be("safe@nowhere.com");
@@ -200,7 +200,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 .And.Subject.First();
             recipient.ToDisplayName
                 .Should().NotBeNullOrWhiteSpace()
-                .And.Be("(safe) noone@nowhere.com <noone@nowhere.com>");
+                .And.Be("(safe) noone@nowhere.com [noone@nowhere.com]");
             recipient.ToEmailAddress
                 .Should().NotBeNullOrWhiteSpace()
                 .And.Be("safe@nowhere.com");
@@ -226,7 +226,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 .And.Subject.First();
             recipient.ToDisplayName
                 .Should().NotBeNullOrWhiteSpace()
-                .And.Be("(safe) Friendly Name <noone@nowhere.com>");
+                .And.Be("(safe) Friendly Name [noone@nowhere.com]");
             recipient.ToEmailAddress
                 .Should().NotBeNullOrWhiteSpace()
                 .And.Be("safe@nowhere.com");
@@ -253,7 +253,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                 .And.Subject.First();
             recipient.ToDisplayName
                 .Should().NotBeNullOrWhiteSpace()
-                .And.Be("Friendly Name <noone@nowhere.com>");
+                .And.Be("Friendly Name [noone@nowhere.com]");
             recipient.ToEmailAddress
                 .Should().NotBeNullOrWhiteSpace()
                 .And.Be("safe@nowhere.com");

@@ -32,13 +32,13 @@ deploy:
   symbol_server: https://www.myget.org/F/nulldesk-ci/symbols/api/v2/package
   on:
     branch: master
-#- provider: NuGet
-#  name: production
-#  api_key:
-#    secure: beIxMmve132jxfIInvuLViCXP9VK91BPGb8+sHNzudx44xt+XqcY/6JSsdocaoWF
-#  on:
-#    branch: master
-#    appveyor_repo_tag: true
+- provider: NuGet
+  name: production
+  api_key:
+    secure: QAxZSIPDkPX/ziDi/D7MZ4nF3bimBfEQ35RiKwO0Lug7HE3lvqGC/zAs1HrWfrDY
+  on:
+    branch: master
+    appveyor_repo_tag: true
 # Build Notes
 # To manually push nupkg and snupkg files (if appveyor is only able to upload legacy versions with non-portable PDB files and legacy symbols)
 #    build locally with build.ps1 on SDK 2.2.200 or later (remember to set the env variable for the tag if you want release version)

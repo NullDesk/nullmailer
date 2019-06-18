@@ -193,7 +193,7 @@ namespace NullDesk.Extensions.Mailer.Core
             foreach (var pendingDeliverable in PendingDeliverables)
             {
                 pendingDeliverable.ToDisplayName =
-                    $"{GetPrependDisplayNameText()}{GetSafetyDisplayName(pendingDeliverable)} <{pendingDeliverable.ToEmailAddress}>";
+                    $"{GetPrependDisplayNameText()}{GetSafetyDisplayName(pendingDeliverable)} [{pendingDeliverable.ToEmailAddress}]";
                 pendingDeliverable.ToEmailAddress = SafetySettings.SafeRecipientEmailAddress;
             }
         }
