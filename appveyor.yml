@@ -1,15 +1,6 @@
 version: '{build}'
-image: Visual Studio 2017
+image: Visual Studio 2019
 install:
-  # Download .NET Core 2.2 SDK and add to PATH  -- VERY slow!
-  # Comment this stuff out when the stock image is up-to-date enough to publish correctly
-  - ps: $urlCurrent = "https://download.visualstudio.microsoft.com/download/pr/607bb33c-e356-449c-a957-ef72c80eeac2/7c2dab909c9a5c6698720c9e5a145701/dotnet-sdk-2.2.200-preview-009648-win-x64.zip"
-  - ps: $env:DOTNET_INSTALL_DIR = "$pwd\.dotnetsdk"
-  - ps: mkdir $env:DOTNET_INSTALL_DIR -Force | Out-Null
-  - ps: $tempFileCurrent = [System.IO.Path]::GetTempFileName()
-  - ps: (New-Object System.Net.WebClient).DownloadFile($urlCurrent, $tempFileCurrent)
-  - ps: Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory($tempFileCurrent, $env:DOTNET_INSTALL_DIR)
-  - ps: $env:Path = "$env:DOTNET_INSTALL_DIR;$env:Path"
   - ps: '& .\prebuild.ps1'
 pull_requests:
   do_not_increment_build_number: true
@@ -18,12 +9,18 @@ branches:
   - master
 nuget:
   disable_publish_on_pr: true
-build_script:
-- ps: .\build.ps1
+before_build:
+- ps: dotnet restore
+build:
+  publish_nuget: true
+  publish_nuget_symbols: true
+  use_snupkg_format: true
 test: off
 artifacts:
-- path: .\dist\**\*.*
-  name: NuGet
+- path: '**\*.nupkg'
+  name: NuGet Packages
+- path: '**\*.snupkg'
+  name: NuGet Symbols Packages
 deploy:
 - provider: NuGet
   server: https://www.myget.org/F/nulldesk-ci/api/v2/package
