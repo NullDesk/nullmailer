@@ -1,10 +1,6 @@
 
 
-<#
-.SYNOPSIS
-    You can add this to you build script to ensure that psbuild is available before calling
-    Invoke-MSBuild. If psbuild is not available locally it will be downloaded automatically.
-#>
+
 function EnsurePsbuildInstalled{
     [cmdletbinding()]
     param(
@@ -26,17 +22,9 @@ function EnsurePsbuildInstalled{
     }
 }
 
-# Taken from psake https://github.com/psake/psake
 
-<#
-.SYNOPSIS
-  This is a helper function that runs a scriptblock and checks the PS variable $lastexitcode
-  to see if an error occcured. If an error is detected then an exception is thrown.
-  This function allows you to run command-line programs without having to
-  explicitly check the $lastexitcode variable.
-.EXAMPLE
-  exec { svn info $repository_trunk } "Error executing SVN. Please verify SVN command-line client is installed"
-#>
+
+
 function Exec {
     [CmdletBinding()]
     param(
@@ -86,30 +74,10 @@ if(!$config){
 # loop through projects and collect src and test project paths
 foreach ($folder in $srcDir) {
     $p = Join-Path -Path $folder.FullName -ChildPath '*.csproj';
-    # only src project folders -> folders with a csproj file
-    if (Test-Path $p -PathType Leaf) {
-        $projectFolders += $folder.FullName
-        # find the test project, if one exists, and run each
-        $testFolderPath = ".\test\" + $folder.Name + ".Tests"
-        if (Test-Path $testFolderPath -PathType Container){
-            $x = Join-Path -Path $testFolderPath -ChildPath 'xunit.runner.json';
-            if (Test-Path $x -PathType Leaf) {
-                $testFolders += $testFolderPath
-            }
-        }
-    }
 }
 
-# run tests first
-foreach($testFolder in $testFolders){
-    Write-Output ""
-    Write-Output "--------"
-    Write-Output "testing : $testFolder"
-    Write-Output "--------"
-    Set-Location $testFolder
-    exec { & dotnet test --configuration $config --filter "TestType=Unit" }
-    Set-Location $rootDir
-}
+exec { & dotnet test --configuration $config --filter "TestType=Unit" }
+
 
 # package src projects
 foreach($srcFolder in $projectFolders){

@@ -15,7 +15,7 @@ build:
   publish_nuget: true
   publish_nuget_symbols: true
   use_snupkg_format: true
-test: off
+test: on
 artifacts:
 - path: '**\*.nupkg'
   name: NuGet Packages
@@ -23,16 +23,9 @@ artifacts:
   name: NuGet Symbols Packages
 deploy:
 - provider: NuGet
-  server: https://www.myget.org/F/nulldesk-ci/api/v2/package
-  api_key:
-    secure: uBiyeuaz9rRv16bZe/X6HID91rZK//umRAHXo0gRh8l57p8MElDVETuqSwFXZVme
-  symbol_server: https://www.myget.org/F/nulldesk-ci/symbols/api/v2/package
-  on:
-    branch: master
-- provider: NuGet
   name: production
   api_key:
-    secure: QAxZSIPDkPX/ziDi/D7MZ4nF3bimBfEQ35RiKwO0Lug7HE3lvqGC/zAs1HrWfrDY
+    secure: g51pGgMjLDtttxJLWt+Fbz2XserKjK4wdalDS7OnhzTmiV+a5yC+IXD0U/1LGZuN
   on:
     branch: master
     appveyor_repo_tag: true

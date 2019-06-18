@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>NullDesk Mailer Extensions base classes and abstractions for email messaging services</Description>
-    <VersionPrefix>5.1.3</VersionPrefix>
+    <VersionPrefix>5.1.4</VersionPrefix>
     <Authors>Stephen M. Redd</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -20,6 +20,7 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Copyright>Stephen M. Redd 2017</Copyright>
     <IsPackable>true</IsPackable>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   <ItemGroup>
     <None Include="MessageModel\ContentBody.cs" />
