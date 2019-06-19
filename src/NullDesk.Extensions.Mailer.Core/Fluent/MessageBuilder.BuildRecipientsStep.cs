@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using NullDesk.Extensions.Mailer.Core.Fluent.Extensions;
 
 namespace NullDesk.Extensions.Mailer.Core.Fluent
@@ -89,6 +90,17 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
                 {
                     return new BuildRecipientSubstitutionStep(Context,
                         Recipient.WithSubstitution(replacementToken, replacementValue));
+                }
+
+                /// <summary>
+                ///     Adds a collection of replacement tokens and values to the collection of substitutions.
+                /// </summary>
+                /// <param name="substitutions">The substitutions.</param>
+                /// <returns>BuildRecipientSubstitutionStep.</returns>
+                public BuildRecipientSubstitutionStep WithPersonalizedSubstitutions(
+                    IDictionary<string, string> substitutions)
+                {
+                    return new BuildRecipientSubstitutionStep(Context, Recipient.WithSubstitutions(substitutions));
                 }
 
                 /// <summary>

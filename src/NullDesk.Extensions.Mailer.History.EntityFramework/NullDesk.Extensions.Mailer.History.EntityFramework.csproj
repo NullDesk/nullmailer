@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>NullDesk Mailer Extensions base implementation of messsage and delivery history storage with EntityFramework Core.</Description>
-    <VersionPrefix>5.1.4</VersionPrefix>
+    <VersionPrefix>5.1.5</VersionPrefix>
     <Authors>Stephen M. Redd</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>

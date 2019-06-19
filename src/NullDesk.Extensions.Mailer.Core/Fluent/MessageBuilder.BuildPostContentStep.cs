@@ -73,7 +73,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
             }
 
             /// <summary>
-            ///     Adds a collection of replacement tokens and values to the collection of substutions.
+            ///     Adds a collection of replacement tokens and values to the collection of substitutions.
             /// </summary>
             /// <param name="substitutions">The substitutions.</param>
             /// <returns>BuildAttachmentOrSubstitutionStep.</returns>
@@ -84,7 +84,7 @@ namespace NullDesk.Extensions.Mailer.Core.Fluent
 
 
             /// <summary>
-            ///     Adds a replacement token and value to the collection of substutions.
+            ///     Adds a replacement token and value to the collection of substitutions.
             /// </summary>
             /// <param name="replacementToken">The replacement token.</param>
             /// <param name="replacementValue">The replacement value.</param>
