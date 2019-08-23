@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>NullDesk Mailer Extension for SQL Server email messsage and delivery history storage using EntityFramework Core</Description>
-    <VersionPrefix>5.1.5</VersionPrefix>
+    <VersionPrefix>5.1.6</VersionPrefix>
     <Authors>Stephen M. Redd</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -33,7 +33,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
     <PackageReference Include="System.Reflection.Extensions" Version="4.3.0" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NullDesk.Extensions.Mailer.Core\NullDesk.Extensions.Mailer.Core.csproj" />
