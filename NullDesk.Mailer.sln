@@ -5,6 +5,7 @@ VisualStudioVersion = 17.13.35617.110
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "general", "general", "{C82FA801-0F7E-422F-9A4F-CA5507AC4982}"
 	ProjectSection(SolutionItems) = preProject
+		deploy.ps1 = deploy.ps1
 		LICENSE = LICENSE
 		README.md = README.md
 		version-bump.ps1 = version-bump.ps1
