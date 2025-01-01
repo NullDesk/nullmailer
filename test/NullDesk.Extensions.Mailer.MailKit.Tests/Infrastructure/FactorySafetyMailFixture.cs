@@ -1,12 +1,12 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using MailKit.Net.Smtp;
+﻿using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Debug;
 using MimeKit;
 using NSubstitute;
 using NullDesk.Extensions.Mailer.Core;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 {
@@ -23,9 +23,9 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
             if (isMailServerAlive)
             {
                 Mail.AddSafetyMailer(new SafetyMailerSettings
-                    {
-                        SafeRecipientEmailAddress = "safe@nowhere.com"
-                    },
+                {
+                    SafeRecipientEmailAddress = "safe@nowhere.com"
+                },
                     mkSettings);
             }
             else
@@ -34,14 +34,14 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                 {
                     var c = Substitute.For<SmtpClient>();
                     c.SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>())
-                        .Returns(Task.CompletedTask);
+                        .Returns(Task.FromResult(string.Empty));
                     return c;
                 }
 
                 Mail.AddSafetyMailer(new SafetyMailerSettings
-                    {
-                        SafeRecipientEmailAddress = "safe@nowhere.com"
-                    },
+                {
+                    SafeRecipientEmailAddress = "safe@nowhere.com"
+                },
                     GetClientFunc,
                     mkSettings);
             }

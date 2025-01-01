@@ -1,8 +1,8 @@
-﻿using System;
+﻿using FluentAssertions;
+using NullDesk.Extensions.Mailer.Core.Fluent;
+using System;
 using System.IO;
 using System.Linq;
-using FluentAssertions;
-using NullDesk.Extensions.Mailer.Core.Fluent;
 using Xunit;
 
 namespace NullDesk.Extensions.Mailer.Core.Tests
@@ -68,7 +68,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                     .Should()
                     .NotBeEmpty()
                     .And.ContainKey(token)
-                    .WhichValue.Should()
+                    .WhoseValue.Should()
                     .Be(value);
             }
         }

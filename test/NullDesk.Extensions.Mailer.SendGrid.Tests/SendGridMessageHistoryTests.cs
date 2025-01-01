@@ -1,13 +1,13 @@
-﻿using System;
+﻿using FluentAssertions;
+using NullDesk.Extensions.Mailer.Core;
+using NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure;
+using NullDesk.Extensions.Mailer.Tests.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentAssertions;
-using NullDesk.Extensions.Mailer.Core;
-using NullDesk.Extensions.Mailer.SendGrid.Tests.Infrastructure;
-using NullDesk.Extensions.Mailer.Tests.Common;
 using Xunit;
 
 namespace NullDesk.Extensions.Mailer.SendGrid.Tests
@@ -102,7 +102,7 @@ namespace NullDesk.Extensions.Mailer.SendGrid.Tests
             {
                 Func<Task> asyncFunction = () => mailer.ReSendAsync(m.Id, CancellationToken.None);
 
-                asyncFunction.Should().Throw<InvalidOperationException>();
+                await asyncFunction.Should().ThrowAsync<InvalidOperationException>();
             }
             else
             {

@@ -1,12 +1,12 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using NullDesk.Extensions.Mailer.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using NullDesk.Extensions.Mailer.Core;
 
 namespace NullDesk.Extensions.Mailer.History.EntityFramework
 {
@@ -133,16 +133,13 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
                                 || i.FromDisplayName.Contains(searchText)
                                 || i.ReplyToEmailAddress.Contains(searchText)
                                 || i.ReplyToDisplayName.Contains(searchText))
-                        .OrderByDescending(i => i.CreatedDate)
-                        .Take(limit)
-                        .Select(i => i.ToDeliverySummary());
+                        ;
 
                     if (!string.IsNullOrEmpty(sourceApplicationName))
                     {
                         results = results
                             .Where(i =>
-                                i.SourceApplicationName.Equals(sourceApplicationName,
-                                    StringComparison.OrdinalIgnoreCase));
+                                i.SourceApplicationName == sourceApplicationName);
                     }
                     if (startDate.HasValue)
                     {
@@ -152,7 +149,10 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework
                     {
                         results = results.Where(i => i.CreatedDate <= endDate);
                     }
-                    return await results.ToListAsync(token);
+                    var s = results.OrderByDescending(i => i.CreatedDate)
+                        .Take(limit)
+                        .Select(i => i.ToDeliverySummary());
+                    return await s.ToListAsync(token);
                 }
             }
             return new DeliveryItem[] { };

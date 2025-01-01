@@ -695,5 +695,5 @@ You can also create a completely custom history store of your own using any tech
 
 Simply create a class that inherits from `IHistoryStore<TSettings>` and implement the required members.
 
-----
+### Building and Publishing
 

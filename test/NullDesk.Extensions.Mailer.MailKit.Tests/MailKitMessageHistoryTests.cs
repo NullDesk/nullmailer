@@ -1,14 +1,14 @@
-﻿using System;
+﻿using FluentAssertions;
+using NullDesk.Extensions.Mailer.Core;
+using NullDesk.Extensions.Mailer.Core.Fluent.Extensions;
+using NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure;
+using NullDesk.Extensions.Mailer.Tests.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentAssertions;
-using NullDesk.Extensions.Mailer.Core;
-using NullDesk.Extensions.Mailer.Core.Fluent.Extensions;
-using NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure;
-using NullDesk.Extensions.Mailer.Tests.Common;
 using Xunit;
 
 // ReSharper disable PossibleMultipleEnumeration
@@ -108,8 +108,8 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests
             {
                 Func<Task> asyncFunction = () => mailer.ReSendAsync(m.Id, CancellationToken.None);
 
-                asyncFunction
-                    .Should().Throw<InvalidOperationException>();
+                await asyncFunction
+                    .Should().ThrowAsync<InvalidOperationException>();
             }
             else
             {

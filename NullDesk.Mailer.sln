@@ -1,16 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35617.110
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "general", "general", "{C82FA801-0F7E-422F-9A4F-CA5507AC4982}"
 	ProjectSection(SolutionItems) = preProject
-		appveyor.yml = appveyor.yml
-		build.ps1 = build.ps1
 		LICENSE = LICENSE
-		prebuild.ps1 = prebuild.ps1
-		publish.ps1 = publish.ps1
 		README.md = README.md
+		version-bump.ps1 = version-bump.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A7F6046E-2F93-4D8E-94A3-56D0027C0D8F}"
