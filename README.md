@@ -8,14 +8,14 @@ Easily configure your application for different email services at startup based 
 
 ## Status
 
-|                                   |   |   |
-|-----------------------------------|:-:|:-:|
-|Project  [Issue Board](https://github.com/NullDesk/NullMailer/issues#boards?repos=79507993)|[![Build status](https://ci.appveyor.com/api/projects/status/5uc95cb6xho4qtdh/branch/master?svg=true)](https://ci.appveyor.com/project/StephenRedd/nullmailer/branch/master)|[![ZenHub](https://img.shields.io/badge/Shipping_faster_with-ZenHub-5e60ba.svg?style=flat-square)](https://github.com/NullDesk/NullMailer/issues#boards?repos=79507993)|
-|NullDesk.Extensions.Mailer.Core                                                             |[![MyGet](https://img.shields.io/myget/nulldesk-ci/vpre/NullDesk.Extensions.Mailer.Core.svg)](https://www.myget.org/feed/nulldesk-ci/package/nuget/NullDesk.Extensions.Mailer.Core)|[![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.Core.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.Core/)|
-|NullDesk.Extensions.Mailer.MailKit                                                         |[![MyGet](https://img.shields.io/myget/nulldesk-ci/vpre/NullDesk.Extensions.Mailer.MailKit.svg)](https://www.myget.org/feed/nulldesk-ci/package/nuget/NullDesk.Extensions.Mailer.MailKit)|[![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.MailKit.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.MailKit/)|
-|NullDesk.Extensions.Mailer.SendGrid                                                        |[![MyGet](https://img.shields.io/myget/nulldesk-ci/vpre/NullDesk.Extensions.Mailer.SendGrid.svg)](https://www.myget.org/feed/nulldesk-ci/package/nuget/NullDesk.Extensions.Mailer.SendGrid)|[![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.SendGrid.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.SendGrid/)|
-|NullDesk.Extensions.Mailer.History.EntityFramework                                         |[![MyGet](https://img.shields.io/myget/nulldesk-ci/vpre/NullDesk.Extensions.Mailer.History.EntityFramework.svg)](https://www.myget.org/feed/nulldesk-ci/package/nuget/NullDesk.Extensions.Mailer.History.EntityFramework)|[![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.History.EntityFramework.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.History.EntityFramework/)|
-|NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer                               |[![MyGet](https://img.shields.io/myget/nulldesk-ci/vpre/NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.svg)](https://www.myget.org/feed/nulldesk-ci/package/nuget/NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer)|[![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer/)|
+|                                                                                             |                                                                                                                                                                                                           |
+| ------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| Project  [Issue Board](https://github.com/NullDesk/NullMailer/issues#boards?repos=79507993) |                                                                                                                                                                                                           |
+| NullDesk.Extensions.Mailer.Core                                                             |                              [![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.Core.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.Core/)                              |
+| NullDesk.Extensions.Mailer.MailKit                                                          |                           [![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.MailKit.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.MailKit/)                           |
+| NullDesk.Extensions.Mailer.SendGrid                                                         |                          [![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.SendGrid.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.SendGrid/)                          |
+| NullDesk.Extensions.Mailer.History.EntityFramework                                          |           [![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.History.EntityFramework.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.History.EntityFramework/)           |
+| NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer                                | [![NuGet](https://img.shields.io/nuget/v/NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.svg)](https://www.nuget.org/packages/NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer/) |
 
 ## What's New
 
@@ -30,30 +30,41 @@ Easily configure your application for different email services at startup based 
 
 ## Contents
 
-- [Features](#features)
-- [Package Descriptions](#package-descriptions)
-- [Basic Usage](#basic-usage)
-  - [Mailer Instantiation](#mailer-instantiation)
-  - [Mailer Factory Usage](#mailer-factory-usage)
-  - [Dependency Injection](#dependency-injection)
-- [Creating MailerMessages](#creating-messages)
-  - [Fluent Message Builder](#message-builder)
-  - [Fluent Extensions](#fluent-extensions)
-  - [Class Instantiation](#class-instantiation)
-  - [Multiple Recipients](#recipients)
-  - [Substitutions and PersonalizedSubstitutions](#subs)
-  - [Templates](#templates)
-  - [Attachments](#attachments)
-- [Advanced Topics](#advanced)
-  - [Safety Mailer](#safetymailer) 
-  - [Logging with ILogger](#ilogger)
-  - [History Stores](#history)
-  - [History with EntityFramework and SQL Server](#sqlhistory)
-  - [Using the History Store](#ihistorystore)
-  - [Re-Sending from IHistoryStore](#resend)
-- [Using GMail](#gmail)
-- [Creating your own Mailer](#custom-mailer)
-- [Custom History](#custom-history)
+- [NullDesk Email Extensions](#nulldesk-email-extensions)
+  - [Overview](#overview)
+  - [Status](#status)
+  - [What's New](#whats-new)
+    - [5.0 Features](#50-features)
+    - [5.0 Potentially Breaking Changes](#50-potentially-breaking-changes)
+  - [Contents](#contents)
+  - [Features](#features)
+  - [Package Descriptions](#package-descriptions)
+  - [Basic Usage](#basic-usage)
+    - [Mailer Instantiation](#mailer-instantiation)
+    - [Mailer Factory Usage](#mailer-factory-usage)
+    - [Dependency Injection](#dependency-injection)
+  - [Creating MailerMessages](#creating-mailermessages)
+    - [Fluent Message Builder](#fluent-message-builder)
+    - [Fluent Extensions](#fluent-extensions)
+    - [Direct Message Instantiation](#direct-message-instantiation)
+    - [Multiple Recipients](#multiple-recipients)
+    - [Substitutions and PersonalizedSubstitutions](#substitutions-and-personalizedsubstitutions)
+    - [Templates](#templates)
+    - [Attachments](#attachments)
+  - [Advanced Topics](#advanced-topics)
+    - [Safety Mailer](#safety-mailer)
+    - [Logging with ILogger](#logging-with-ilogger)
+    - [History Store](#history-store)
+      - [SQL Server History Store](#sql-server-history-store)
+      - [Using History with Mailers](#using-history-with-mailers)
+      - [ Resending Mail from History](#-resending-mail-from-history)
+  - [Using Gmail](#using-gmail)
+  - [Creating your own mailers](#creating-your-own-mailers)
+  - [Custom History](#custom-history)
+    - [Custom EF SQL History Contexts](#custom-ef-sql-history-contexts)
+    - [Custom EF non-SQL History](#custom-ef-non-sql-history)
+    - [Custom (non-EF) History](#custom-non-ef-history)
+    - [Building and Publishing](#building-and-publishing)
 
 ## <a name="features"></a>Features
 
@@ -68,14 +79,14 @@ Easily configure your application for different email services at startup based 
 
 ## <a name="pacakge-descriptions"></a>Package Descriptions
 
-|                                                                                  |           |
-|----------------------------------------------------------------------------------|-----------|
-|NullDesk.Extensions.Mailer.Core                             |Base classes and interfaces for the mailer extensions, and settings.|
-|NullDesk.Extensions.Mailer.MailKit                          |SMTP Relay Email service using the popular cross platform [MailKit library](https://github.com/jstedfast/MailKit). Includes support for basic Email Template files.|
-|NullDesk.Extensions.Mailer.SendGrid                         |SendGrid email service using SendGrid APIs. Supports basic usage of SendGrid templates; can be inherited for more advanced SendGrid functionality.|
-|NullDesk.Extensions.Mailer.History.EntityFramework          |Base classes for message and delivery history using entity framework |
-|NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer|Implementation of message and delivery history using entity framework targeting for MS SQL Server |
-|_NullDesk.Extensions.Mailer.NetMail_                         |*(coming soon)* SMTP Relay Email service using the cross-platform System.Net.Mail framework from Microsoft.|
+|                                                              |                                                                                                                                                                     |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| NullDesk.Extensions.Mailer.Core                              | Base classes and interfaces for the mailer extensions, and settings.                                                                                                |
+| NullDesk.Extensions.Mailer.MailKit                           | SMTP Relay Email service using the popular cross platform [MailKit library](https://github.com/jstedfast/MailKit). Includes support for basic Email Template files. |
+| NullDesk.Extensions.Mailer.SendGrid                          | SendGrid email service using SendGrid APIs. Supports basic usage of SendGrid templates; can be inherited for more advanced SendGrid functionality.                  |
+| NullDesk.Extensions.Mailer.History.EntityFramework           | Base classes for message and delivery history using entity framework                                                                                                |
+| NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer | Implementation of message and delivery history using entity framework targeting for MS SQL Server                                                                   |
+| _NullDesk.Extensions.Mailer.NetMail_                         | *(coming soon)* SMTP Relay Email service using the cross-platform System.Net.Mail framework from Microsoft.                                                         |
 
 
 ## <a name="basic-usage"></a>Basic Usage
@@ -694,6 +705,4 @@ In this case, you would only need to install the `NullDesk.Extensions.Mailer.His
 You can also create a completely custom history store of your own using any technologies you like.
 
 Simply create a class that inherits from `IHistoryStore<TSettings>` and implement the required members.
-
-### Building and Publishing
 

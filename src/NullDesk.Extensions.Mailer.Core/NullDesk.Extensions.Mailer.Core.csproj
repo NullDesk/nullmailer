@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>NullDesk Mailer Extensions base classes and abstractions for email messaging services</Description>
-    <Version>8.0.0-beta.1</Version>
+    <Version>8.0.0-beta.4</Version>
     <Authors>Stephen M. Redd</Authors>
     <TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -12,7 +12,7 @@
     <PackageId>NullDesk.Extensions.Mailer.Core</PackageId>
     <PackageTags>email;nulldesk</PackageTags>
     <PackageProjectUrl>https://github.com/NullDesk/NullMailer</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/NullDesk/NullMailer/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/NullDesk/NullMailer</RepositoryUrl>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
@@ -22,8 +22,13 @@
     <IsPackable>true</IsPackable>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="MessageModel\ContentBody.cs" />
   </ItemGroup>
   <ItemGroup>

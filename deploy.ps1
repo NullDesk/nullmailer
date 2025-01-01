@@ -15,29 +15,24 @@
 
 #>
 [cmdletbinding()]
-param([Parameter(Mandatory)][string]$apikey)
+param([Parameter(Mandatory)][string]$apikey, [switch]$publish = $false)
 
 $rootDir = Get-Location
 $srcDir = Get-ChildItem ./src
 $outputDir = Join-Path -Path $rootDir -ChildPath '/packOutput'
-
+Write-Output `n
 
 if (-not (Test-Path -Path $outputDir -PathType Container)) {
+    Write-Output "Creating output directory: $outputDir"
     New-Item -Path $outputDir -ItemType Directory
 }
+Write-Output "Cleaning output directory: $outputDir"
 Remove-Item $outputDir\*
-
-#Write-Output "Getting nuget.exe"
-#$sourceNugetExe = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
-#$targetNugetExe = "$outputDir\nuget.exe"
-#$progressPreference = 'silentlyContinue'
-#Invoke-WebRequest $sourceNugetExe -OutFile $targetNugetExe
-#$progressPreference = 'continue'
-#
-#Set-Alias nuget $targetNugetExe -Scope Global -Verbose
+Write-Output `n
 
 if(!$config){
     $config = "Release"
+    Write-Output "Configuration $config"
 }
 
 Write-Output "restoring packages"
@@ -58,17 +53,14 @@ foreach($srcFolder in $projectFolders){
     Write-Output "Build packages"
     & dotnet pack $srcFolder -c $config -o $outputDir -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
 }
-
- & dotnet nuget push $outputDir -s https://api.nuget.org/v3/index.json -k $apikey
-
-#Set-Location $outputDir
-#$pkgs = Get-ChildItem -Path .\ -exclude '*.snupkg','*nuget.exe'
-#foreach($pkg in $pkgs){
-#
-#    & $targetNugetExe push $pkg.Name $apikey -Source https://api.nuget.org/v3/index.json
-#}
-#Set-Location $rootDir
-
-#Remove-Item $targetNugetExe
-
+Write-Output `n
+if($publish){
+    Write-Output "Publish packages"
+    & dotnet nuget push $outputDir\*.* -s https://api.nuget.org/v3/index.json -k $apikey
+    Write-Output `n
+}
+else
+{
+    Write-Output "Skiped publishing packages; use the -publish switch to publish"
+}
 Write-Output "Done"
