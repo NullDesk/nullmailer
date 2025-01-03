@@ -2,7 +2,7 @@
 
 ## Overview
 
-Email extensions for quickly integrating common mail scenarios into any .Net Core or .Net Full-Framework project.
+Email extensions for quickly integrating common mail scenarios into any .Net Core project.
 
 Easily configure your application for different email services at startup based on environment, deployment configuration, or custom detection of available mail providers.
 
@@ -34,8 +34,8 @@ Easily configure your application for different email services at startup based 
   - [Overview](#overview)
   - [Status](#status)
   - [What's New](#whats-new)
-    - [5.0 Features](#50-features)
-    - [5.0 Potentially Breaking Changes](#50-potentially-breaking-changes)
+    - [5.0 Features](#features)
+    - [5.0 Potentially Breaking Changes](#potentially-breaking-changes)
   - [Contents](#contents)
   - [Features](#features)
   - [Package Descriptions](#package-descriptions)
@@ -66,7 +66,7 @@ Easily configure your application for different email services at startup based 
     - [Custom (non-EF) History](#custom-non-ef-history)
     - [Building and Publishing](#building-and-publishing)
 
-## <a name="features"></a>Features
+## Features
 
 - Template support for all mail services
 - Replacement variables (substitutions) with or without templates
@@ -77,7 +77,7 @@ Easily configure your application for different email services at startup based 
   - Microsoft logging extensions
   - Microsoft dependency injection extensions
 
-## <a name="pacakge-descriptions"></a>Package Descriptions
+## Package Descriptions
 
 |                                                              |                                                                                                                                                                     |
 | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -89,7 +89,7 @@ Easily configure your application for different email services at startup based 
 | _NullDesk.Extensions.Mailer.NetMail_                         | *(coming soon)* SMTP Relay Email service using the cross-platform System.Net.Mail framework from Microsoft.                                                         |
 
 
-## <a name="basic-usage"></a>Basic Usage
+## Basic Usage
 
 - Reference the package or packages your application needs:
   - For SMTP install `NullDesk.Extensions.Mailer.MailKit`.
@@ -102,7 +102,7 @@ Easily configure your application for different email services at startup based 
 
 > The built-in Mailers are reusable by default. As of 4.0.0, mailers no longer keep an internal reference to delivered items, but it is still recommended to create a new mailer instance each time.
 
-### <a name="mailer-instantiation"></a>Mailer Instantiation
+### Mailer Instantiation
 
 The simplest usage is to instantiate the mailer of your choice, use the fluent message builder API to create one or more messages, then send the messages:
 
@@ -128,7 +128,7 @@ The simplest usage is to instantiate the mailer of your choice, use the fluent m
              await mailer.SendAllAsync(CancellationToken.None);
          }
 
-### <a name="mailer-factory-usage"></a>Mailer Factory Usage
+### Mailer Factory Usage
 
 For cases where dependency injection isn't available, or desired, you can use the mailer factory to obtain mailer instances.
 
@@ -163,7 +163,7 @@ When you are ready to send messages:
             await mailer.SendAllAsync(CancellationToken.None);
         }
 
-### <a name="dependency-injection"></a>Dependency Injection
+### Dependency Injection
 
 When using any dependency injection framework, it is best to register types as follows:
 
@@ -207,9 +207,9 @@ Then you can just inject `IMailer` into any classes that need to send messages
             }
         }
 
-## <a name="creating-messages"></a>Creating MailerMessages
+## Creating MailerMessages
 
-### <a name="message-builder"></a>Fluent Message Builder
+### Fluent Message Builder
 
 The mailer extensions include a fluent message builder API that provides a guided experience for creating complete and deliverable messages.
 
@@ -274,7 +274,7 @@ A Complete Example:
             .Build();
 
 
-### <a name="fluent-extensions"></a>Fluent Extensions
+### Fluent Extensions
 
 The Mailer Extensions also includes a more traditional set of fluent extension methods.
 
@@ -296,7 +296,7 @@ Here is a basic example:
             .WithSubject("Subject")
             .WithBody<TemplateBody>(body => body.TemplateName = "MyTemplate");
 
-### <a name="class-instantiation"></a>Direct Message Instantiation
+### Direct Message Instantiation
 
 While using the message builder fluent API is usually best, direct instantiation is also straight-forward:
 
@@ -336,7 +336,7 @@ While using the message builder fluent API is usually best, direct instantiation
             }
         };
 
-### <a name="recipients"></a>Multiple Recipients
+### Multiple Recipients
 
 A `MailMessage` may define multiple recipients, each potentially having their own personalized substitutions. The Mailer extensions will ensure that **each recipient receives a separate and isolated email** message.
 
@@ -344,7 +344,7 @@ Each `MailMessage` is converted into one or more `DeliveryItem` instances; one p
 
 If a history store is used, then each `DeliveryItem` will have its own history record.
 
-### <a name="subs"></a>Substitutions and PersonalizedSubstitutions
+### Substitutions and PersonalizedSubstitutions
 
 The mailer extensions support content substitutions for body content, subject, and templates. 
 
@@ -357,7 +357,7 @@ The `MailMessage` has a top-level dictionary property for supplying replacement 
             {"%title%", "President"}
         };
 
-### <a name="templates"></a>Templates
+### Templates
 
 Different implementations of `IMailer` support templates in slightly different ways.
 
@@ -365,13 +365,13 @@ The `MkSmtpMailer` uses MailKit to deliver email using traditional SMTP services
 
 The `SendGridMailer` uses SendGrid's server-side transactional templates. Here the template name should be the ID of the transactional template you wish to use. The mailer will simply pass the template name and substitutions collections to the server, which will then create the message and deliver it.
 
-### <a name="attachments"></a>Attachments
+### Attachments
 
 Attachments can added to a `MailMessage` as either a collection of file paths, or a Dictionary of file names and Streams.
 
-## <a name="advanced"></a>Advanced Topics
+## Advanced Topics
 
-### <a name="safetymailer"></a>Safety Mailer
+### Safety Mailer
 
 A safety mailer is a proxy for another `IMailer` type. It replaces the recipient email address for all messages being delivered to a pre-configured setting supplied to the proxy. 
 
@@ -425,7 +425,7 @@ Example: Factory Safety Mailer with a custom mailer
 
     Mail.Register<SafetyMailer<MyMailer>, SafetyMailerSettings, MyMailer, MyMailerSettings>(safetyMailerSettings, myMailerSettings);
 
-### <a name="ilogger"></a>Logging with ILogger
+### Logging with ILogger
 
 The mailer extensions support logging with [Microsoft's Logging Extensions](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging).
 
@@ -469,7 +469,7 @@ Example: Logging with MS DI extensions:
             return services.BuildServiceProvider();
         }
 
-### <a name="history"></a>History Store
+### History Store
 
 The mailer extensions also supports storing message and delivery details in an optional history store.
 
@@ -477,7 +477,7 @@ Depending on which history package you select, configuration may be different.
 
 The core package includes a `NullHistoryStore` (does nothing) and an `InMemoryHistoryStore` for testing purposes.
 
-#### <a name="sqlhistory"></a>SQL Server History Store
+#### SQL Server History Store
 
 To store history in SQL server using Entity Framework 7, add the `NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer` NuGet package.
 
@@ -510,7 +510,7 @@ Other settings of interest:
 - **StoreAttachmentContents** (default=false): Set true to serialize the content of attachments into history; all history items will be re-sendable, but this can consume a lot of data storage (hint: if you need this kind of thing, you might want to write your own history store and store attachments to a filesystem, and otherwise optimize space usage).
 - **IsEnabled** (default=true): Set to false to disable recording history.
 
-#### <a name="ihistorystore"></a>Using History with Mailers
+#### Using History with Mailers
 
 These examples demonstrate usage with the EntityFramework SQL Server History Store package, but usage will be similar for any IHistoryStore implementation.
 
@@ -571,7 +571,7 @@ Example: History with MS DI extensions:
             return services.BuildServiceProvider();
         }
 
-#### <a name="resend"></a> Resending Mail from History
+#### Resending Mail from History
 
 Using a history store enables mailers to re-send messages.
 
@@ -583,7 +583,7 @@ The re-send will **immediately** re-deliver the message. You do not have to call
 
 You can enable attachment serialization and storage for the history store in the settings by changing the `StoreAttachmentContents` value to `true`.
 
-## <a name="gmail"></a>Using Gmail
+## Using Gmail
 
 If you are using GMail with the MailKit SMTP Mailer, you will need to use the less secure username/password authentication, or you will need to obtain and use oAuth access tokens.
 
@@ -618,7 +618,7 @@ When using oAuth, you will need to supply a value to the `Authenticator` propert
             }
         };
 
-## <a name="custom-mailer"></a>Creating your own mailers
+## Creating your own mailers
 
 To implement your own mailer, simply implement a class that inherits `Mailer<TSettings>`.
 
@@ -656,7 +656,7 @@ The base class will handle logging the exception, updating the DeliveryItem's pr
             }
         }
 
-## <a name="custom-history"></a>Custom History
+## Custom History
 
 ### Custom EF SQL History Contexts
 
