@@ -1,16 +1,16 @@
-﻿using System;
+﻿using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
+using NullDesk.Extensions.Mailer.Core;
+using NullDesk.Extensions.Mailer.Core.Fluent;
+using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Infrastructure;
+using NullDesk.Extensions.Mailer.Tests.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
-using NullDesk.Extensions.Mailer.Core;
-using NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Infrastructure;
-using NullDesk.Extensions.Mailer.Tests.Common;
 using Xunit;
-using NullDesk.Extensions.Mailer.Core.Fluent;
 
 // ReSharper disable PossibleMultipleEnumeration
 #pragma warning disable xUnit1026 // Theory methods should use all of their parameters
@@ -49,7 +49,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
                 .AndPlainText(text)
                 .And.WithSubstitutions(ReplacementVars)
                 .Build();
-          
+
             var deliveries = message.Recipients.Select(recipient => new DeliveryItem(message, recipient)).ToList();
             foreach (var item in deliveries)
             {
@@ -71,7 +71,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
             attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
 
             var mailer = Fixture.ServiceProvider.GetService<IMailer>();
-            ((EntityHistoryStore<TestSqlHistoryContext>) ((Mailer<NullMailerSettings>) mailer).HistoryStore).Settings
+            ((EntityHistoryStore<TestSqlHistoryContext>)((Mailer<NullMailerSettings>)mailer).HistoryStore).Settings
                 .StoreAttachmentContents = true;
             var deliveryItems =
                 mailer.CreateMessage(b => b
@@ -118,7 +118,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
             attachments = attachments?.Select(a => Path.Combine(AppContext.BaseDirectory, a)).ToArray();
 
             var mailer = Fixture.ServiceProvider.GetService<IMailer>();
-            ((EntityHistoryStore<TestSqlHistoryContext>) ((Mailer<NullMailerSettings>) mailer).HistoryStore).Settings
+            ((EntityHistoryStore<TestSqlHistoryContext>)((Mailer<NullMailerSettings>)mailer).HistoryStore).Settings
                 .StoreAttachmentContents = false;
             var deliveryItems =
                 mailer.CreateMessage(b => b
@@ -176,7 +176,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
                     Id = Guid.NewGuid(),
                     IsSuccess = true,
                     ExceptionMessage = null,
-                    Body = new ContentBody {PlainTextContent = "content"},
+                    Body = new ContentBody { PlainTextContent = "content" },
                     FromDisplayName = "noone",
                     FromEmailAddress = "noone@nowhere.com"
                 });
@@ -210,7 +210,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
                 Id = Guid.NewGuid(),
                 IsSuccess = true,
                 ExceptionMessage = null,
-                Body = new ContentBody {PlainTextContent = "content"},
+                Body = new ContentBody { PlainTextContent = "content" },
                 FromDisplayName = "noone",
                 FromEmailAddress = "noone@nowhere.com"
             });
@@ -226,7 +226,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests
                 Id = Guid.NewGuid(),
                 IsSuccess = true,
                 ExceptionMessage = null,
-                Body = new ContentBody {PlainTextContent = "content"},
+                Body = new ContentBody { PlainTextContent = "content" },
                 FromDisplayName = "noone",
                 FromEmailAddress = "noone@nowhere.com"
             });

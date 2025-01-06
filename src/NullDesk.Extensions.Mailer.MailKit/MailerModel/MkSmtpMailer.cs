@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using MailKit.Net.Smtp;
+﻿using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
 using MimeKit;
 using NullDesk.Extensions.Mailer.Core;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 // ReSharper disable once CheckNamespace
 namespace NullDesk.Extensions.Mailer.MailKit
@@ -91,9 +91,7 @@ namespace NullDesk.Extensions.Mailer.MailKit
             }
             try
             {
-                var box = string.IsNullOrEmpty(deliveryItem.ToDisplayName)
-                    ? new MailboxAddress(deliveryItem.ToEmailAddress)
-                    : new MailboxAddress(deliveryItem.ToDisplayName, deliveryItem.ToEmailAddress);
+                var box = new MailboxAddress(deliveryItem.ToDisplayName, deliveryItem.ToEmailAddress);
                 mkMessage.To.Add(box);
             }
             catch (FormatException)

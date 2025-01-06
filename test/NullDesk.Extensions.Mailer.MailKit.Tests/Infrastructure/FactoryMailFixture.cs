@@ -1,12 +1,12 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using MailKit.Net.Smtp;
+﻿using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Debug;
 using MimeKit;
 using NSubstitute;
 using NullDesk.Extensions.Mailer.Core;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 {
@@ -16,7 +16,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
         {
             var loggerFactory = new LoggerFactory(new[] { new DebugLoggerProvider() }, new LoggerFilterOptions() { MinLevel = LogLevel.Debug });
 
-            Mail =  new MailerFactory(loggerFactory, Store);
+            Mail = new MailerFactory(loggerFactory, Store);
             var mkSettings = SetupMailerOptions(out bool isMailServerAlive).Value;
 
 
@@ -30,7 +30,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                 {
                     var c = Substitute.For<SmtpClient>();
                     c.SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>())
-                        .Returns(Task.CompletedTask);
+                        .Returns(Task.FromResult(string.Empty));
                     return c;
                 }
 

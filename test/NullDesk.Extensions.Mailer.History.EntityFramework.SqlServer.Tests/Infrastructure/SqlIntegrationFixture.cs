@@ -1,8 +1,8 @@
-using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NullDesk.Extensions.Mailer.Core;
+using System;
 
 namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Infrastructure
 {
@@ -31,7 +31,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Inf
             services.AddNullMailer(s => s.GetService<IOptions<NullMailerSettings>>().Value);
 
             ServiceProvider = services.BuildServiceProvider();
-            
+
         }
 
         public IServiceProvider ServiceProvider { get; set; }
@@ -40,7 +40,7 @@ namespace NullDesk.Extensions.Mailer.History.EntityFramework.SqlServer.Tests.Inf
         public void Dispose()
         {
             using (var context =
-                ((EntityHistoryStore<TestSqlHistoryContext>) ServiceProvider.GetService<IHistoryStore>())
+                ((EntityHistoryStore<TestSqlHistoryContext>)ServiceProvider.GetService<IHistoryStore>())
                 .GetHistoryContext())
             {
                 context.Database.EnsureDeleted();

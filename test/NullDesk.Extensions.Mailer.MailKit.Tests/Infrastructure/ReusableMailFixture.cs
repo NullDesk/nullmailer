@@ -1,13 +1,13 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using MailKit.Net.Smtp;
+﻿using MailKit.Net.Smtp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using NSubstitute;
 using NullDesk.Extensions.Mailer.Core;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 {
@@ -30,7 +30,7 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
                 var client = Substitute.For<SmtpClient>();
                 client
                     .SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>())
-                    .Returns(Task.CompletedTask);
+                    .Returns(Task.FromResult(string.Empty));
                 return isMailServerAlive
                     ? new MkSmtpMailer(options.Value, s.GetService<ILogger<MkSmtpMailer>>(),
                         s.GetService<IHistoryStore>())

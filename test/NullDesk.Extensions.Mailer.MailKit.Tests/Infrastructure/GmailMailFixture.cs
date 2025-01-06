@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading;
-using System.Threading.Tasks;
-using Google.Apis.Auth.OAuth2;
+﻿using Google.Apis.Auth.OAuth2;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -12,6 +7,11 @@ using MimeKit;
 using NSubstitute;
 using NullDesk.Extensions.Mailer.Core;
 using NullDesk.Extensions.Mailer.MailKit.Authentication;
+using System;
+using System.IO;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 {
@@ -31,6 +31,13 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+
         }
 
         private void SetupBasic()
@@ -109,13 +116,13 @@ namespace NullDesk.Extensions.Mailer.MailKit.Tests.Infrastructure
 
         protected OptionsWrapper<MkSmtpMailerSettings> SetupMailerOptionsToken()
         {
-            var certificate = new X509Certificate2(@"C:\Users\steph\Downloads\NullMailerTests-ec989cf935fc.p12",
-                "notasecret", X509KeyStorageFlags.Exportable);
+            var certificate = X509CertificateLoader.LoadCertificateFromFile(@"C:\Users\steph\Downloads\NullMailerTests-ec989cf935fc.p12");
+            //,"notasecret", X509KeyStorageFlags.Exportable);
             var credential = new ServiceAccountCredential(
                 new ServiceAccountCredential.Initializer("nullmailertests@nullmailertests.iam.gserviceaccount.com")
                 {
                     // Note: other scopes can be found here: https://developers.google.com/gmail/api/auth/scopes
-                    Scopes = new[] {"https://mail.google.com/"},
+                    Scopes = new[] { "https://mail.google.com/" },
                     User = "abc@xyz.com"
                 }.FromCertificate(certificate));
 

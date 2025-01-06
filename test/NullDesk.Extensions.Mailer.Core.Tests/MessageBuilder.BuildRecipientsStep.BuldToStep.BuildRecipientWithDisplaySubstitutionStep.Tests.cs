@@ -1,7 +1,7 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NullDesk.Extensions.Mailer.Core.Fluent;
 using NullDesk.Extensions.Mailer.Core.Fluent.Extensions;
+using System;
 using Xunit;
 
 namespace NullDesk.Extensions.Mailer.Core.Tests
@@ -34,8 +34,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                     .Should()
                     .NotBeNull()
                     .And
-                    .BeOfType<MessageBuilder.BuildRecipientsStep.BuildToStep.BuildRecipientWithDisplaySubstitutionStep
-                    >()
+                    .BeOfType<MessageBuilder.BuildRecipientsStep.BuildToStep.BuildRecipientWithDisplaySubstitutionStep>()
                     .Which.As<IBuilderContext>()
                     .Message.Recipients
                     .Should()
@@ -44,7 +43,7 @@ namespace NullDesk.Extensions.Mailer.Core.Tests
                     .And.ContainSingle(r => r.EmailAddress == address)
                     .Which.PersonalizedSubstitutions.Should()
                     .ContainKey(token)
-                    .WhichValue.Should()
+                    .WhoseValue.Should()
                     .Be(value);
             }
         }
