@@ -19,14 +19,9 @@ Easily configure your application for different email services at startup based 
 
 ## What's New
 
-### 5.0 Features
+### 8.5 Features
 
-- [Safety Mailer](#safetymailer)  is a generic proxy for 'IMailer' that will override the recipient email address for all messages delivered by that mailer, and replace it with a configured substitute. This is useful for dev/test deployments.
-- Proxy mailer framework support allows easy creation of wrappers for mailers. Support for proxy instances and settings unique to the proxy are supported by both DI and Factory frameworks.
-
-### 5.0 Potentially Breaking Changes
-
-- Dependency injection allows registering of more than one IMailer; however, if your application uses multiple registrations please ensure you [understand the behavior](https://www.stevejgordon.co.uk/asp-net-core-dependency-injection-registering-multiple-implementations-interface).
+Upgrades to .NET 8, removes netstandard 2.0 support due to the difficulties of managing pacakge vulnerabilities. If you need netstandard support, please use version 8.0 (there are no feature changes between them). 
 
 ## Contents
 
@@ -34,10 +29,9 @@ Easily configure your application for different email services at startup based 
   - [Overview](#overview)
   - [Status](#status)
   - [What's New](#whats-new)
-    - [5.0 Features](#features)
-    - [5.0 Potentially Breaking Changes](#potentially-breaking-changes)
+    - [8.5 Features](#features)
   - [Contents](#contents)
-  - [Features](#features)
+  - [General Features](#general-features)
   - [Package Descriptions](#package-descriptions)
   - [Basic Usage](#basic-usage)
     - [Mailer Instantiation](#mailer-instantiation)
@@ -66,11 +60,10 @@ Easily configure your application for different email services at startup based 
     - [Custom (non-EF) History](#custom-non-ef-history)
     - [Building and Publishing](#building-and-publishing)
 
-## Features
+## General Features
 
 - Template support for all mail services
 - Replacement variables (substitutions) with or without templates
-- Cross-platform Netstandard 1.3 packages
 - Fluent Message Builder API
 - Optional Delivery history store
 - Optional support for:
